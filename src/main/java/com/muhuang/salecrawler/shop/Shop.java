@@ -20,8 +20,8 @@ public class Shop {
 
     private Long shopId;
 
-    private String name;
+    private String shopName;
 
-    private String url;
+    private String shopUrl;
 
 }
