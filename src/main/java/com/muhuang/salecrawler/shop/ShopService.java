@@ -15,7 +15,7 @@ public class ShopService {
         shopRepository.save(shop);
     }
 
-    public Page<?> getShops() {
+    public Page<Shop> getShops() {
         PageRequest pageable = PageRequest.of(0, 10);
         return shopRepository.findAll(pageable);
     }

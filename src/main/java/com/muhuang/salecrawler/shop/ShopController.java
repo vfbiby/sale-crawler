@@ -20,7 +20,7 @@ public class ShopController {
     }
 
     @GetMapping
-    Page<?> getShops(){
+    Page<Shop> getShops(){
         return shopService.getShops();
     }
 

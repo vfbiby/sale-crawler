@@ -12,7 +12,7 @@ import java.util.function.Function;
 @Data
 public class TestPage<T> implements Page<T> {
 
-    long totalElement;
+    long totalElements;
     int totalPages;
     int number;
     int numberOfElement;
@@ -26,12 +26,12 @@ public class TestPage<T> implements Page<T> {
 
     @Override
     public int getTotalPages() {
-        return 0;
+        return totalPages;
     }
 
     @Override
     public long getTotalElements() {
-        return 0;
+        return totalElements;
     }
 
     @Override

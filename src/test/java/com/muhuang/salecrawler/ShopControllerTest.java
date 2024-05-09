@@ -101,16 +101,26 @@ public class ShopControllerTest {
 
         @Test
         void getShops_whenThereIsNoShopsInDB_receiveOK() {
-            ResponseEntity<Object> response = testRestTemplate.getForEntity(API_1_0_SHOP, Object.class);
+            ResponseEntity<Object> response = getShops(new ParameterizedTypeReference<>() {});
             assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         }
 
         @Test
         void getShops_whenThereIsNoShopsInDB_receivePageWithZeroItems() {
-            ResponseEntity<TestPage<Object>> response = testRestTemplate.exchange(API_1_0_SHOP,
-                    HttpMethod.GET, null, new ParameterizedTypeReference<>() {
-                    });
+            ResponseEntity<TestPage<Object>> response = getShops(new ParameterizedTypeReference<>() {});
             assertThat(response.getBody().getTotalElements()).isEqualTo(0);
+        }
+
+        @Test
+        void getShops_whenThereIsAShopsInDB_receivePageWithUser() {
+            shopRepository.save(createValidShop());
+            ResponseEntity<TestPage<Object>> response = getShops(new ParameterizedTypeReference<>() {});
+            System.out.println(response);
+            assertThat(response.getBody().getTotalElements()).isEqualTo(1);
+        }
+
+        private <T> ResponseEntity<T> getShops(ParameterizedTypeReference<T> responseType) {
+            return testRestTemplate.exchange(API_1_0_SHOP, HttpMethod.GET, null, responseType);
         }
 
     }
