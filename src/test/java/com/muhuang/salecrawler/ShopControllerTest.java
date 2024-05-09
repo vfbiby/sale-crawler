@@ -1,8 +1,10 @@
 package com.muhuang.salecrawler;
 
+import com.muhuang.salecrawler.shared.GenericResponse;
 import com.muhuang.salecrawler.shop.Shop;
 import com.muhuang.salecrawler.shop.ShopRepository;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -18,6 +20,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class ShopControllerTest {
 
     public static final String API_1_0_SHOP = "/api/1.0/shops";
+
     @Autowired
     private ShopRepository shopRepository;
 
@@ -29,18 +32,55 @@ public class ShopControllerTest {
         shopRepository.deleteAll();
     }
 
-    @Test
-    void postShop_whenShopIsValid_receiveOK() {
-        Shop shop = createValidShop();
-        ResponseEntity<Object> response = testRestTemplate.postForEntity(API_1_0_SHOP, shop, Object.class);
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+    @Nested
+    class HappyPath {
+
+        @Test
+        void postShop_whenShopIsValid_receiveOK() {
+            Shop shop = createValidShop();
+            ResponseEntity<Object> response = postForEntity(shop, Object.class);
+            assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        }
+
+        @Test
+        void postShop_whenShopIsValid_saveToDatabase() {
+            postForEntity(createValidShop(), Object.class);
+            assertThat(shopRepository.count()).isEqualTo(1);
+        }
+
+        @Test
+        void postShop_whenShopIsValid_receiveSuccessMessage() {
+            Shop shop = createValidShop();
+            ResponseEntity<GenericResponse> response = postForEntity(shop, GenericResponse.class);
+            assertThat(response.getBody().getMessage()).isNotNull();
+        }
+
     }
 
-    @Test
-    void postShop_whenShopIsValid_saveToDatabase() {
-        Shop shop = createValidShop();
-        testRestTemplate.postForEntity(API_1_0_SHOP, shop, Object.class);
-        assertThat(shopRepository.count()).isEqualTo(1);
+    @Nested
+    class SadPath {
+
+        @Test
+        void postShop_whenShopHasNullShopId_receiveBadRequest() {
+            Shop shop = createValidShop();
+            shop.setShopId(null);
+            ResponseEntity<GenericResponse> response = postForEntity(shop, GenericResponse.class);
+            assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+        }
+
+        @Test
+        void postShop_whenShopHasNullShopName_receiveBadRequest() {
+            Shop shop = createValidShop();
+            shop.setShopName(null);
+            System.out.println(shop);
+            ResponseEntity<GenericResponse> response = postForEntity(shop, GenericResponse.class);
+            assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+        }
+
+    }
+
+    private <T> ResponseEntity<T> postForEntity(Shop shop, Class<T> responseType) {
+        return testRestTemplate.postForEntity(API_1_0_SHOP, shop, responseType);
     }
 
     private static Shop createValidShop() {
