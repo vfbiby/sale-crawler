@@ -1,0 +1,14 @@
+GET http://localhost:8080/api/1.0/shops
+Content-Type: application/json
+
+###
+POST http://localhost:8080/api/1.0/shops
+Content-Type: application/json
+
+{
+  "shopId": 105703949,
+  "shopName": "TT坏坏",
+  "shopUrl": "https://shop105703949.taobao.com"
+}
+
+###

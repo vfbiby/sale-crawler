@@ -9,6 +9,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
@@ -90,6 +92,25 @@ public class ShopControllerTest {
             shop.setShopUrl("not-valid-url");
             ResponseEntity<GenericResponse> response = postForEntity(shop, GenericResponse.class);
             assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+        }
+
+    }
+
+    @Nested
+    class ReadShop {
+
+        @Test
+        void getShops_whenThereIsNoShopsInDB_receiveOK() {
+            ResponseEntity<Object> response = testRestTemplate.getForEntity(API_1_0_SHOP, Object.class);
+            assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        }
+
+        @Test
+        void getShops_whenThereIsNoShopsInDB_receivePageWithZeroItems() {
+            ResponseEntity<TestPage<Object>> response = testRestTemplate.exchange(API_1_0_SHOP,
+                    HttpMethod.GET, null, new ParameterizedTypeReference<>() {
+                    });
+            assertThat(response.getBody().getTotalElements()).isEqualTo(0);
         }
 
     }
