@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.validator.constraints.URL;
 
 @Data
 @Builder
@@ -25,6 +26,8 @@ public class Shop {
     @NotNull
     private String shopName;
 
+    @URL
+    @NotNull
     private String shopUrl;
 
 }

@@ -72,7 +72,22 @@ public class ShopControllerTest {
         void postShop_whenShopHasNullShopName_receiveBadRequest() {
             Shop shop = createValidShop();
             shop.setShopName(null);
-            System.out.println(shop);
+            ResponseEntity<GenericResponse> response = postForEntity(shop, GenericResponse.class);
+            assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+        }
+
+        @Test
+        void postShop_whenShopHasNullShopUrl_receiveBadRequest() {
+            Shop shop = createValidShop();
+            shop.setShopUrl(null);
+            ResponseEntity<GenericResponse> response = postForEntity(shop, GenericResponse.class);
+            assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+        }
+
+        @Test
+        void postShop_whenShopHasInvalidShopUrl_receiveBadRequest() {
+            Shop shop = createValidShop();
+            shop.setShopUrl("not-valid-url");
             ResponseEntity<GenericResponse> response = postForEntity(shop, GenericResponse.class);
             assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
         }
