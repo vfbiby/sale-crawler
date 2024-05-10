@@ -3,7 +3,10 @@ package com.muhuang.salecrawler;
 import com.muhuang.salecrawler.item.Item;
 import com.muhuang.salecrawler.item.ItemRepository;
 import com.muhuang.salecrawler.item.ItemService;
+import com.muhuang.salecrawler.shop.Shop;
+import com.muhuang.salecrawler.shop.ShopService;
 import jakarta.annotation.Resource;
+import lombok.Builder;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -17,6 +20,7 @@ import org.springframework.test.context.ActiveProfiles;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+import static com.muhuang.salecrawler.ShopControllerTest.createValidShop;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -31,6 +35,9 @@ public class ItemControllerTest {
 
     @Resource
     private ItemService itemService;
+
+    @Resource
+    private ShopService shopService;
 
     @BeforeEach
     public void cleanup() {
@@ -65,10 +72,23 @@ public class ItemControllerTest {
             assertThat(inDB.getPublishedAt()).isNotNull();
         }
 
+        @Builder
+        record ShopDTO(String itemId, String name, Shop shop) {
+        }
+
+        @Test
+        void postItem_whenItemIsValid_ItemSaveToDatabaseWithShopInfo() {
+            Shop savedShop = shopService.save(createValidShop());
+            ShopDTO shopDTO = ShopDTO.builder().itemId("3244282383").name("2024气质新款连衣裙").shop(savedShop).build();
+            testRestTemplate.postForEntity("/api/1.0/items", shopDTO, Object.class);
+            Item inDB = itemRepository.findAll().get(0);
+            assertThat(inDB.getShop().getShopId()).isEqualTo(savedShop.getShopId());
+        }
+
     }
 
     @Nested
-    class SadPath{
+    class SadPath {
 
         @Test
         void postItem_whenItemHasNullItemId_receiveBadRequest() {

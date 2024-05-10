@@ -1,0 +1,16 @@
+GET http://localhost:8080/api/1.0/items
+Accept: application/json
+
+###
+POST http://localhost:8080/api/1.0/items
+Content-Type: application/json
+
+{
+  "itemId": "3333333222",
+  "name": "2024夏装气质连衣裙",
+  "shop": {
+    "id": 1
+  }
+}
+
+###

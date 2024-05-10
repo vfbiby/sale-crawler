@@ -129,8 +129,8 @@ public class ShopControllerTest {
         return testRestTemplate.postForEntity(API_1_0_SHOP, shop, responseType);
     }
 
-    private static Shop createValidShop() {
-        return Shop.builder().shopId(38888273L).shopName("SKY").shopUrl("https://sky.taobao.com").build();
+    static Shop createValidShop() {
+        return Shop.builder().shopId("38888273").shopName("SKY").shopUrl("https://sky.taobao.com").build();
     }
 
 }

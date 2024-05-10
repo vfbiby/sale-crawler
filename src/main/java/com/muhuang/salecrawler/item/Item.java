@@ -1,5 +1,6 @@
 package com.muhuang.salecrawler.item;
 
+import com.muhuang.salecrawler.shop.Shop;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -34,6 +35,10 @@ public class Item {
 
     @Temporal(TemporalType.TIMESTAMP)
     private Date publishedAt;
+
+    @ManyToOne
+    @JoinColumn(name = "shop_id", referencedColumnName = "id")
+    private Shop shop;
 
 }
 

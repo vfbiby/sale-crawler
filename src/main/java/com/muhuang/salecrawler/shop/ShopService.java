@@ -11,8 +11,8 @@ public class ShopService {
     @Resource
     private ShopRepository shopRepository;
 
-    public void save(Shop shop) {
-        shopRepository.save(shop);
+    public Shop save(Shop shop) {
+        return shopRepository.save(shop);
     }
 
     public Page<Shop> getShops() {

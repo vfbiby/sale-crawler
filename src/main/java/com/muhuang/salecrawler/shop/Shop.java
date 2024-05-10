@@ -21,7 +21,7 @@ public class Shop {
     private Long id;
 
     @NotNull
-    private Long shopId;
+    private String shopId;
 
     @NotNull
     private String shopName;
