@@ -1,6 +1,7 @@
 package com.muhuang.salecrawler.item;
 
 import com.muhuang.salecrawler.shared.GenericResponse;
+import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,7 +18,7 @@ public class ItemController {
     }
 
     @PostMapping
-    GenericResponse createItem(@RequestBody Item item) {
+    GenericResponse createItem(@Valid @RequestBody Item item) {
         itemService.save(item);
         return new GenericResponse("Item saved");
     }

@@ -1,7 +1,8 @@
 package com.muhuang.salecrawler.item;
 
-import com.muhuang.salecrawler.shop.Shop;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -18,14 +19,18 @@ public class Item {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "id", nullable = false)
+    @Column(nullable = false)
     private Long id;
 
+    @NotNull
+    @Size(min = 10,max = 30)
+    @Column(length = 30)
     private String itemId;
 
+    @NotNull
+    @Size(min = 10, max = 60)
+    @Column(length = 60)
     private String name;
-
-    private String shopId;
 
     @Temporal(TemporalType.TIMESTAMP)
     private Date publishedAt;
