@@ -20,7 +20,6 @@ import org.springframework.test.context.ActiveProfiles;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import static com.muhuang.salecrawler.ShopControllerTest.createValidShop;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -72,19 +71,19 @@ public class ItemControllerTest {
             assertThat(inDB.getPublishedAt()).isNotNull();
         }
 
-        @Builder
-        record ShopDTO(String itemId, String name, Shop shop) {
-        }
-
         @Test
         void postItem_whenItemIsValid_ItemSaveToDatabaseWithShopInfo() {
             Shop savedShop = shopService.save(createValidShop());
-            ShopDTO shopDTO = ShopDTO.builder().itemId("3244282383").name("2024气质新款连衣裙").shop(savedShop).build();
-            testRestTemplate.postForEntity("/api/1.0/items", shopDTO, Object.class);
+            Item shop = Item.builder().itemId("3244282383").name("2024气质新款连衣裙").shop(savedShop).build();
+            postItem(shop, Object.class);
             Item inDB = itemRepository.findAll().get(0);
             assertThat(inDB.getShop().getId()).isNotNull();
         }
 
+    }
+
+    private static Shop createValidShop() {
+        return Shop.builder().outShopId("38888273").shopName("SKY").shopUrl("https://sky.taobao.com").build();
     }
 
     @Nested
