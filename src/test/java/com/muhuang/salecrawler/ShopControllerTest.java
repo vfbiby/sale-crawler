@@ -65,7 +65,7 @@ public class ShopControllerTest {
         @Test
         void postShop_whenShopHasNullShopId_receiveBadRequest() {
             Shop shop = createValidShop();
-            shop.setShopId(null);
+            shop.setOutShopId(null);
             ResponseEntity<GenericResponse> response = postForEntity(shop, GenericResponse.class);
             assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
         }
@@ -130,7 +130,7 @@ public class ShopControllerTest {
     }
 
     static Shop createValidShop() {
-        return Shop.builder().shopId("38888273").shopName("SKY").shopUrl("https://sky.taobao.com").build();
+        return Shop.builder().outShopId("38888273").shopName("SKY").shopUrl("https://sky.taobao.com").build();
     }
 
 }

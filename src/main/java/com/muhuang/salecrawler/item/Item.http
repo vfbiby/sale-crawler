@@ -9,7 +9,7 @@ Content-Type: application/json
   "itemId": "3333333222",
   "name": "2024夏装气质连衣裙",
   "shop": {
-    "id": 1
+    "shopId": "105703949"
   }
 }
 

@@ -16,12 +16,12 @@ import org.hibernate.validator.constraints.URL;
 public class Shop {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    @Column(name = "id", nullable = false)
+    @GeneratedValue
     private Long id;
 
     @NotNull
-    private String shopId;
+    @Column(unique = true)
+    private String outShopId;
 
     @NotNull
     private String shopName;
