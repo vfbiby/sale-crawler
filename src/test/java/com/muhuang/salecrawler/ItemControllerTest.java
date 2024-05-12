@@ -4,9 +4,10 @@ import com.muhuang.salecrawler.item.Item;
 import com.muhuang.salecrawler.item.ItemRepository;
 import com.muhuang.salecrawler.item.ItemService;
 import com.muhuang.salecrawler.shop.Shop;
+import com.muhuang.salecrawler.shop.ShopRepository;
 import com.muhuang.salecrawler.shop.ShopService;
 import jakarta.annotation.Resource;
-import lombok.Builder;
+import org.h2.util.TempFileDeleter;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -38,9 +39,13 @@ public class ItemControllerTest {
     @Resource
     private ShopService shopService;
 
+    @Resource
+    private ShopRepository shopRepository;
+
     @BeforeEach
     public void cleanup() {
         itemRepository.deleteAll();
+        shopRepository.deleteAll();
     }
 
     @Nested

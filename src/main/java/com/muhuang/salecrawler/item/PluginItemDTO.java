@@ -16,13 +16,14 @@ public class PluginItemDTO {
 
     private Long id;
 
-    @NotNull
+    @NotNull(message = "{saleCrawler.constraints.shopId.NotNull.message}")
     private String shopId;
 
     private String shopName;
 
     private String shopUrl;
 
-    private List<Item> item;
+    @NotNull(message = "{saleCrawler.constraints.items.NotNull.message}")
+    private List<Item> items;
 
 }

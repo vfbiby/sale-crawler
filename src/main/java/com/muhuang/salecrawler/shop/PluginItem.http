@@ -1,0 +1,10 @@
+POST http://localhost:8080/api/1.0/plugin-items
+Content-Type: application/json
+Accept-Language: zh-cn
+
+{
+  "shopId": null,
+  "items": null
+}
+
+###

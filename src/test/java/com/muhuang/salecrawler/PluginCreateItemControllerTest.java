@@ -4,7 +4,11 @@ import com.muhuang.salecrawler.item.Item;
 import com.muhuang.salecrawler.item.ItemRepository;
 import com.muhuang.salecrawler.item.PluginItemDTO;
 import com.muhuang.salecrawler.shared.ApiError;
+import com.muhuang.salecrawler.shop.Shop;
+import com.muhuang.salecrawler.shop.ShopRepository;
+import com.muhuang.salecrawler.shop.ShopService;
 import jakarta.annotation.Resource;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -16,6 +20,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.util.ArrayList;
+import java.util.Map;
+import java.util.Objects;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -30,16 +36,28 @@ public class PluginCreateItemControllerTest {
     @Resource
     private ItemRepository itemRepository;
 
+    @Resource
+    private ShopService shopService;
+
+    @Resource
+    private ShopRepository shopRepository;
+
     @Nested
     class Create {
 
-        @BeforeEach
+        @AfterEach
         public void cleanup() {
             itemRepository.deleteAll();
+            shopRepository.deleteAll();
         }
 
         @Nested
         class HappyPath {
+
+            @BeforeEach
+            public void insertData() {
+                insertValidShop();
+            }
 
             @Test
             void postItem_whenShopAndItemIsValid_receiveOK() {
@@ -62,15 +80,38 @@ public class PluginCreateItemControllerTest {
                 assertThat(response.getBody()).isNotNull();
             }
 
+
+        }
+
+        private void insertValidShop() {
+            PluginItemDTO pluginItemDTO = createValidShop();
+            Shop shop = Shop.builder().outShopId(pluginItemDTO.getShopId())
+                    .shopName(pluginItemDTO.getShopName())
+                    .shopUrl(pluginItemDTO.getShopUrl()).build();
+            shopService.save(shop);
         }
 
         @Nested
         class SadPath {
 
+            @BeforeEach
+            public void insertShop() {
+                insertValidShop();
+            }
+
+
             @Test
             void postItem_whenShopHasNullShopId_receiveBadRequest() {
                 PluginItemDTO pItem = createValidPluginItem();
                 pItem.setShopId(null);
+                ResponseEntity<Object> response = postPluginItem(pItem, Object.class);
+                assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+            }
+
+            @Test
+            void postItem_whenShopHasNullItems_receiveBadRequest() {
+                PluginItemDTO pItem = createValidPluginItem();
+                pItem.setItems(null);
                 ResponseEntity<Object> response = postPluginItem(pItem, Object.class);
                 assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
             }
@@ -87,14 +128,32 @@ public class PluginCreateItemControllerTest {
             void postItem_whenShopIsInvalid_receiveApiError() {
                 PluginItemDTO pItem = new PluginItemDTO();
                 ResponseEntity<ApiError> response = postPluginItem(pItem, ApiError.class);
-                assertThat(response.getBody().getUrl()).isEqualTo(API_1_0_PLUGIN_ITEMS);
+                assertThat(Objects.requireNonNull(response.getBody()).getUrl()).isEqualTo(API_1_0_PLUGIN_ITEMS);
             }
 
             @Test
             void postItem_whenShopIsInvalid_receiveApiErrorWithValidationErrors() {
                 PluginItemDTO pItem = new PluginItemDTO();
                 ResponseEntity<ApiError> response = postPluginItem(pItem, ApiError.class);
-                assertThat(response.getBody().getValidationErrors().size()).isEqualTo(1);
+                assertThat(Objects.requireNonNull(response.getBody()).getValidationErrors().size()).isEqualTo(2);
+            }
+
+            @Test
+            void postItem_whenShopHasNullShopId_receiveMessageOfNullErrorForShopId() {
+                PluginItemDTO pItem = createValidPluginItem();
+                pItem.setShopId(null);
+                ResponseEntity<ApiError> response = postPluginItem(pItem, ApiError.class);
+                Map<String, String> validationErrors = Objects.requireNonNull(response.getBody()).getValidationErrors();
+                assertThat(validationErrors.get("shopId")).isEqualTo("ShopId can not be null");
+            }
+
+            @Test
+            void postItem_whenShopHasNullItems_receiveMessageOfNullErrorForItems() {
+                PluginItemDTO pItem = createValidPluginItem();
+                pItem.setItems(null);
+                ResponseEntity<ApiError> response = postPluginItem(pItem, ApiError.class);
+                Map<String, String> validationErrors = Objects.requireNonNull(response.getBody()).getValidationErrors();
+                assertThat(validationErrors.get("items")).isEqualTo("Items can not be null");
             }
 
         }
@@ -104,15 +163,19 @@ public class PluginCreateItemControllerTest {
         }
 
         private static PluginItemDTO createValidPluginItem() {
-            PluginItemDTO pItem = PluginItemDTO.builder().shopId("3423343434")
-                    .shopName("TT坏坏")
-                    .shopUrl("https://shop105703949.taobao.com").build();
+            PluginItemDTO pItem = createValidShop();
             Item item = Item.builder().itemId("779612411768")
                     .name("TT坏坏针织无袖长裙搭配吊带裙两件套女休闲度假风宽松设计感套装").build();
             ArrayList<Item> items = new ArrayList<>();
             items.add(item);
-            pItem.setItem(items);
+            pItem.setItems(items);
             return pItem;
+        }
+
+        private static PluginItemDTO createValidShop() {
+            return PluginItemDTO.builder().shopId("3423343434")
+                    .shopName("TT坏坏")
+                    .shopUrl("https://shop105703949.taobao.com").build();
         }
 
     }

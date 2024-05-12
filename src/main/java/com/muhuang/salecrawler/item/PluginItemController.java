@@ -30,9 +30,9 @@ public class PluginItemController {
     @PostMapping
     GenericResponse createPluginItems(@Valid @RequestBody PluginItemDTO pluginItemDTO) throws ShopIsNotExistInDbException {
         if (shopRepository.findByOutShopId(pluginItemDTO.getShopId()) == null) {
-            throw new ShopIsNotExistInDbException();
+            throw new ShopIsNotExistInDbException("Shop is not exist in db");
         }
-        itemRepository.saveAll(pluginItemDTO.getItem());
+        itemRepository.saveAll(pluginItemDTO.getItems());
         return new GenericResponse("Plugin item saved!");
     }
 

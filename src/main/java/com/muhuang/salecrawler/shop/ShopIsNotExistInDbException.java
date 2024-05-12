@@ -5,4 +5,9 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 
 @ResponseStatus(HttpStatus.BAD_REQUEST)
 public class ShopIsNotExistInDbException extends RuntimeException {
+    private String message;
+
+    public ShopIsNotExistInDbException(String message) {
+        this.message = message;
+    }
 }

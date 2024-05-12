@@ -15,6 +15,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
 
+import java.util.Objects;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -54,7 +56,7 @@ public class ShopControllerTest {
         void postShop_whenShopIsValid_receiveSuccessMessage() {
             Shop shop = createValidShop();
             ResponseEntity<GenericResponse> response = postForEntity(shop, GenericResponse.class);
-            assertThat(response.getBody().getMessage()).isNotNull();
+            assertThat(Objects.requireNonNull(response.getBody()).getMessage()).isNotNull();
         }
 
     }
@@ -108,7 +110,7 @@ public class ShopControllerTest {
         @Test
         void getShops_whenThereIsNoShopsInDB_receivePageWithZeroItems() {
             ResponseEntity<TestPage<Object>> response = getShops(new ParameterizedTypeReference<>() {});
-            assertThat(response.getBody().getTotalElements()).isEqualTo(0);
+            assertThat(Objects.requireNonNull(response.getBody()).getTotalElements()).isEqualTo(0);
         }
 
         @Test
@@ -116,7 +118,7 @@ public class ShopControllerTest {
             shopRepository.save(createValidShop());
             ResponseEntity<TestPage<Object>> response = getShops(new ParameterizedTypeReference<>() {});
             System.out.println(response);
-            assertThat(response.getBody().getTotalElements()).isEqualTo(1);
+            assertThat(Objects.requireNonNull(response.getBody()).getTotalElements()).isEqualTo(1);
         }
 
         private <T> ResponseEntity<T> getShops(ParameterizedTypeReference<T> responseType) {
