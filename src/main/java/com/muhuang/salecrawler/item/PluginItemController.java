@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 
+import static com.muhuang.salecrawler.shop.ShopController.getApiError;
+
 @RestController
 @RequestMapping("/api/1.0/plugin-items")
 public class PluginItemController {
@@ -39,14 +41,7 @@ public class PluginItemController {
     @ExceptionHandler({MethodArgumentNotValidException.class})
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     ApiError handleValidationException(MethodArgumentNotValidException exception, HttpServletRequest request) {
-        BindingResult bindingResult = exception.getBindingResult();
-
-        HashMap<String, String> validationErrors = new HashMap<>();
-
-        for (FieldError fieldError : bindingResult.getFieldErrors()) {
-            validationErrors.put(fieldError.getField(), fieldError.getDefaultMessage());
-        }
-        return new ApiError(400, "validation error", request.getServletPath(), validationErrors);
+        return getApiError(exception, request);
     }
 
 }

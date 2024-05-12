@@ -24,6 +24,7 @@ public class Shop {
 
     @NotNull
     @Column(unique = true)
+    @UniqueShopId
     private String outShopId;
 
     @NotNull
