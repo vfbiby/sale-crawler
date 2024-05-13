@@ -1,6 +1,5 @@
 package com.muhuang.salecrawler.item;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.muhuang.salecrawler.shop.Shop;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
@@ -28,7 +27,7 @@ public class Item {
     @NotNull
     @Size(min = 10, max = 60)
     @Column(length = 60)
-    private String name;
+    private String title;
 
     @Temporal(TemporalType.TIMESTAMP)
     private Date publishedAt;

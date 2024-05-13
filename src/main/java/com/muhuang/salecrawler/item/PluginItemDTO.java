@@ -24,6 +24,6 @@ public class PluginItemDTO {
     private String shopUrl;
 
     @NotNull(message = "{saleCrawler.constraints.items.NotNull.message}")
-    private List<Item> items;
+    private List<ItemDTO> items;
 
 }

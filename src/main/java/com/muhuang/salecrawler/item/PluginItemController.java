@@ -8,12 +8,9 @@ import com.muhuang.salecrawler.shop.ShopRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
-import org.springframework.validation.BindingResult;
-import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -24,13 +21,12 @@ import static com.muhuang.salecrawler.shop.ShopController.getApiError;
 @RequestMapping("/api/1.0/plugin-items")
 public class PluginItemController {
 
-    private final ItemRepository itemRepository;
     private final ShopRepository shopRepository;
+    private final ItemService itemService;
 
-    public PluginItemController(ItemRepository itemRepository,
-                                ShopRepository shopRepository) {
-        this.itemRepository = itemRepository;
+    public PluginItemController(ShopRepository shopRepository, ItemService itemService) {
         this.shopRepository = shopRepository;
+        this.itemService = itemService;
     }
 
     @PostMapping
@@ -39,9 +35,10 @@ public class PluginItemController {
         if (byOutShopId == null) {
             throw new ShopIsNotExistInDbException("Shop is not exist in db");
         }
-        Stream<Item> itemStream = pluginItemDTO.getItems().stream().peek(item -> item.setShop(byOutShopId));
+        Stream<Item> itemStream = pluginItemDTO.getItems().stream().map(itemDTO ->
+                Item.builder().itemId(itemDTO.getItemId()).title(itemDTO.getName()).shop(byOutShopId).build());
         List<Item> collect = itemStream.collect(Collectors.toList());
-        itemRepository.saveAll(collect);
+        itemService.saveAll(collect);
         return new GenericResponse("Plugin item saved!");
     }
 

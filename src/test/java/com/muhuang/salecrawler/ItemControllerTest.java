@@ -78,7 +78,7 @@ public class ItemControllerTest {
         @Test
         void postItem_whenItemIsValid_ItemSaveToDatabaseWithShopInfo() {
             Shop savedShop = shopService.save(createValidShop());
-            Item shop = Item.builder().itemId("3244282383").name("2024气质新款连衣裙").shop(savedShop).build();
+            Item shop = Item.builder().itemId("3244282383").title("2024气质新款连衣裙").shop(savedShop).build();
             postItem(shop, Object.class);
             Item inDB = itemRepository.findAll().get(0);
             assertThat(inDB.getShop().getId()).isNotNull();
@@ -130,7 +130,7 @@ public class ItemControllerTest {
         @Test
         void postItem_whenItemNameLessThan10Characters_receiveBadRequest() {
             Item item = createValidItem();
-            item.setName("短名字");
+            item.setTitle("短名字");
             ResponseEntity<Object> response = postItem(item, Object.class);
             assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
         }
@@ -139,7 +139,7 @@ public class ItemControllerTest {
         void postItem_whenItemNameIs60Characters_receiveOK() {
             Item item = createValidItemWithShop();
             String longName = IntStream.rangeClosed(1, 60).mapToObj(i -> "x").collect(Collectors.joining());
-            item.setName(longName);
+            item.setTitle(longName);
             ResponseEntity<Object> response = postItem(item, Object.class);
             assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         }
@@ -148,7 +148,7 @@ public class ItemControllerTest {
         void postItem_whenItemNameIsMoreThan60Characters_receiveBadRequest() {
             Item item = createValidItem();
             String longName = IntStream.rangeClosed(1, 61).mapToObj(i -> "x").collect(Collectors.joining());
-            item.setName(longName);
+            item.setTitle(longName);
             ResponseEntity<Object> response = postItem(item, Object.class);
             assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
         }
@@ -156,7 +156,7 @@ public class ItemControllerTest {
         @Test
         void postItem_whenItemHasNullItemName_receiveBadRequest() {
             Item item = createValidItem();
-            item.setName(null);
+            item.setTitle(null);
             ResponseEntity<Object> response = postItem(item, Object.class);
             assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
         }
@@ -176,7 +176,7 @@ public class ItemControllerTest {
     }
 
     private static Item createValidItem() {
-        return Item.builder().itemId("32838242344").name("2024气质新款连衣裙").build();
+        return Item.builder().itemId("32838242344").title("2024气质新款连衣裙").build();
     }
 
     public Item createValidItemWithShop() {

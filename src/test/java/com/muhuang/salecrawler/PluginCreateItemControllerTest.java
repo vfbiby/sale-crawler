@@ -1,8 +1,6 @@
 package com.muhuang.salecrawler;
 
-import com.muhuang.salecrawler.item.Item;
-import com.muhuang.salecrawler.item.ItemRepository;
-import com.muhuang.salecrawler.item.PluginItemDTO;
+import com.muhuang.salecrawler.item.*;
 import com.muhuang.salecrawler.shared.ApiError;
 import com.muhuang.salecrawler.shop.Shop;
 import com.muhuang.salecrawler.shop.ShopRepository;
@@ -20,8 +18,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -41,6 +41,9 @@ public class PluginCreateItemControllerTest {
 
     @Resource
     private ShopRepository shopRepository;
+
+    @Resource
+    private ItemService itemService;
 
     @Nested
     class Create {
@@ -86,6 +89,18 @@ public class PluginCreateItemControllerTest {
                 PluginItemDTO pItem = createValidPluginItem();
                 ResponseEntity<Object> response = postPluginItem(pItem, Object.class);
                 assertThat(response.getBody()).isNotNull();
+            }
+
+            @Test
+            void postItem_whenPluginItemIsValid_ItemSaveToDatabaseWithPublishedAt() {
+                PluginItemDTO validPluginItem = createValidPluginItem();
+                Shop savedShop = shopRepository.findByOutShopId(validPluginItem.getShopId());
+                List<Item> items = validPluginItem.getItems().stream().map(itemDTO ->
+                        Item.builder().itemId(itemDTO.getItemId()).title(itemDTO.getName())
+                                .shop(savedShop).build()).collect(Collectors.toList());
+                itemService.saveAll(items);
+                Item inDB = itemRepository.findAll().get(0);
+                assertThat(inDB.getPublishedAt()).isNotNull();
             }
 
         }
@@ -171,11 +186,7 @@ public class PluginCreateItemControllerTest {
 
         private static PluginItemDTO createValidPluginItem() {
             PluginItemDTO pItem = createValidShop();
-            Item item = Item.builder().itemId("779612411768")
-                    .name("TT坏坏针织无袖长裙搭配吊带裙两件套女休闲度假风宽松设计感套装").build();
-            ArrayList<Item> items = new ArrayList<>();
-            items.add(item);
-            pItem.setItems(items);
+            createValidItemDTO(pItem);
             return pItem;
         }
 
@@ -185,6 +196,14 @@ public class PluginCreateItemControllerTest {
                     .shopUrl("https://shop105703949.taobao.com").build();
         }
 
+    }
+
+    private static void createValidItemDTO(PluginItemDTO pItem) {
+        ItemDTO item = ItemDTO.builder().itemId("779612411768")
+                .name("TT坏坏针织无袖长裙搭配吊带裙两件套女休闲度假风宽松设计感套装").build();
+        ArrayList<ItemDTO> items = new ArrayList<>();
+        items.add(item);
+        pItem.setItems(items);
     }
 
 }

@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class ItemService {
@@ -20,8 +21,16 @@ public class ItemService {
     public void save(Item item) {
         Shop inDB = shopRepository.findByOutShopId(item.getShop().getOutShopId());
         item.setShop(inDB);
-        item.setPublishedAt(new Date());
+        setPublishedAt(item);
         itemRepository.save(item);
     }
 
+    private static void setPublishedAt(Item item) {
+        item.setPublishedAt(new Date());
+    }
+
+    public void saveAll(List<Item> collect) {
+        collect.stream().peek(ItemService::setPublishedAt).collect(Collectors.toList());
+        itemRepository.saveAll(collect);
+    }
 }
