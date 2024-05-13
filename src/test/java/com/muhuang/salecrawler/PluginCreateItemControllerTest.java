@@ -74,12 +74,19 @@ public class PluginCreateItemControllerTest {
             }
 
             @Test
+            void postItem_whenShopAndItemIsValid_itemSaveToDatabaseWithOutShopId() {
+                PluginItemDTO pItem = createValidPluginItem();
+                postPluginItem(pItem, Item.class);
+                String savedItemOutShopId = itemRepository.findAll().get(0).getShop().getOutShopId();
+                assertThat(savedItemOutShopId).isEqualTo(pItem.getShopId());
+            }
+
+            @Test
             void postItem_whenShopAndItemIsValid_receiveSuccessMessage() {
                 PluginItemDTO pItem = createValidPluginItem();
                 ResponseEntity<Object> response = postPluginItem(pItem, Object.class);
                 assertThat(response.getBody()).isNotNull();
             }
-
 
         }
 
