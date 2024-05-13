@@ -7,7 +7,6 @@ import com.muhuang.salecrawler.shop.Shop;
 import com.muhuang.salecrawler.shop.ShopRepository;
 import com.muhuang.salecrawler.shop.ShopService;
 import jakarta.annotation.Resource;
-import org.h2.util.TempFileDeleter;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -53,7 +52,7 @@ public class ItemControllerTest {
 
         @Test
         void postItem_whenItemIsValid_receiveOK() {
-            ResponseEntity<Object> response = postItem(createValidItem(), Object.class);
+            ResponseEntity<Object> response = postItem(createValidItemWithShop(), Object.class);
             assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         }
 
@@ -65,13 +64,13 @@ public class ItemControllerTest {
 
         @Test
         void postItem_whenItemIsValid_ItemSaveToDatabase() {
-            postItem(createValidItem(), Object.class);
+            postItem(createValidItemWithShop(), Object.class);
             assertThat(itemRepository.count()).isEqualTo(1);
         }
 
         @Test
         void postItem_whenItemIsValid_ItemSaveToDatabaseWithPublishedAt() {
-            itemService.save(createValidItem());
+            itemService.save(createValidItemWithShop());
             Item inDB = itemRepository.findAll().get(0);
             assertThat(inDB.getPublishedAt()).isNotNull();
         }
@@ -112,7 +111,7 @@ public class ItemControllerTest {
 
         @Test
         void postItem_whenItemIdIs30Characters_receiveOK() {
-            Item item = createValidItem();
+            Item item = createValidItemWithShop();
             String longString = IntStream.rangeClosed(1, 30).mapToObj(i -> "x").collect(Collectors.joining());
             item.setItemId(longString);
             ResponseEntity<Object> response = postItem(item, Object.class);
@@ -138,7 +137,7 @@ public class ItemControllerTest {
 
         @Test
         void postItem_whenItemNameIs60Characters_receiveOK() {
-            Item item = createValidItem();
+            Item item = createValidItemWithShop();
             String longName = IntStream.rangeClosed(1, 60).mapToObj(i -> "x").collect(Collectors.joining());
             item.setName(longName);
             ResponseEntity<Object> response = postItem(item, Object.class);
@@ -162,6 +161,14 @@ public class ItemControllerTest {
             assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
         }
 
+        @Test
+        void postItem_whenItemHasNoOutShopId_receiveBadRequest() {
+            Item item = createValidItem();
+            item.setShop(null);
+            ResponseEntity<Object> response = postItem(item, Object.class);
+            assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+        }
+
     }
 
     private <T> ResponseEntity<T> postItem(Item item, Class<T> responseType) {
@@ -170,6 +177,14 @@ public class ItemControllerTest {
 
     private static Item createValidItem() {
         return Item.builder().itemId("32838242344").name("2024气质新款连衣裙").build();
+    }
+
+    public Item createValidItemWithShop() {
+        Shop validShop = createValidShop();
+        shopRepository.save(validShop);
+        Item item = createValidItem();
+        item.setShop(validShop);
+        return item;
     }
 
 }

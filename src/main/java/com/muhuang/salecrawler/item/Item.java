@@ -1,13 +1,11 @@
 package com.muhuang.salecrawler.item;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.muhuang.salecrawler.shop.Shop;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.Date;
 
@@ -23,7 +21,7 @@ public class Item {
     private Long id;
 
     @NotNull
-    @Size(min = 10,max = 30)
+    @Size(min = 10, max = 30)
     @Column(length = 30)
     private String itemId;
 
@@ -35,19 +33,10 @@ public class Item {
     @Temporal(TemporalType.TIMESTAMP)
     private Date publishedAt;
 
+    @NotNull
     @ManyToOne
-    @JoinColumn(name = "shop_id", referencedColumnName = "outShopId")
+    @JoinColumn(name = "out_shop_id", referencedColumnName = "outShopId")
     private Shop shop;
 
-    @Override
-    public String toString() {
-        return "Item{" +
-                "id=" + id +
-                ", itemId='" + itemId + '\'' +
-                ", name='" + name + '\'' +
-                ", publishedAt=" + publishedAt +
-                ", shop=" + shop +
-                '}';
-    }
 }
 
