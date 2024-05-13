@@ -1,5 +1,6 @@
 package com.muhuang.salecrawler.item;
 
+import com.muhuang.salecrawler.shop.ExistsInDatabase;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -17,6 +18,7 @@ public class PluginItemDTO {
     private Long id;
 
     @NotNull(message = "{saleCrawler.constraints.shopId.NotNull.message}")
+    @ExistsInDatabase
     private String shopId;
 
     private String shopName;

@@ -31,12 +31,9 @@ public class PluginItemController {
 
     @PostMapping
     GenericResponse createPluginItems(@Valid @RequestBody PluginItemDTO pluginItemDTO) throws ShopIsNotExistInDbException {
-        Shop byOutShopId = shopRepository.findByOutShopId(pluginItemDTO.getShopId());
-        if (byOutShopId == null) {
-            throw new ShopIsNotExistInDbException("Shop is not exist in db");
-        }
+        Shop inDB = shopRepository.findByOutShopId(pluginItemDTO.getShopId());
         Stream<Item> itemStream = pluginItemDTO.getItems().stream().map(itemDTO ->
-                Item.builder().itemId(itemDTO.getItemId()).title(itemDTO.getName()).shop(byOutShopId).build());
+                Item.builder().itemId(itemDTO.getItemId()).title(itemDTO.getName()).shop(inDB).build());
         List<Item> collect = itemStream.collect(Collectors.toList());
         itemService.saveAll(collect);
         return new GenericResponse("Plugin item saved!");

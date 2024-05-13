@@ -121,7 +121,6 @@ public class PluginCreateItemControllerTest {
                 insertValidShop();
             }
 
-
             @Test
             void postItem_whenShopHasNullShopId_receiveBadRequest() {
                 PluginItemDTO pItem = createValidPluginItem();

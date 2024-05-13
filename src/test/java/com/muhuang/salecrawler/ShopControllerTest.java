@@ -122,7 +122,6 @@ public class ShopControllerTest {
             shopRepository.save(createValidShop());
             ResponseEntity<TestPage<Object>> response = getShops(new ParameterizedTypeReference<>() {
             });
-            System.out.println(response);
             assertThat(Objects.requireNonNull(response.getBody()).getTotalElements()).isEqualTo(1);
         }
 
