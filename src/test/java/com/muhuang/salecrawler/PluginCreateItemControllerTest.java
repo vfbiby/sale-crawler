@@ -174,7 +174,7 @@ public class PluginCreateItemControllerTest {
                 pItem.setItems(null);
                 ResponseEntity<ApiError> response = postPluginItem(pItem, ApiError.class);
                 Map<String, String> validationErrors = Objects.requireNonNull(response.getBody()).getValidationErrors();
-                assertThat(validationErrors.get("items")).isEqualTo("Items can not be null");
+                assertThat(validationErrors.get("items")).isEqualTo("Items can not be empty");
             }
 
         }

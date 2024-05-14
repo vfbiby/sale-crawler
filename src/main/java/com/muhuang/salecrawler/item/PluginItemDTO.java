@@ -1,6 +1,8 @@
 package com.muhuang.salecrawler.item;
 
 import com.muhuang.salecrawler.shop.ExistsInDatabase;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -25,7 +27,8 @@ public class PluginItemDTO {
 
     private String shopUrl;
 
-    @NotNull(message = "{saleCrawler.constraints.items.NotNull.message}")
+    @Valid
+    @NotEmpty(message = "{saleCrawler.constraints.items.empty.message}")
     private List<ItemDTO> items;
 
 }
