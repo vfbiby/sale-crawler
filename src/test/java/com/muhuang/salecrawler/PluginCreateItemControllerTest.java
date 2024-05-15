@@ -17,7 +17,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -177,6 +176,16 @@ public class PluginCreateItemControllerTest {
                 assertThat(validationErrors.get("items")).isEqualTo("Items can not be empty");
             }
 
+            @Test
+            void postItem_whenPluginItemHasNullItemId_receiveBadRequest() {
+                PluginItemDTO pItem = createValidPluginItem();
+                ItemDTO itemDTO = createItemDTO();
+                itemDTO.setItemId(null);
+                pItem.setItems(List.of(itemDTO));
+                ResponseEntity<ApiError> response = postPluginItem(pItem, ApiError.class);
+                assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+            }
+
         }
 
         private <T> ResponseEntity<T> postPluginItem(PluginItemDTO pItem, Class<T> responseType) {
@@ -185,7 +194,8 @@ public class PluginCreateItemControllerTest {
 
         private static PluginItemDTO createValidPluginItem() {
             PluginItemDTO pItem = createValidShop();
-            createValidItemDTO(pItem);
+            ItemDTO item = createItemDTO();
+            pItem.setItems(List.of(item));
             return pItem;
         }
 
@@ -197,12 +207,9 @@ public class PluginCreateItemControllerTest {
 
     }
 
-    private static void createValidItemDTO(PluginItemDTO pItem) {
-        ItemDTO item = ItemDTO.builder().itemId("779612411768")
+    private static ItemDTO createItemDTO() {
+        return ItemDTO.builder().itemId("779612411768")
                 .name("TT坏坏针织无袖长裙搭配吊带裙两件套女休闲度假风宽松设计感套装").build();
-        ArrayList<ItemDTO> items = new ArrayList<>();
-        items.add(item);
-        pItem.setItems(items);
     }
 
 }
