@@ -57,7 +57,7 @@ public class PluginCreateItemControllerTest {
         class HappyPath {
 
             @BeforeEach
-            public void insertData() {
+            public void setup() {
                 insertValidShop();
             }
 
@@ -92,14 +92,18 @@ public class PluginCreateItemControllerTest {
 
             @Test
             void postItem_whenPluginItemIsValid_ItemSaveToDatabaseWithPublishedAt() {
-                PluginItemDTO validPluginItem = createValidPluginItem();
-                Shop savedShop = shopRepository.findByOutShopId(validPluginItem.getShopId());
-                List<Item> items = validPluginItem.getItems().stream().map(itemDTO ->
-                        Item.builder().itemId(itemDTO.getItemId()).title(itemDTO.getName())
-                                .shop(savedShop).build()).collect(Collectors.toList());
-                itemService.saveAll(items);
+                PluginItemDTO pItem = createValidPluginItem();
+                postPluginItem(pItem, Object.class);
                 Item inDB = itemRepository.findAll().get(0);
                 assertThat(inDB.getPublishedAt()).isNotNull();
+            }
+
+            @Test
+            void postItem_whenPluginItemIsValid_itemNameSaveAsTitle() {
+                PluginItemDTO pItem = createValidPluginItem();
+                postPluginItem(pItem, Object.class);
+                Item inDB = itemRepository.findAll().get(0);
+                assertThat(inDB.getTitle()).isEqualTo(pItem.getItems().get(0).getName());
             }
 
         }

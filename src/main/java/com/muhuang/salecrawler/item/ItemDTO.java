@@ -1,6 +1,5 @@
 package com.muhuang.salecrawler.item;
 
-import com.muhuang.salecrawler.shop.Shop;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -25,7 +24,5 @@ public class ItemDTO {
     @NotNull
     @URL
     private String pic;
-
-    private Shop shop;
 
 }
