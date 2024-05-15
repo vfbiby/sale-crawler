@@ -32,6 +32,8 @@ public class Item {
     @Temporal(TemporalType.TIMESTAMP)
     private Date publishedAt;
 
+    private String pic;
+
     @NotNull
     @ManyToOne
     @JoinColumn(name = "out_shop_id", referencedColumnName = "outShopId")

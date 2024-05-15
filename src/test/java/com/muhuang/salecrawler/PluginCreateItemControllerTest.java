@@ -106,6 +106,14 @@ public class PluginCreateItemControllerTest {
                 assertThat(inDB.getTitle()).isEqualTo(pItem.getItems().get(0).getName());
             }
 
+            @Test
+            void postItem_whenPluginItemIsValid_itemPicSaveToDatabase() {
+                PluginItemDTO pItem = createValidPluginItem();
+                postPluginItem(pItem, Object.class);
+                Item inDB = itemRepository.findAll().get(0);
+                assertThat(inDB.getPic()).isNotNull();
+            }
+
         }
 
         private void insertValidShop() {
