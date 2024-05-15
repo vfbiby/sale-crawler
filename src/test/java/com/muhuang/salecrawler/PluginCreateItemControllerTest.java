@@ -169,9 +169,9 @@ public class PluginCreateItemControllerTest {
             }
 
             @Test
-            void postItem_whenShopHasNullItems_receiveMessageOfNullErrorForItems() {
+            void postItem_whenShopHasEmptyItems_receiveMessageOfEmptyErrorForItems() {
                 PluginItemDTO pItem = createValidPluginItem();
-                pItem.setItems(null);
+                pItem.setItems(List.of());
                 ResponseEntity<ApiError> response = postPluginItem(pItem, ApiError.class);
                 Map<String, String> validationErrors = Objects.requireNonNull(response.getBody()).getValidationErrors();
                 assertThat(validationErrors.get("items")).isEqualTo("Items can not be empty");
