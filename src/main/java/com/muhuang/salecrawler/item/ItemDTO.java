@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.validator.constraints.URL;
 
 @Data
 @AllArgsConstructor
@@ -18,7 +19,12 @@ public class ItemDTO {
     @NotNull
     private String itemId;
 
+    @NotNull
     private String name;
+
+    @NotNull
+    @URL
+    private String pic;
 
     private Shop shop;
 

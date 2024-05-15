@@ -186,6 +186,36 @@ public class PluginCreateItemControllerTest {
                 assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
             }
 
+            @Test
+            void postItem_whenPluginItemHasNullName_receiveBadRequest() {
+                PluginItemDTO pItem = createValidPluginItem();
+                ItemDTO itemDTO = createItemDTO();
+                itemDTO.setName(null);
+                pItem.setItems(List.of(itemDTO));
+                ResponseEntity<ApiError> response = postPluginItem(pItem, ApiError.class);
+                assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+            }
+
+            @Test
+            void postItem_whenPluginItemHasNullPic_receiveBadRequest() {
+                PluginItemDTO pItem = createValidPluginItem();
+                ItemDTO itemDTO = createItemDTO();
+                itemDTO.setPic(null);
+                pItem.setItems(List.of(itemDTO));
+                ResponseEntity<ApiError> response = postPluginItem(pItem, ApiError.class);
+                assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+            }
+
+            @Test
+            void postItem_whenPluginItemPicIsNotUrl_receiveBadRequest() {
+                PluginItemDTO pItem = createValidPluginItem();
+                ItemDTO itemDTO = createItemDTO();
+                itemDTO.setPic("not-a-link");
+                pItem.setItems(List.of(itemDTO));
+                ResponseEntity<ApiError> response = postPluginItem(pItem, ApiError.class);
+                assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+            }
+
         }
 
         private <T> ResponseEntity<T> postPluginItem(PluginItemDTO pItem, Class<T> responseType) {
@@ -209,7 +239,8 @@ public class PluginCreateItemControllerTest {
 
     private static ItemDTO createItemDTO() {
         return ItemDTO.builder().itemId("779612411768")
-                .name("TT坏坏针织无袖长裙搭配吊带裙两件套女休闲度假风宽松设计感套装").build();
+                .name("TT坏坏针织无袖长裙搭配吊带裙两件套女休闲度假风宽松设计感套装")
+                .pic("https://img.taobao.com/main.jpg").build();
     }
 
 }
