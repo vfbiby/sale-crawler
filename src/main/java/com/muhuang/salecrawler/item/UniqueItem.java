@@ -13,7 +13,7 @@ import java.lang.annotation.Target;
 @Constraint(validatedBy = UniqueItemValidator.class)
 public @interface UniqueItem {
 
-    String message() default "";
+    String message() default "{saleCrawler.constraints.shop.uniqueItemId.message}";
 
     Class<?>[] groups() default {};
 

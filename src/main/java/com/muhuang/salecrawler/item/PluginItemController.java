@@ -3,7 +3,7 @@ package com.muhuang.salecrawler.item;
 import com.muhuang.salecrawler.shared.ApiError;
 import com.muhuang.salecrawler.shared.GenericResponse;
 import com.muhuang.salecrawler.shop.Shop;
-import com.muhuang.salecrawler.shop.ShopIsNotExistInDbException;
+import com.muhuang.salecrawler.shop.ShopController;
 import com.muhuang.salecrawler.shop.ShopRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
@@ -17,21 +17,16 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static com.muhuang.salecrawler.shop.ShopController.getApiError;
-
 @RestController
 @RequestMapping("/api/1.0/plugin-items")
 public class PluginItemController {
 
     private final ShopRepository shopRepository;
     private final ItemService itemService;
-    private final ItemRepository itemRepository;
 
-    public PluginItemController(ShopRepository shopRepository, ItemService itemService,
-                                ItemRepository itemRepository) {
+    public PluginItemController(ShopRepository shopRepository, ItemService itemService) {
         this.shopRepository = shopRepository;
         this.itemService = itemService;
-        this.itemRepository = itemRepository;
     }
 
     @PostMapping
@@ -58,7 +53,7 @@ public class PluginItemController {
     @ExceptionHandler({MethodArgumentNotValidException.class})
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     ApiError handleValidationException(MethodArgumentNotValidException exception, HttpServletRequest request) {
-        return getApiError(exception, request);
+        return ShopController.getApiError(exception, request);
     }
 
 }

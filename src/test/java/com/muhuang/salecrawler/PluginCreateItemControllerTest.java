@@ -208,7 +208,7 @@ public class PluginCreateItemControllerTest {
                 ItemDTO itemDTO = createItemDTO();
                 itemDTO.setItemId(null);
                 pItem.setItems(List.of(itemDTO));
-                ResponseEntity<ApiError> response = postPluginItem(pItem, ApiError.class);
+                ResponseEntity<Object> response = postPluginItem(pItem, Object.class);
                 assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
             }
 
@@ -218,7 +218,7 @@ public class PluginCreateItemControllerTest {
                 ItemDTO itemDTO = createItemDTO();
                 itemDTO.setName(null);
                 pItem.setItems(List.of(itemDTO));
-                ResponseEntity<ApiError> response = postPluginItem(pItem, ApiError.class);
+                ResponseEntity<Object> response = postPluginItem(pItem, Object.class);
                 assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
             }
 
@@ -228,7 +228,7 @@ public class PluginCreateItemControllerTest {
                 ItemDTO itemDTO = createItemDTO();
                 itemDTO.setPic(null);
                 pItem.setItems(List.of(itemDTO));
-                ResponseEntity<ApiError> response = postPluginItem(pItem, ApiError.class);
+                ResponseEntity<Object> response = postPluginItem(pItem, Object.class);
                 assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
             }
 
@@ -238,7 +238,7 @@ public class PluginCreateItemControllerTest {
                 ItemDTO itemDTO = createItemDTO();
                 itemDTO.setPic("not-a-link");
                 pItem.setItems(List.of(itemDTO));
-                ResponseEntity<ApiError> response = postPluginItem(pItem, ApiError.class);
+                ResponseEntity<Object> response = postPluginItem(pItem, Object.class);
                 assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
             }
 
@@ -248,6 +248,15 @@ public class PluginCreateItemControllerTest {
                 postPluginItem(pItem, Object.class);
                 ResponseEntity<Object> response = postPluginItem(pItem, Object.class);
                 assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+            }
+
+            @Test
+            void postItem_whenItemIdDuplicated_receiveDuplicateItemId() {
+                PluginItemDTO pItem = createValidPluginItem();
+                postPluginItem(pItem, Object.class);
+                ResponseEntity<ApiError> response = postPluginItem(pItem, ApiError.class);
+                Map<String, String> validationErrors = Objects.requireNonNull(response.getBody()).getValidationErrors();
+                assertThat(validationErrors.get("items[0].itemId")).isEqualTo("Item id is in database");
             }
 
         }
