@@ -11,6 +11,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.ZoneId;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -35,7 +37,8 @@ public class PluginItemController {
         Stream<Item> itemStream = pluginItemDTO.getItems().stream().map(itemDTO -> {
             Item.ItemBuilder itemBuilder = buildItem(itemDTO, inDB);
             if (pluginItemDTO.getPublishedAt() != null) {
-                itemBuilder.publishedAt(pluginItemDTO.getPublishedAt());
+                itemBuilder.publishedAt(Date.from(pluginItemDTO.getPublishedAt()
+                        .atStartOfDay(ZoneId.systemDefault()).toInstant()));
             }
             return itemBuilder.build();
         });

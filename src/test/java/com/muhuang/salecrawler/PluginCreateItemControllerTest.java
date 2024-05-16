@@ -17,6 +17,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
 
+import java.sql.Timestamp;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -118,11 +121,12 @@ public class PluginCreateItemControllerTest {
             @Test
             void postItem_whenPluginItemHasPublishedAt_itemSaveToDatabaseWithSpecifyPublishedAt() {
                 PluginItemDTO pItem = createValidPluginItem();
-                Date publishedAt = new Date();
+                LocalDate publishedAt = LocalDate.now();
                 pItem.setPublishedAt(publishedAt);
                 postPluginItem(pItem, Object.class);
                 Item inDB = itemRepository.findAll().get(0);
-                assertThat(inDB.getPublishedAt().getTime()).isEqualTo(publishedAt.getTime());
+                assertThat((inDB.getPublishedAt().getTime()))
+                        .isEqualTo(Timestamp.valueOf(publishedAt.atStartOfDay()).getTime());
             }
 
         }
@@ -132,8 +136,7 @@ public class PluginCreateItemControllerTest {
             Shop shop = Shop.builder().outShopId(pluginItemDTO.getShopId())
                     .shopName(pluginItemDTO.getShopName())
                     .shopUrl(pluginItemDTO.getShopUrl()).build();
-            shopService.save(shop);
-        }
+            shopService.save(shop);}
 
         @Nested
         class SadPath {

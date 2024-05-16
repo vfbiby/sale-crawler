@@ -11,6 +11,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 
@@ -31,7 +32,7 @@ public class PluginItemDTO {
     private String shopUrl;
 
     @Temporal(TemporalType.TIMESTAMP)
-    private Date PublishedAt;
+    private LocalDate PublishedAt;
 
     @Valid
     @NotEmpty(message = "{saleCrawler.constraints.items.empty.message}")
