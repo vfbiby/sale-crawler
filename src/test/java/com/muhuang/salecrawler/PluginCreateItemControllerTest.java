@@ -17,6 +17,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -112,6 +113,16 @@ public class PluginCreateItemControllerTest {
                 postPluginItem(pItem, Object.class);
                 Item inDB = itemRepository.findAll().get(0);
                 assertThat(inDB.getPic()).isNotNull();
+            }
+
+            @Test
+            void postItem_whenPluginItemHasPublishedAt_itemSaveToDatabaseWithSpecifyPublishedAt() {
+                PluginItemDTO pItem = createValidPluginItem();
+                Date publishedAt = new Date();
+                pItem.setPublishedAt(publishedAt);
+                postPluginItem(pItem, Object.class);
+                Item inDB = itemRepository.findAll().get(0);
+                assertThat(inDB.getPublishedAt().getTime()).isEqualTo(publishedAt.getTime());
             }
 
         }

@@ -29,7 +29,8 @@ public class ItemService {
     }
 
     private static void setPublishedAt(Item item) {
-        item.setPublishedAt(new Date());
+        if (item.getPublishedAt() == null)
+            item.setPublishedAt(new Date());
     }
 
     public void saveAll(List<Item> collect) {

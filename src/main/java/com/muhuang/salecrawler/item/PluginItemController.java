@@ -30,14 +30,23 @@ public class PluginItemController {
     }
 
     @PostMapping
-    GenericResponse createPluginItems(@Valid @RequestBody PluginItemDTO pluginItemDTO) throws ShopIsNotExistInDbException {
+    GenericResponse createPluginItems(@Valid @RequestBody PluginItemDTO pluginItemDTO) {
         Shop inDB = shopRepository.findByOutShopId(pluginItemDTO.getShopId());
-        Stream<Item> itemStream = pluginItemDTO.getItems().stream().map(itemDTO ->
-                Item.builder().itemId(itemDTO.getItemId()).title(itemDTO.getName())
-                        .shop(inDB).pic(itemDTO.getPic()).build());
+        Stream<Item> itemStream = pluginItemDTO.getItems().stream().map(itemDTO -> {
+            Item.ItemBuilder itemBuilder = buildItem(itemDTO, inDB);
+            if (pluginItemDTO.getPublishedAt() != null) {
+                itemBuilder.publishedAt(pluginItemDTO.getPublishedAt());
+            }
+            return itemBuilder.build();
+        });
         List<Item> collect = itemStream.collect(Collectors.toList());
         itemService.saveAll(collect);
         return new GenericResponse("Plugin item saved!");
+    }
+
+    private static Item.ItemBuilder buildItem(ItemDTO itemDTO, Shop inDB) {
+        return Item.builder().itemId(itemDTO.getItemId()).title(itemDTO.getName())
+                .shop(inDB).pic(itemDTO.getPic());
     }
 
     @ExceptionHandler({MethodArgumentNotValidException.class})
