@@ -242,6 +242,14 @@ public class PluginCreateItemControllerTest {
                 assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
             }
 
+            @Test
+            void postItem_whenItemIdDuplicated_receiveBadRequest() {
+                PluginItemDTO pItem = createValidPluginItem();
+                postPluginItem(pItem, Object.class);
+                ResponseEntity<Object> response = postPluginItem(pItem, Object.class);
+                assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+            }
+
         }
 
         private <T> ResponseEntity<T> postPluginItem(PluginItemDTO pItem, Class<T> responseType) {
