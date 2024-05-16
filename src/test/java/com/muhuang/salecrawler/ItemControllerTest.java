@@ -13,10 +13,13 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
 
+import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -171,12 +174,43 @@ public class ItemControllerTest {
 
     }
 
+    @Nested
+    class Read {
+
+        @Test
+        void getItems_whenThereAreNoItemsInDB_receiveOK() {
+            ResponseEntity<Object> response = testRestTemplate.getForEntity("/api/1.0/items", Object.class);
+            assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        }
+
+        @Test
+        void getItems_whenThereAreNoItemsInDB_receivePageWithZeroItems() {
+            ResponseEntity<TestPage<Object>> response = getItems(new ParameterizedTypeReference<>() {
+            });
+            assertThat(Objects.requireNonNull(response.getBody()).getTotalElements()).isEqualTo(0);
+        }
+
+        @Test
+        void getItems_whenThereIsAItemInDB_receivePageWithItem() {
+            itemRepository.save(createValidItemWithShop());
+            ResponseEntity<TestPage<Object>> response = getItems(new ParameterizedTypeReference<>() {
+            });
+            assertThat(Objects.requireNonNull(response.getBody()).getTotalElements()).isEqualTo(1);
+        }
+
+    }
+
+    private ResponseEntity<TestPage<Object>> getItems(ParameterizedTypeReference<TestPage<Object>> responseType) {
+        return testRestTemplate.exchange("/api/1.0/items", HttpMethod.GET, null, responseType);
+    }
+
     private <T> ResponseEntity<T> postItem(Item item, Class<T> responseType) {
         return testRestTemplate.postForEntity("/api/1.0/items", item, responseType);
     }
 
     private static Item createValidItem() {
-        return Item.builder().itemId("32838242344").title("2024气质新款连衣裙").build();
+        return Item.builder().itemId("32838242344").title("2024气质新款连衣裙")
+                .pic("https://x.taobao.com/v.img").build();
     }
 
     public Item createValidItemWithShop() {
