@@ -37,11 +37,6 @@ public class PluginItemController {
     @PostMapping
     GenericResponse createPluginItems(@Valid @RequestBody PluginItemDTO pluginItemDTO) {
         Shop inDB = shopRepository.findByOutShopId(pluginItemDTO.getShopId());
-        pluginItemDTO.getItems().forEach(itemDTO -> {
-            if (itemRepository.findByItemId(itemDTO.getItemId()) != null) {
-                throw new ItemDuplicateException();
-            }
-        });
         Stream<Item> itemStream = pluginItemDTO.getItems().stream().map(itemDTO -> {
             Item.ItemBuilder itemBuilder = buildItem(itemDTO, inDB);
             if (pluginItemDTO.getPublishedAt() != null) {

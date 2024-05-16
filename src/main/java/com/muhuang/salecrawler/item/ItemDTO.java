@@ -16,6 +16,7 @@ public class ItemDTO {
     private Long id;
 
     @NotNull
+    @UniqueItem
     private String itemId;
 
     @NotNull
