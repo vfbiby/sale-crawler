@@ -6,6 +6,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.client.support.BasicAuthenticationInterceptor;
 import org.springframework.test.context.ActiveProfiles;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -15,12 +16,21 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class LoginControllerTest {
 
     @Autowired
-    private TestRestTemplate restTemplate;
+    private TestRestTemplate testRestTemplate;
 
     @Test
     void postLogin_withoutUserCredentials_receiveUnauthorized() {
-        ResponseEntity<Object> response = restTemplate.postForEntity("/api/1.0/login", null, Object.class);
+        ResponseEntity<Object> response = testRestTemplate.postForEntity("/api/1.0/login", null, Object.class);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.UNAUTHORIZED);
+    }
+
+    @Test
+    void postLogin_withIncorrectCredentials_receiveUnauthorized() {
+        testRestTemplate.getRestTemplate().getInterceptors()
+                .add(new BasicAuthenticationInterceptor("test-user", "P4ssword"));
+        ResponseEntity<Object> response = testRestTemplate.postForEntity("/api/1.0/login", null, Object.class);
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.UNAUTHORIZED);
+        testRestTemplate.getRestTemplate().getInterceptors().clear();
     }
 
 }
