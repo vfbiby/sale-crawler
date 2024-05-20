@@ -1,5 +1,6 @@
 package com.muhuang.salecrawler;
 
+import com.muhuang.salecrawler.shared.ApiError;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,34 +11,43 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.support.BasicAuthenticationInterceptor;
 import org.springframework.test.context.ActiveProfiles;
 
+import java.util.Objects;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")
 public class LoginControllerTest {
 
+    public static final String API_1_0_LOGIN = "/api/1.0/login";
     @Autowired
     private TestRestTemplate testRestTemplate;
 
     @AfterEach
     public void cleanup() {
-        unauthenticate();
+        unauthenticated();
     }
 
     @Test
     void postLogin_withoutUserCredentials_receiveUnauthorized() {
-        ResponseEntity<Object> response = testRestTemplate.postForEntity("/api/1.0/login", null, Object.class);
+        ResponseEntity<Object> response = testRestTemplate.postForEntity(API_1_0_LOGIN, null, Object.class);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.UNAUTHORIZED);
     }
 
     @Test
     void postLogin_withIncorrectCredentials_receiveUnauthorized() {
         authenticate();
-        ResponseEntity<Object> response = testRestTemplate.postForEntity("/api/1.0/login", null, Object.class);
+        ResponseEntity<Object> response = testRestTemplate.postForEntity(API_1_0_LOGIN, null, Object.class);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.UNAUTHORIZED);
     }
 
-    private void unauthenticate() {
+    @Test
+    void postLogin_withoutUserCredentials_receiveApiError() {
+        ResponseEntity<ApiError> response = testRestTemplate.postForEntity(API_1_0_LOGIN, null, ApiError.class);
+        assertThat(Objects.requireNonNull(response.getBody()).getUrl()).isEqualTo(API_1_0_LOGIN);
+    }
+
+    private void unauthenticated() {
         testRestTemplate.getRestTemplate().getInterceptors().clear();
     }
 

@@ -20,6 +20,12 @@ public class ApiError {
 
     private String url;
 
+    public ApiError(int status, String message, String url) {
+        this.status = status;
+        this.message = message;
+        this.url = url;
+    }
+
     private Map<String, String> validationErrors;
 
 }
