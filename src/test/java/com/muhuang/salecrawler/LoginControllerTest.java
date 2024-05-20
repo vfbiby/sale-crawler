@@ -47,6 +47,19 @@ public class LoginControllerTest {
         assertThat(Objects.requireNonNull(response.getBody()).getUrl()).isEqualTo(API_1_0_LOGIN);
     }
 
+    @Test
+    void postLogin_withoutUserCredentials_receiveApiErrorWithoutValidationErrors() {
+        ResponseEntity<String> response = testRestTemplate.postForEntity(API_1_0_LOGIN, null, String.class);
+        assertThat(Objects.requireNonNull(response.getBody()).contains("validationErrors")).isFalse();
+    }
+
+    @Test
+    void postLogin_withIncorrectCredentials_receiveUnauthorizedWithoutWWWAuthenticationHeader() {
+        authenticate();
+        ResponseEntity<Object> response = testRestTemplate.postForEntity(API_1_0_LOGIN, null, Object.class);
+        assertThat(response.getHeaders().containsKey("www-authenticate")).isFalse();
+    }
+
     private void unauthenticated() {
         testRestTemplate.getRestTemplate().getInterceptors().clear();
     }
