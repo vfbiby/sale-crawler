@@ -1,6 +1,9 @@
 package com.muhuang.salecrawler;
 
 import com.muhuang.salecrawler.shared.ApiError;
+import com.muhuang.salecrawler.user.User;
+import com.muhuang.salecrawler.user.UserRepository;
+import jakarta.annotation.Resource;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,9 +26,13 @@ public class LoginControllerTest {
     @Autowired
     private TestRestTemplate testRestTemplate;
 
+    @Resource
+    private UserRepository userRepository;
+
     @AfterEach
     public void cleanup() {
         unauthenticated();
+//        userRepository.deleteAll();
     }
 
     @Test
@@ -58,6 +65,16 @@ public class LoginControllerTest {
         authenticate();
         ResponseEntity<Object> response = testRestTemplate.postForEntity(API_1_0_LOGIN, null, Object.class);
         assertThat(response.getHeaders().containsKey("www-authenticate")).isFalse();
+    }
+
+    @Test
+    void postLogin_withValidCredentials_receiveOK() {
+        User user = new User();
+        user.setDisplayName("test-display");
+        user.setUsername("test-username");
+        user.setPassword("P4sword");
+        ResponseEntity<String> response = testRestTemplate.postForEntity(API_1_0_LOGIN, user, String.class);
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
     }
 
     private void unauthenticated() {
