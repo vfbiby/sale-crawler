@@ -42,9 +42,6 @@ public class PluginCreateItemControllerTest {
     @Resource
     private ShopRepository shopRepository;
 
-    @Resource
-    private ItemService itemService;
-
     @Nested
     class Create {
 
@@ -64,21 +61,21 @@ public class PluginCreateItemControllerTest {
 
             @Test
             void postItem_whenShopAndItemIsValid_receiveOK() {
-                PluginItemDTO pItem = createValidPluginItem();
+                PluginItemDTO pItem = TestUtil.createValidPluginItem();
                 ResponseEntity<Object> response = postPluginItem(pItem, Object.class);
                 assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
             }
 
             @Test
             void postItem_whenShopAndItemIsValid_itemSaveToDatabase() {
-                PluginItemDTO pItem = createValidPluginItem();
+                PluginItemDTO pItem = TestUtil.createValidPluginItem();
                 postPluginItem(pItem, Object.class);
                 assertThat(itemRepository.count()).isEqualTo(1);
             }
 
             @Test
             void postItem_whenShopAndItemIsValid_itemSaveToDatabaseWithOutShopId() {
-                PluginItemDTO pItem = createValidPluginItem();
+                PluginItemDTO pItem = TestUtil.createValidPluginItem();
                 postPluginItem(pItem, Item.class);
                 String savedItemOutShopId = itemRepository.findAll().get(0).getShop().getOutShopId();
                 assertThat(savedItemOutShopId).isEqualTo(pItem.getShopId());
@@ -86,14 +83,14 @@ public class PluginCreateItemControllerTest {
 
             @Test
             void postItem_whenShopAndItemIsValid_receiveSuccessMessage() {
-                PluginItemDTO pItem = createValidPluginItem();
+                PluginItemDTO pItem = TestUtil.createValidPluginItem();
                 ResponseEntity<Object> response = postPluginItem(pItem, Object.class);
                 assertThat(response.getBody()).isNotNull();
             }
 
             @Test
             void postItem_whenPluginItemIsValid_ItemSaveToDatabaseWithPublishedAt() {
-                PluginItemDTO pItem = createValidPluginItem();
+                PluginItemDTO pItem = TestUtil.createValidPluginItem();
                 postPluginItem(pItem, Object.class);
                 Item inDB = itemRepository.findAll().get(0);
                 assertThat(inDB.getPublishedAt()).isNotNull();
@@ -101,7 +98,7 @@ public class PluginCreateItemControllerTest {
 
             @Test
             void postItem_whenPluginItemIsValid_itemNameSaveAsTitle() {
-                PluginItemDTO pItem = createValidPluginItem();
+                PluginItemDTO pItem = TestUtil.createValidPluginItem();
                 postPluginItem(pItem, Object.class);
                 Item inDB = itemRepository.findAll().get(0);
                 assertThat(inDB.getTitle()).isEqualTo(pItem.getItems().get(0).getName());
@@ -109,7 +106,7 @@ public class PluginCreateItemControllerTest {
 
             @Test
             void postItem_whenPluginItemIsValid_itemPicSaveToDatabase() {
-                PluginItemDTO pItem = createValidPluginItem();
+                PluginItemDTO pItem = TestUtil.createValidPluginItem();
                 postPluginItem(pItem, Object.class);
                 Item inDB = itemRepository.findAll().get(0);
                 assertThat(inDB.getPic()).isNotNull();
@@ -117,7 +114,7 @@ public class PluginCreateItemControllerTest {
 
             @Test
             void postItem_whenPluginItemHasPublishedAt_itemSaveToDatabaseWithSpecifyPublishedAt() {
-                PluginItemDTO pItem = createValidPluginItem();
+                PluginItemDTO pItem = TestUtil.createValidPluginItem();
                 LocalDate publishedAt = LocalDate.now();
                 pItem.setPublishedAt(publishedAt);
                 postPluginItem(pItem, Object.class);
@@ -129,7 +126,7 @@ public class PluginCreateItemControllerTest {
         }
 
         private void insertValidShop() {
-            PluginItemDTO pluginItemDTO = createValidShop();
+            PluginItemDTO pluginItemDTO = TestUtil.createValidShop();
             Shop shop = Shop.builder().outShopId(pluginItemDTO.getShopId())
                     .shopName(pluginItemDTO.getShopName())
                     .shopUrl(pluginItemDTO.getShopUrl()).build();
@@ -145,7 +142,7 @@ public class PluginCreateItemControllerTest {
 
             @Test
             void postItem_whenShopHasNullShopId_receiveBadRequest() {
-                PluginItemDTO pItem = createValidPluginItem();
+                PluginItemDTO pItem = TestUtil.createValidPluginItem();
                 pItem.setShopId(null);
                 ResponseEntity<Object> response = postPluginItem(pItem, Object.class);
                 assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
@@ -153,7 +150,7 @@ public class PluginCreateItemControllerTest {
 
             @Test
             void postItem_whenShopHasNullItems_receiveBadRequest() {
-                PluginItemDTO pItem = createValidPluginItem();
+                PluginItemDTO pItem = TestUtil.createValidPluginItem();
                 pItem.setItems(null);
                 ResponseEntity<Object> response = postPluginItem(pItem, Object.class);
                 assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
@@ -161,7 +158,7 @@ public class PluginCreateItemControllerTest {
 
             @Test
             void postItem_whenShopIsValidButShopIsNotInDB_receiveBadRequest() {
-                PluginItemDTO pItem = createValidPluginItem();
+                PluginItemDTO pItem = TestUtil.createValidPluginItem();
                 pItem.setShopId("not-in-db-shop");
                 ResponseEntity<Object> response = postPluginItem(pItem, Object.class);
                 assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
@@ -183,7 +180,7 @@ public class PluginCreateItemControllerTest {
 
             @Test
             void postItem_whenShopHasNullShopId_receiveMessageOfNullErrorForShopId() {
-                PluginItemDTO pItem = createValidPluginItem();
+                PluginItemDTO pItem = TestUtil.createValidPluginItem();
                 pItem.setShopId(null);
                 ResponseEntity<ApiError> response = postPluginItem(pItem, ApiError.class);
                 Map<String, String> validationErrors = Objects.requireNonNull(response.getBody()).getValidationErrors();
@@ -192,7 +189,7 @@ public class PluginCreateItemControllerTest {
 
             @Test
             void postItem_whenShopHasEmptyItems_receiveMessageOfEmptyErrorForItems() {
-                PluginItemDTO pItem = createValidPluginItem();
+                PluginItemDTO pItem = TestUtil.createValidPluginItem();
                 pItem.setItems(List.of());
                 ResponseEntity<ApiError> response = postPluginItem(pItem, ApiError.class);
                 Map<String, String> validationErrors = Objects.requireNonNull(response.getBody()).getValidationErrors();
@@ -201,8 +198,8 @@ public class PluginCreateItemControllerTest {
 
             @Test
             void postItem_whenPluginItemHasNullItemId_receiveBadRequest() {
-                PluginItemDTO pItem = createValidPluginItem();
-                ItemDTO itemDTO = createItemDTO();
+                PluginItemDTO pItem = TestUtil.createValidPluginItem();
+                ItemDTO itemDTO = TestUtil.createItemDTO();
                 itemDTO.setItemId(null);
                 pItem.setItems(List.of(itemDTO));
                 ResponseEntity<Object> response = postPluginItem(pItem, Object.class);
@@ -211,8 +208,8 @@ public class PluginCreateItemControllerTest {
 
             @Test
             void postItem_whenPluginItemHasNullName_receiveBadRequest() {
-                PluginItemDTO pItem = createValidPluginItem();
-                ItemDTO itemDTO = createItemDTO();
+                PluginItemDTO pItem = TestUtil.createValidPluginItem();
+                ItemDTO itemDTO = TestUtil.createItemDTO();
                 itemDTO.setName(null);
                 pItem.setItems(List.of(itemDTO));
                 ResponseEntity<Object> response = postPluginItem(pItem, Object.class);
@@ -221,8 +218,8 @@ public class PluginCreateItemControllerTest {
 
             @Test
             void postItem_whenPluginItemHasNullPic_receiveBadRequest() {
-                PluginItemDTO pItem = createValidPluginItem();
-                ItemDTO itemDTO = createItemDTO();
+                PluginItemDTO pItem = TestUtil.createValidPluginItem();
+                ItemDTO itemDTO = TestUtil.createItemDTO();
                 itemDTO.setPic(null);
                 pItem.setItems(List.of(itemDTO));
                 ResponseEntity<Object> response = postPluginItem(pItem, Object.class);
@@ -231,8 +228,8 @@ public class PluginCreateItemControllerTest {
 
             @Test
             void postItem_whenPluginItemPicIsNotUrl_receiveBadRequest() {
-                PluginItemDTO pItem = createValidPluginItem();
-                ItemDTO itemDTO = createItemDTO();
+                PluginItemDTO pItem = TestUtil.createValidPluginItem();
+                ItemDTO itemDTO = TestUtil.createItemDTO();
                 itemDTO.setPic("not-a-link");
                 pItem.setItems(List.of(itemDTO));
                 ResponseEntity<Object> response = postPluginItem(pItem, Object.class);
@@ -241,7 +238,7 @@ public class PluginCreateItemControllerTest {
 
             @Test
             void postItem_whenItemIdDuplicated_receiveBadRequest() {
-                PluginItemDTO pItem = createValidPluginItem();
+                PluginItemDTO pItem = TestUtil.createValidPluginItem();
                 postPluginItem(pItem, Object.class);
                 ResponseEntity<Object> response = postPluginItem(pItem, Object.class);
                 assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
@@ -249,7 +246,7 @@ public class PluginCreateItemControllerTest {
 
             @Test
             void postItem_whenItemIdDuplicated_receiveDuplicateItemId() {
-                PluginItemDTO pItem = createValidPluginItem();
+                PluginItemDTO pItem = TestUtil.createValidPluginItem();
                 postPluginItem(pItem, Object.class);
                 ResponseEntity<ApiError> response = postPluginItem(pItem, ApiError.class);
                 Map<String, String> validationErrors = Objects.requireNonNull(response.getBody()).getValidationErrors();
@@ -262,25 +259,6 @@ public class PluginCreateItemControllerTest {
             return testRestTemplate.postForEntity(API_1_0_PLUGIN_ITEMS, pItem, responseType);
         }
 
-        private static PluginItemDTO createValidPluginItem() {
-            PluginItemDTO pItem = createValidShop();
-            ItemDTO item = createItemDTO();
-            pItem.setItems(List.of(item));
-            return pItem;
-        }
-
-        private static PluginItemDTO createValidShop() {
-            return PluginItemDTO.builder().shopId("3423343434")
-                    .shopName("TT坏坏")
-                    .shopUrl("https://shop105703949.taobao.com").build();
-        }
-
-    }
-
-    private static ItemDTO createItemDTO() {
-        return ItemDTO.builder().itemId("779612411768")
-                .name("TT坏坏针织无袖长裙搭配吊带裙两件套女休闲度假风宽松设计感套装")
-                .pic("https://img.taobao.com/main.jpg").build();
     }
 
 }

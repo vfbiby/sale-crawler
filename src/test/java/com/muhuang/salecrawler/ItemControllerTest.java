@@ -61,7 +61,7 @@ public class ItemControllerTest {
 
         @Test
         void postItem_whenItemIsValid_receiveSuccessMessage() {
-            ResponseEntity<Object> response = postItem(createValidItem(), Object.class);
+            ResponseEntity<Object> response = postItem(TestUtil.createValidItem(), Object.class);
             assertThat(response.getBody()).isNotNull();
         }
 
@@ -98,7 +98,7 @@ public class ItemControllerTest {
 
         @Test
         void postItem_whenItemHasNullItemId_receiveBadRequest() {
-            Item item = createValidItem();
+            Item item = TestUtil.createValidItem();
             item.setItemId(null);
             ResponseEntity<Object> response = postItem(item, Object.class);
             assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
@@ -106,7 +106,7 @@ public class ItemControllerTest {
 
         @Test
         void postItem_whenItemIdLessThan10Characters_receiveBadRequest() {
-            Item item = createValidItem();
+            Item item = TestUtil.createValidItem();
             item.setItemId("123456789");
             ResponseEntity<Object> response = postItem(item, Object.class);
             assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
@@ -123,7 +123,7 @@ public class ItemControllerTest {
 
         @Test
         void postItem_whenItemIdIsMoreThan30Characters_receiveBadRequest() {
-            Item item = createValidItem();
+            Item item = TestUtil.createValidItem();
             String longString = IntStream.rangeClosed(1, 31).mapToObj(i -> "x").collect(Collectors.joining());
             item.setItemId(longString);
             ResponseEntity<Object> response = postItem(item, Object.class);
@@ -132,7 +132,7 @@ public class ItemControllerTest {
 
         @Test
         void postItem_whenItemNameLessThan10Characters_receiveBadRequest() {
-            Item item = createValidItem();
+            Item item = TestUtil.createValidItem();
             item.setTitle("短名字");
             ResponseEntity<Object> response = postItem(item, Object.class);
             assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
@@ -149,7 +149,7 @@ public class ItemControllerTest {
 
         @Test
         void postItem_whenItemNameIsMoreThan60Characters_receiveBadRequest() {
-            Item item = createValidItem();
+            Item item = TestUtil.createValidItem();
             String longName = IntStream.rangeClosed(1, 61).mapToObj(i -> "x").collect(Collectors.joining());
             item.setTitle(longName);
             ResponseEntity<Object> response = postItem(item, Object.class);
@@ -158,7 +158,7 @@ public class ItemControllerTest {
 
         @Test
         void postItem_whenItemHasNullItemName_receiveBadRequest() {
-            Item item = createValidItem();
+            Item item = TestUtil.createValidItem();
             item.setTitle(null);
             ResponseEntity<Object> response = postItem(item, Object.class);
             assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
@@ -166,7 +166,7 @@ public class ItemControllerTest {
 
         @Test
         void postItem_whenItemHasNoOutShopId_receiveBadRequest() {
-            Item item = createValidItem();
+            Item item = TestUtil.createValidItem();
             item.setShop(null);
             ResponseEntity<Object> response = postItem(item, Object.class);
             assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
@@ -208,15 +208,10 @@ public class ItemControllerTest {
         return testRestTemplate.postForEntity("/api/1.0/items", item, responseType);
     }
 
-    private static Item createValidItem() {
-        return Item.builder().itemId("32838242344").title("2024气质新款连衣裙")
-                .pic("https://x.taobao.com/v.img").build();
-    }
-
     public Item createValidItemWithShop() {
         Shop validShop = createValidShop();
         shopRepository.save(validShop);
-        Item item = createValidItem();
+        Item item = TestUtil.createValidItem();
         item.setShop(validShop);
         return item;
     }
