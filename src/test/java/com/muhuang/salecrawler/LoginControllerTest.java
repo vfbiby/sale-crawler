@@ -36,44 +36,45 @@ public class LoginControllerTest {
 
     @Test
     void postLogin_withoutUserCredentials_receiveUnauthorized() {
-        ResponseEntity<Object> response = testRestTemplate.postForEntity(API_1_0_LOGIN, null, Object.class);
+        ResponseEntity<Object> response = login(Object.class);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.UNAUTHORIZED);
     }
 
     @Test
     void postLogin_withIncorrectCredentials_receiveUnauthorized() {
         authenticate("wrong-username");
-        ResponseEntity<Object> response = testRestTemplate.postForEntity(API_1_0_LOGIN, null, Object.class);
+        ResponseEntity<Object> response = login(Object.class);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.UNAUTHORIZED);
     }
 
     @Test
     void postLogin_withoutUserCredentials_receiveApiError() {
-        ResponseEntity<ApiError> response = testRestTemplate.postForEntity(API_1_0_LOGIN, null, ApiError.class);
+        ResponseEntity<ApiError> response = login(ApiError.class);
         assertThat(Objects.requireNonNull(response.getBody()).getUrl()).isEqualTo(API_1_0_LOGIN);
+    }
+
+    private <T> ResponseEntity<T> login(Class<T> responseType) {
+        return testRestTemplate.postForEntity(API_1_0_LOGIN, null, responseType);
     }
 
     @Test
     void postLogin_withoutUserCredentials_receiveApiErrorWithoutValidationErrors() {
-        ResponseEntity<String> response = testRestTemplate.postForEntity(API_1_0_LOGIN, null, String.class);
+        ResponseEntity<String> response = login(String.class);
         assertThat(Objects.requireNonNull(response.getBody()).contains("validationErrors")).isFalse();
     }
 
     @Test
     void postLogin_withIncorrectCredentials_receiveUnauthorizedWithoutWWWAuthenticationHeader() {
         authenticate("wrong-username");
-        ResponseEntity<Object> response = testRestTemplate.postForEntity(API_1_0_LOGIN, null, Object.class);
+        ResponseEntity<Object> response = login(Object.class);
         assertThat(response.getHeaders().containsKey("www-authenticate")).isFalse();
     }
 
     @Test
     void postLogin_withValidCredentials_receiveOK() {
-        User user = new User();
-        user.setDisplayName("test-display");
-        user.setUsername("test-username");
-        user.setPassword("P4sword");
+        User user = TestUtil.createValidUser();
         userService.save(user);
-        authenticate("test-username");
+        authenticate(user.getUsername());
         ResponseEntity<String> response = testRestTemplate.postForEntity(API_1_0_LOGIN, user, String.class);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
     }
