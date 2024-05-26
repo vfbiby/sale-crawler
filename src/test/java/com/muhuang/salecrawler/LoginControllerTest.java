@@ -2,7 +2,7 @@ package com.muhuang.salecrawler;
 
 import com.muhuang.salecrawler.shared.ApiError;
 import com.muhuang.salecrawler.user.User;
-import com.muhuang.salecrawler.user.UserRepository;
+import com.muhuang.salecrawler.user.UserService;
 import jakarta.annotation.Resource;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
@@ -27,12 +27,11 @@ public class LoginControllerTest {
     private TestRestTemplate testRestTemplate;
 
     @Resource
-    private UserRepository userRepository;
+    private UserService userService;
 
     @AfterEach
     public void cleanup() {
         unauthenticated();
-//        userRepository.deleteAll();
     }
 
     @Test
@@ -43,7 +42,7 @@ public class LoginControllerTest {
 
     @Test
     void postLogin_withIncorrectCredentials_receiveUnauthorized() {
-        authenticate();
+        authenticate("wrong-username");
         ResponseEntity<Object> response = testRestTemplate.postForEntity(API_1_0_LOGIN, null, Object.class);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.UNAUTHORIZED);
     }
@@ -62,7 +61,7 @@ public class LoginControllerTest {
 
     @Test
     void postLogin_withIncorrectCredentials_receiveUnauthorizedWithoutWWWAuthenticationHeader() {
-        authenticate();
+        authenticate("wrong-username");
         ResponseEntity<Object> response = testRestTemplate.postForEntity(API_1_0_LOGIN, null, Object.class);
         assertThat(response.getHeaders().containsKey("www-authenticate")).isFalse();
     }
@@ -73,6 +72,8 @@ public class LoginControllerTest {
         user.setDisplayName("test-display");
         user.setUsername("test-username");
         user.setPassword("P4sword");
+        userService.save(user);
+        authenticate("test-username");
         ResponseEntity<String> response = testRestTemplate.postForEntity(API_1_0_LOGIN, user, String.class);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
     }
@@ -81,9 +82,9 @@ public class LoginControllerTest {
         testRestTemplate.getRestTemplate().getInterceptors().clear();
     }
 
-    private void authenticate() {
+    private void authenticate(String username) {
         testRestTemplate.getRestTemplate().getInterceptors()
-                .add(new BasicAuthenticationInterceptor("test-user", "P4ssword"));
+                .add(new BasicAuthenticationInterceptor(username, "P4sword"));
     }
 
 }
