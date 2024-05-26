@@ -32,7 +32,7 @@ public class SecurityConfiguration {
                 String name = authentication.getName();
                 String password = authentication.getCredentials().toString();
                 UserDetails user = authServices.loadUserByUsername(name);
-                if (password.equals(user.getPassword())) {
+                if (passwordEncoder().matches(password, user.getPassword())) {
                     return new UsernamePasswordAuthenticationToken(name, password, user.getAuthorities());
                 }
                 return authentication;
