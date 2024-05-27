@@ -50,7 +50,7 @@ public class LoginControllerTest {
 
     @Test
     void postLogin_withIncorrectCredentials_receiveUnauthorized() {
-        authenticate("wrong-username");
+        authenticate();
         ResponseEntity<Object> response = login(Object.class);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.UNAUTHORIZED);
     }
@@ -69,41 +69,36 @@ public class LoginControllerTest {
 
     @Test
     void postLogin_withIncorrectCredentials_receiveUnauthorizedWithoutWWWAuthenticationHeader() {
-        authenticate("wrong-username");
+        authenticate();
         ResponseEntity<Object> response = login(Object.class);
         assertThat(response.getHeaders().containsKey("www-authenticate")).isFalse();
     }
 
     @Test
     void postLogin_withValidCredentials_receiveOK() {
-        User user = TestUtil.createValidUser();
-        userService.save(user);
-        authenticate(user.getUsername());
-        ResponseEntity<String> response = testRestTemplate.postForEntity(API_1_0_LOGIN, user, String.class);
+        userService.save(TestUtil.createValidUser());
+        authenticate();
+        ResponseEntity<String> response = testRestTemplate.postForEntity(API_1_0_LOGIN, TestUtil.createValidUser(), String.class);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
     }
 
     @Test
     void postLogin_withValidCredentials_receiveLoggedInUserId() {
-        User user = TestUtil.createValidUser();
-        User inDB = userService.save(user);
-        authenticate(user.getUsername());
-        ResponseEntity<Map<String, Object>> response = login(new ParameterizedTypeReference<>() {
-        });
+        User inDB = userService.save(TestUtil.createValidUser());
+        authenticate();
+        ResponseEntity<Map<String, Object>> response = login(new ParameterizedTypeReference<>() {});
         Map<String, Object> body = response.getBody();
-        Integer id = (Integer) body.get("id");
+        Integer id = (Integer) Objects.requireNonNull(body).get("id");
         assertThat(id).isEqualTo(inDB.getId());
     }
 
     @Test
     void postLogin_withValidCredentials_receiveLoggedInUserImage() {
-        User user = TestUtil.createValidUser();
-        User inDB = userService.save(user);
-        authenticate(user.getUsername());
-        ResponseEntity<Map<String, Object>> response = login(new ParameterizedTypeReference<>() {
-        });
+        User inDB = userService.save(TestUtil.createValidUser());
+        authenticate();
+        ResponseEntity<Map<String, Object>> response = login(new ParameterizedTypeReference<>() {});
         Map<String, Object> body = response.getBody();
-        String image = (String) body.get("image");
+        String image = (String) Objects.requireNonNull(body).get("image");
         assertThat(image).isEqualTo(inDB.getImage());
     }
 
@@ -119,9 +114,9 @@ public class LoginControllerTest {
         testRestTemplate.getRestTemplate().getInterceptors().clear();
     }
 
-    private void authenticate(String username) {
+    private void authenticate() {
         testRestTemplate.getRestTemplate().getInterceptors()
-                .add(new BasicAuthenticationInterceptor(username, "P4sword"));
+                .add(new BasicAuthenticationInterceptor("test-username", "P4sword"));
     }
 
 }
