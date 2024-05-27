@@ -1,16 +1,29 @@
 package com.muhuang.salecrawler.login;
 
+import com.muhuang.salecrawler.configuration.AuthServices;
+import com.muhuang.salecrawler.user.User;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.Collections;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/1.0/login")
 public class LoginController {
 
-    @PostMapping
-    void login() {
+    private final AuthServices authService;
 
+    public LoginController(AuthServices authService) {
+        this.authService = authService;
+    }
+
+    @PostMapping
+    Map<String, Object> handleLogin(Authentication authentication) {
+        Long userId = ((User) authService.loadUserByUsername(authentication.getName())).getId();
+        return Collections.singletonMap("id", userId);
     }
 
 }
