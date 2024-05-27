@@ -1,5 +1,7 @@
 package com.muhuang.salecrawler.user;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonView;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -21,10 +23,15 @@ public class User implements UserDetails {
 
     @Id
     @GeneratedValue
+    @JsonView(Views.Base.class)
     private long id;
 
+    @JsonView(Views.Base.class)
     private String displayName;
+
+    @JsonView(Views.Base.class)
     private String username;
+
     private String password;
 
     @Override
@@ -33,6 +40,7 @@ public class User implements UserDetails {
         return AuthorityUtils.createAuthorityList("Role_USER");
     }
 
+    @JsonView(Views.Base.class)
     private String image;
 
     @Override

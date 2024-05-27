@@ -86,7 +86,8 @@ public class LoginControllerTest {
     void postLogin_withValidCredentials_receiveLoggedInUserId() {
         User inDB = userService.save(TestUtil.createValidUser());
         authenticate();
-        ResponseEntity<Map<String, Object>> response = login(new ParameterizedTypeReference<>() {});
+        ResponseEntity<Map<String, Object>> response = login(new ParameterizedTypeReference<>() {
+        });
         Map<String, Object> body = response.getBody();
         Integer id = (Integer) Objects.requireNonNull(body).get("id");
         assertThat(id).isEqualTo(inDB.getId());
@@ -96,10 +97,43 @@ public class LoginControllerTest {
     void postLogin_withValidCredentials_receiveLoggedInUserImage() {
         User inDB = userService.save(TestUtil.createValidUser());
         authenticate();
-        ResponseEntity<Map<String, Object>> response = login(new ParameterizedTypeReference<>() {});
+        ResponseEntity<Map<String, Object>> response = login(new ParameterizedTypeReference<>() {
+        });
         Map<String, Object> body = response.getBody();
         String image = (String) Objects.requireNonNull(body).get("image");
         assertThat(image).isEqualTo(inDB.getImage());
+    }
+
+    @Test
+    void postLogin_withValidCredentials_receiveLoggedInUserDisplayName() {
+        User inDB = userService.save(TestUtil.createValidUser());
+        authenticate();
+        ResponseEntity<Map<String, Object>> response = login(new ParameterizedTypeReference<>() {
+        });
+        Map<String, Object> body = response.getBody();
+        String displayName = (String) Objects.requireNonNull(body).get("displayName");
+        assertThat(displayName).isEqualTo(inDB.getDisplayName());
+    }
+
+    @Test
+    void postLogin_withValidCredentials_receiveLoggedInUserUsername() {
+        User inDB = userService.save(TestUtil.createValidUser());
+        authenticate();
+        ResponseEntity<Map<String, Object>> response = login(new ParameterizedTypeReference<>() {
+        });
+        Map<String, Object> body = response.getBody();
+        String username = (String) Objects.requireNonNull(body).get("username");
+        assertThat(username).isEqualTo(inDB.getUsername());
+    }
+
+    @Test
+    void postLogin_withValidCredentials_notReceiveLoggedInUserPassword() {
+        userService.save(TestUtil.createValidUser());
+        authenticate();
+        ResponseEntity<Map<String, Object>> response = login(new ParameterizedTypeReference<>() {
+        });
+        Map<String, Object> body = response.getBody();
+        assertThat(Objects.requireNonNull(body).containsKey("password")).isFalse();
     }
 
     private <T> ResponseEntity<T> login(Class<T> responseType) {
