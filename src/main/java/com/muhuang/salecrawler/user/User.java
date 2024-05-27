@@ -33,6 +33,8 @@ public class User implements UserDetails {
         return AuthorityUtils.createAuthorityList("Role_USER");
     }
 
+    private String image;
+
     @Override
     @Transient
     public boolean isAccountNonExpired() {

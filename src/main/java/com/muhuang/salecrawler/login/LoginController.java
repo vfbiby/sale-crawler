@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 
 @RestController
@@ -22,8 +22,11 @@ public class LoginController {
 
     @PostMapping
     Map<String, Object> handleLogin(Authentication authentication) {
-        Long userId = ((User) authService.loadUserByUsername(authentication.getName())).getId();
-        return Collections.singletonMap("id", userId);
+        User user = ((User) authService.loadUserByUsername(authentication.getName()));
+        HashMap<String, Object> userMap = new HashMap<>();
+        userMap.put("id", user.getId());
+        userMap.put("image", user.getImage());
+        return userMap;
     }
 
 }

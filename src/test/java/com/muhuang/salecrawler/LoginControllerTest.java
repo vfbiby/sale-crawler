@@ -95,6 +95,18 @@ public class LoginControllerTest {
         assertThat(id).isEqualTo(inDB.getId());
     }
 
+    @Test
+    void postLogin_withValidCredentials_receiveLoggedInUserImage() {
+        User user = TestUtil.createValidUser();
+        User inDB = userService.save(user);
+        authenticate(user.getUsername());
+        ResponseEntity<Map<String, Object>> response = login(new ParameterizedTypeReference<>() {
+        });
+        Map<String, Object> body = response.getBody();
+        String image = (String) body.get("image");
+        assertThat(image).isEqualTo(inDB.getImage());
+    }
+
     private <T> ResponseEntity<T> login(Class<T> responseType) {
         return testRestTemplate.postForEntity(API_1_0_LOGIN, null, responseType);
     }

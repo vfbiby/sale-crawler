@@ -14,6 +14,7 @@ public class TestUtil {
         user.setDisplayName("test-display");
         user.setUsername("test-username");
         user.setPassword("P4sword");
+        user.setImage("profile-image.png");
         return user;
     }
 
