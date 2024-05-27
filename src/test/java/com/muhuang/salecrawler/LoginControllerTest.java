@@ -91,7 +91,7 @@ public class LoginControllerTest {
         ResponseEntity<Map<String, Object>> response = login(new ParameterizedTypeReference<>() {
         });
         Map<String, Object> body = response.getBody();
-        Long id = Long.valueOf((Integer) body.get("id"));
+        Integer id = (Integer) body.get("id");
         assertThat(id).isEqualTo(inDB.getId());
     }
 
