@@ -39,11 +39,6 @@ public class ItemService {
         itemRepository.saveAll(collect);
     }
 
-    public Page<Item> getUsers() {
-        Pageable pageRequest = PageRequest.of(0, 5);
-        return itemRepository.findAll(pageRequest);
-    }
-
     public Page<Item> getUsers(Sort.Direction direction, String sortBy) {
         PageRequest pageRequest = PageRequest.of(0, 5, direction, sortBy);
         return itemRepository.findAll(pageRequest);

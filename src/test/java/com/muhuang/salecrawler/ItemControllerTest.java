@@ -200,6 +200,15 @@ public class ItemControllerTest {
         }
 
         @Test
+        void getItems_whenThereAreTwoItemInDB_defaultSortByIdDESC() {
+            String itemIdTwo = "32838242345";
+            createOneShopAndTwoItem("32838242344", itemIdTwo);
+            ResponseEntity<TestPage<Item>> response = getItems("/api/1.0/items");
+            List<Item> items = Objects.requireNonNull(response.getBody()).getContent();
+            assertThat(items.get(0).getItemId()).isEqualTo(itemIdTwo);
+        }
+
+        @Test
         void getItems_whenThereAreTwoItemInDBAndSortByPublishedAt_defaultDirectionIsDesc() {
             String itemIdTwo = "32838242345";
             createOneShopAndTwoItem("32838242344", itemIdTwo);
