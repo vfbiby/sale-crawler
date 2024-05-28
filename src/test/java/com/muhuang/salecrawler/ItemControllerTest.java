@@ -7,7 +7,6 @@ import com.muhuang.salecrawler.shop.Shop;
 import com.muhuang.salecrawler.shop.ShopRepository;
 import com.muhuang.salecrawler.shop.ShopService;
 import jakarta.annotation.Resource;
-import lombok.SneakyThrows;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -201,16 +200,30 @@ public class ItemControllerTest {
         }
 
         @Test
-        void getItems_whenThereIsTwoItemInDBAndSortByPublishedAt_defaultDirectionIsDesc() {
+        void getItems_whenThereAreTwoItemInDBAndSortByPublishedAt_defaultDirectionIsDesc() {
+            String itemIdTwo = "32838242345";
+            createOneShopAndTwoItem("32838242344", itemIdTwo);
+            ResponseEntity<TestPage<Item>> response = getItems("/api/1.0/items?sortBy=publishedAt");
+            List<Item> items = Objects.requireNonNull(response.getBody()).getContent();
+            assertThat(items.get(0).getItemId()).isEqualTo(itemIdTwo);
+        }
+
+        @Test
+        void getItems_whenThereAreTwoItemInDBAndSortByPublishedAtASC_olderItemAtFirst() {
+            String itemIdOne = "32838242344";
+            createOneShopAndTwoItem(itemIdOne, "32838242345");
+            ResponseEntity<TestPage<Item>> response = getItems("/api/1.0/items?sortBy=publishedAt&direction=ASC");
+            List<Item> items = Objects.requireNonNull(response.getBody()).getContent();
+            assertThat(items.get(0).getItemId()).isEqualTo(itemIdOne);
+        }
+
+        private void createOneShopAndTwoItem(String itemIdOne, String itemIdTwo) {
             Shop shopInDB = shopRepository.save(createValidShop());
-            Item item1 = createValidItemWithDate("32838242344", "2022-06-25");
-            Item item2 = createValidItemWithDate("32838242345", "2023-06-25");
+            Item item1 = createValidItemWithDate(itemIdOne, "2022-06-25");
+            Item item2 = createValidItemWithDate(itemIdTwo, "2023-06-25");
             item1.setShop(shopInDB);
             item2.setShop(shopInDB);
             itemRepository.saveAll(List.of(item1, item2));
-            ResponseEntity<TestPage<Item>> response = getItems("/api/1.0/items?sortBy=publishedAt");
-            List<Item> items = Objects.requireNonNull(response.getBody()).getContent();
-            assertThat(items.get(0).getItemId()).isEqualTo(item2.getItemId());
         }
 
     }

@@ -24,7 +24,9 @@ public class ItemController {
 
     @GetMapping
     Page<?> getItems(@RequestParam Optional<String> sortBy, @RequestParam Optional<Sort.Direction> direction) {
-        return itemService.getUsers(Sort.Direction.DESC, sortBy);
+        return itemService.getUsers(
+                direction.orElse(Sort.Direction.DESC),
+                sortBy.orElse("id"));
     }
 
 }

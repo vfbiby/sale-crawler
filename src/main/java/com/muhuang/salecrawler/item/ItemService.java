@@ -11,7 +11,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -45,8 +44,8 @@ public class ItemService {
         return itemRepository.findAll(pageRequest);
     }
 
-    public Page<Item> getUsers(Sort.Direction direction, Optional<String> sortBy) {
-        PageRequest pageRequest = PageRequest.of(0, 5, direction, sortBy.orElse("id"));
+    public Page<Item> getUsers(Sort.Direction direction, String sortBy) {
+        PageRequest pageRequest = PageRequest.of(0, 5, direction, sortBy);
         return itemRepository.findAll(pageRequest);
     }
 }
