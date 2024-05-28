@@ -7,6 +7,7 @@ import com.muhuang.salecrawler.shop.Shop;
 import com.muhuang.salecrawler.shop.ShopRepository;
 import com.muhuang.salecrawler.shop.ShopService;
 import jakarta.annotation.Resource;
+import lombok.SneakyThrows;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -19,6 +20,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
 
+import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -198,6 +200,29 @@ public class ItemControllerTest {
             assertThat(Objects.requireNonNull(response.getBody()).getTotalElements()).isEqualTo(1);
         }
 
+        @Test
+        void getItems_whenThereIsTwoItemInDBAndSortByPublishedAt_defaultDirectionIsDesc() {
+            Shop shopInDB = shopRepository.save(createValidShop());
+            Item item1 = createValidItemWithDate("32838242344", "2022-06-25");
+            Item item2 = createValidItemWithDate("32838242345", "2023-06-25");
+            item1.setShop(shopInDB);
+            item2.setShop(shopInDB);
+            itemRepository.saveAll(List.of(item1, item2));
+            ResponseEntity<TestPage<Item>> response = getItems("/api/1.0/items?sortBy=publishedAt");
+            List<Item> items = Objects.requireNonNull(response.getBody()).getContent();
+            assertThat(items.get(0).getItemId()).isEqualTo(item2.getItemId());
+        }
+
+    }
+
+    private ResponseEntity<TestPage<Item>> getItems(String url) {
+        return testRestTemplate.exchange(url,
+                HttpMethod.GET, null, new ParameterizedTypeReference<>() {
+                });
+    }
+
+    private static Item createValidItemWithDate(String itemId, String date) {
+        return TestUtil.createItemWithDetail(itemId, date, "2024气质新款连衣裙", "https://x.taobao.com/v.img");
     }
 
     private ResponseEntity<TestPage<Object>> getItems(ParameterizedTypeReference<TestPage<Object>> responseType) {

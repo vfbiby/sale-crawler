@@ -6,10 +6,12 @@ import jakarta.annotation.Resource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -40,6 +42,11 @@ public class ItemService {
 
     public Page<Item> getUsers() {
         Pageable pageRequest = PageRequest.of(0, 5);
+        return itemRepository.findAll(pageRequest);
+    }
+
+    public Page<Item> getUsers(Sort.Direction direction, Optional<String> sortBy) {
+        PageRequest pageRequest = PageRequest.of(0, 5, direction, sortBy.orElse("id"));
         return itemRepository.findAll(pageRequest);
     }
 }

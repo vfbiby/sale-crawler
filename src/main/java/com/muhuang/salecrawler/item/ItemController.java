@@ -1,16 +1,13 @@
 package com.muhuang.salecrawler.item;
 
 import com.muhuang.salecrawler.shared.GenericResponse;
-import com.muhuang.salecrawler.shop.Shop;
-import com.muhuang.salecrawler.shop.ShopIsNotExistInDbException;
-import com.muhuang.salecrawler.shop.ShopRepository;
 import jakarta.annotation.Resource;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/1.0/items")
@@ -26,8 +23,8 @@ public class ItemController {
     }
 
     @GetMapping
-    Page<?> getItems(){
-        return itemService.getUsers();
+    Page<?> getItems(@RequestParam Optional<String> sortBy, @RequestParam Optional<Sort.Direction> direction) {
+        return itemService.getUsers(Sort.Direction.DESC, sortBy);
     }
 
 }

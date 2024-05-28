@@ -4,7 +4,13 @@ import com.muhuang.salecrawler.item.Item;
 import com.muhuang.salecrawler.item.ItemDTO;
 import com.muhuang.salecrawler.item.PluginItemDTO;
 import com.muhuang.salecrawler.user.User;
+import lombok.SneakyThrows;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.util.Date;
 import java.util.List;
 
 public class TestUtil {
@@ -38,7 +44,13 @@ public class TestUtil {
     }
 
     static Item createValidItem() {
-        return Item.builder().itemId("32838242344").title("2024气质新款连衣裙")
-                .pic("https://x.taobao.com/v.img").build();
+        return createItemWithDetail("32838242344",
+                LocalDate.now().toString(), "2024气质新款夏装连衣裙", "https://xx.taobao.com/v.img");
+    }
+
+    @SneakyThrows
+    static Item createItemWithDetail(String itemId, String date, String title, String pic) {
+        return Item.builder().itemId(itemId).title(title)
+                .pic(pic).publishedAt(new SimpleDateFormat("yyyy-MM-dd").parse(date)).build();
     }
 }

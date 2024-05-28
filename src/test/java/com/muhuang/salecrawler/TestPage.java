@@ -51,7 +51,7 @@ public class TestPage<T> implements Page<T> {
 
     @Override
     public List<T> getContent() {
-        return null;
+        return content;
     }
 
     @Override
