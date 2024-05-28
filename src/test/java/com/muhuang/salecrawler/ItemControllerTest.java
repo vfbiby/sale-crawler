@@ -237,18 +237,21 @@ public class ItemControllerTest {
 
     }
 
-    private ResponseEntity<TestPage<Item>> getItems(String url) {
-        return testRestTemplate.exchange(url,
-                HttpMethod.GET, null, new ParameterizedTypeReference<>() {
-                });
-    }
-
     private static Item createValidItemWithDate(String itemId, String date) {
         return TestUtil.createItemWithDetail(itemId, date, "2024气质新款连衣裙", "https://x.taobao.com/v.img");
     }
 
+    private ResponseEntity<TestPage<Item>> getItems(String url) {
+        return getItems(url, new ParameterizedTypeReference<>() {
+        });
+    }
+
     private ResponseEntity<TestPage<Object>> getItems(ParameterizedTypeReference<TestPage<Object>> responseType) {
-        return testRestTemplate.exchange("/api/1.0/items", HttpMethod.GET, null, responseType);
+        return getItems("/api/1.0/items", responseType);
+    }
+
+    private <T> ResponseEntity<TestPage<T>> getItems(String url, ParameterizedTypeReference<TestPage<T>> responseType) {
+        return testRestTemplate.exchange(url, HttpMethod.GET, null, responseType);
     }
 
     private <T> ResponseEntity<T> postItem(Item item, Class<T> responseType) {
