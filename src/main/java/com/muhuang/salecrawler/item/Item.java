@@ -1,5 +1,6 @@
 package com.muhuang.salecrawler.item;
 
+import com.muhuang.salecrawler.sale.Sale;
 import com.muhuang.salecrawler.shop.Shop;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
@@ -7,6 +8,7 @@ import jakarta.validation.constraints.Size;
 import lombok.*;
 
 import java.util.Date;
+import java.util.List;
 
 @Data
 @Entity
@@ -38,6 +40,10 @@ public class Item {
     @ManyToOne
     @JoinColumn(name = "out_shop_id", referencedColumnName = "outShopId")
     private Shop shop;
+
+    @OneToMany
+    @JoinColumn(name = "item_id")
+    private List<Sale> saleList;
 
 }
 
