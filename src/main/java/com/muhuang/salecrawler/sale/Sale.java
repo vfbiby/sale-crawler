@@ -11,7 +11,6 @@ import java.util.Date;
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "sales")
 public class Sale {
 
     @Id
@@ -19,7 +18,7 @@ public class Sale {
     private Long id;
 
     @Temporal(TemporalType.TIMESTAMP)
-    private Date date;
+    private Date saleDate;
 
     private int number;
 
