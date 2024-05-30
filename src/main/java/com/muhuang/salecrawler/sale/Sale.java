@@ -1,12 +1,15 @@
 package com.muhuang.salecrawler.sale;
 
+import com.muhuang.salecrawler.item.Item;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.Date;
 
+@Builder
 @Data
 @Entity
 @NoArgsConstructor
@@ -22,4 +25,7 @@ public class Sale {
 
     private int number;
 
+    @ManyToOne
+    @JoinColumn(name = "item_id")
+    private Item item;
 }
