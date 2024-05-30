@@ -24,6 +24,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 @ActiveProfiles("test")
 public class SaleControllerTest {
 
+    public static final String API_1_0_SALES = "/api/1.0/sales";
+
     @Resource
     private TestRestTemplate testRestTemplate;
 
@@ -47,7 +49,7 @@ public class SaleControllerTest {
             Item item = TestUtil.createValidItem();
             itemRepository.save(item);
             Sale sale = Sale.builder().saleDate(new Date()).number(3).item(item).build();
-            ResponseEntity<Object> response = testRestTemplate.postForEntity("/api/1.0/sales", sale, Object.class);
+            ResponseEntity<Object> response = testRestTemplate.postForEntity(API_1_0_SALES, sale, Object.class);
             assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         }
 
@@ -56,8 +58,15 @@ public class SaleControllerTest {
             Item item = TestUtil.createValidItem();
             itemRepository.save(item);
             Sale sale = Sale.builder().saleDate(new Date()).number(3).item(item).build();
-            testRestTemplate.postForEntity("/api/1.0/sales", sale, Object.class);
+            testRestTemplate.postForEntity(API_1_0_SALES, sale, Object.class);
             assertThat(salerepository.count()).isEqualTo(1);
+        }
+
+        @Test
+        void postSale_whenSaleHasNoItem_receiveBadRequest() {
+            Sale sale = Sale.builder().saleDate(new Date()).number(3).build();
+            ResponseEntity<Object> response = testRestTemplate.postForEntity(API_1_0_SALES, sale, Object.class);
+            assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
         }
 
     }
@@ -67,13 +76,13 @@ public class SaleControllerTest {
 
         @Test
         void getSales_whenDatabaseHasNoSales_receiveOK() {
-            ResponseEntity<Object> response = testRestTemplate.getForEntity("/api/1.0/sales", Object.class);
+            ResponseEntity<Object> response = testRestTemplate.getForEntity(API_1_0_SALES, Object.class);
             assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         }
 
         @Test
         void getSales_whenThereAreNoSalesInDB_receivePageWithZeroSales() {
-            ResponseEntity<TestPage<Sale>> response = testRestTemplate.exchange("/api/1.0/sales",
+            ResponseEntity<TestPage<Sale>> response = testRestTemplate.exchange(API_1_0_SALES,
                     HttpMethod.GET, null, new ParameterizedTypeReference<>() {
                     });
             assertThat(response.getBody().getTotalElements()).isEqualTo(0);
@@ -83,7 +92,7 @@ public class SaleControllerTest {
         void getSales_whenThereAreASalesInDB_receivePageWithOneSales() {
             Sale sale = Sale.builder().saleDate(new Date()).number(3).build();
             salerepository.save(sale);
-            ResponseEntity<TestPage<Sale>> response = testRestTemplate.exchange("/api/1.0/sales",
+            ResponseEntity<TestPage<Sale>> response = testRestTemplate.exchange(API_1_0_SALES,
                     HttpMethod.GET, null, new ParameterizedTypeReference<>() {
                     });
             assertThat(response.getBody().getTotalElements()).isEqualTo(1);

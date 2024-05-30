@@ -1,10 +1,9 @@
 package com.muhuang.salecrawler.sale;
 
+import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/1.0/sales")
@@ -17,7 +16,7 @@ public class SaleController {
     }
 
     @PostMapping
-    void saveSales(@RequestBody Sale sale) {
+    void saveSales(@Valid @RequestBody Sale sale) {
         saleRepository.save(sale);
     }
 

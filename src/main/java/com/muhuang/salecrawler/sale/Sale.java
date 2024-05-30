@@ -2,6 +2,7 @@ package com.muhuang.salecrawler.sale;
 
 import com.muhuang.salecrawler.item.Item;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -25,6 +26,7 @@ public class Sale {
 
     private int number;
 
+    @NotNull
     @ManyToOne
     @JoinColumn(name = "item_id")
     private Item item;
