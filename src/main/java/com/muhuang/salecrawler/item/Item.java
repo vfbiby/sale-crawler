@@ -41,7 +41,7 @@ public class Item {
     @JoinColumn(name = "out_shop_id", referencedColumnName = "outShopId")
     private Shop shop;
 
-    @OneToMany
+    @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "item_id")
     private List<Sale> saleList;
 

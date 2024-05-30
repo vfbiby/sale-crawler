@@ -69,17 +69,20 @@ public class ItemSaleControllerTest {
         shopRepository.save(validShop);
         Item item = TestUtil.createValidItem();
         item.setShop(validShop);
-        Sale sale = new Sale();
-        sale.setSaleDate(new Date());
-        sale.setNumber(8);
-        Sale save = saleRepository.save(sale);
-        item.setSaleList(List.of(save));
+        item.setSaleList(List.of(createSale()));
         itemRepository.save(item);
         ResponseEntity<TestPage<Item>> response = testRestTemplate.exchange("/api/1.0/items",
                 HttpMethod.GET, null, new ParameterizedTypeReference<>() {
                 });
         List<Item> items = Objects.requireNonNull(response.getBody()).getContent();
         assertThat(items.get(0).getSaleList().size()).isEqualTo(1);
+    }
+
+    private static Sale createSale() {
+        Sale sale = new Sale();
+        sale.setSaleDate(new Date());
+        sale.setNumber(8);
+        return sale;
     }
 
 }
