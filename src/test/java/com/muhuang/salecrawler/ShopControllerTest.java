@@ -43,20 +43,20 @@ public class ShopControllerTest {
 
         @Test
         void postShop_whenShopIsValid_receiveOK() {
-            Shop shop = createValidShop();
+            Shop shop = TestUtil.createValidShop();
             ResponseEntity<Object> response = postShop(shop, Object.class);
             assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         }
 
         @Test
         void postShop_whenShopIsValid_saveToDatabase() {
-            postShop(createValidShop(), Object.class);
+            postShop(TestUtil.createValidShop(), Object.class);
             assertThat(shopRepository.count()).isEqualTo(1);
         }
 
         @Test
         void postShop_whenShopIsValid_receiveSuccessMessage() {
-            Shop shop = createValidShop();
+            Shop shop = TestUtil.createValidShop();
             ResponseEntity<GenericResponse> response = postShop(shop, GenericResponse.class);
             assertThat(Objects.requireNonNull(response.getBody()).getMessage()).isNotNull();
         }
@@ -68,7 +68,7 @@ public class ShopControllerTest {
 
         @Test
         void postShop_whenShopHasNullShopId_receiveBadRequest() {
-            Shop shop = createValidShop();
+            Shop shop = TestUtil.createValidShop();
             shop.setOutShopId(null);
             ResponseEntity<GenericResponse> response = postShop(shop, GenericResponse.class);
             assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
@@ -76,7 +76,7 @@ public class ShopControllerTest {
 
         @Test
         void postShop_whenShopHasNullShopName_receiveBadRequest() {
-            Shop shop = createValidShop();
+            Shop shop = TestUtil.createValidShop();
             shop.setShopName(null);
             ResponseEntity<GenericResponse> response = postShop(shop, GenericResponse.class);
             assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
@@ -84,7 +84,7 @@ public class ShopControllerTest {
 
         @Test
         void postShop_whenShopHasNullShopUrl_receiveBadRequest() {
-            Shop shop = createValidShop();
+            Shop shop = TestUtil.createValidShop();
             shop.setShopUrl(null);
             ResponseEntity<GenericResponse> response = postShop(shop, GenericResponse.class);
             assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
@@ -92,7 +92,7 @@ public class ShopControllerTest {
 
         @Test
         void postShop_whenShopHasInvalidShopUrl_receiveBadRequest() {
-            Shop shop = createValidShop();
+            Shop shop = TestUtil.createValidShop();
             shop.setShopUrl("not-valid-url");
             ResponseEntity<GenericResponse> response = postShop(shop, GenericResponse.class);
             assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
@@ -119,7 +119,7 @@ public class ShopControllerTest {
 
         @Test
         void getShops_whenThereIsAShopsInDB_receivePageWithUser() {
-            shopRepository.save(createValidShop());
+            shopRepository.save(TestUtil.createValidShop());
             ResponseEntity<TestPage<Object>> response = getShops(new ParameterizedTypeReference<>() {
             });
             assertThat(Objects.requireNonNull(response.getBody()).getTotalElements()).isEqualTo(1);
@@ -139,7 +139,7 @@ public class ShopControllerTest {
 
             @Test
             void postShop_whenAnotherShopHasSameOutShopId_receiveBadRequest() {
-                Shop validShop = createValidShop();
+                Shop validShop = TestUtil.createValidShop();
                 shopRepository.save(validShop);
                 ResponseEntity<Object> response = postShop(validShop, Object.class);
                 assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
@@ -147,7 +147,7 @@ public class ShopControllerTest {
 
             @Test
             void postShop_whenAnotherShopHasSameOutShopId_receiveDuplicateShopId() {
-                Shop validShop = createValidShop();
+                Shop validShop = TestUtil.createValidShop();
                 shopRepository.save(validShop);
                 ResponseEntity<ApiError> response = postShop(validShop, ApiError.class);
                 Map<String, String> validationErrors = Objects.requireNonNull(response.getBody()).getValidationErrors();
@@ -159,10 +159,6 @@ public class ShopControllerTest {
 
     private <T> ResponseEntity<T> postShop(Shop shop, Class<T> responseType) {
         return testRestTemplate.postForEntity(API_1_0_SHOP, shop, responseType);
-    }
-
-    static Shop createValidShop() {
-        return Shop.builder().outShopId("38888273").shopName("SKY").shopUrl("https://sky.taobao.com").build();
     }
 
 }

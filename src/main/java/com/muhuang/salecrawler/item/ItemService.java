@@ -3,10 +3,7 @@ package com.muhuang.salecrawler.item;
 import com.muhuang.salecrawler.shop.Shop;
 import com.muhuang.salecrawler.shop.ShopRepository;
 import jakarta.annotation.Resource;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;

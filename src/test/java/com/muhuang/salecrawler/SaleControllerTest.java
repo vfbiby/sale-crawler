@@ -4,8 +4,10 @@ import com.muhuang.salecrawler.item.Item;
 import com.muhuang.salecrawler.item.ItemRepository;
 import com.muhuang.salecrawler.sale.Sale;
 import com.muhuang.salecrawler.sale.SaleRepository;
+import com.muhuang.salecrawler.shop.ShopRepository;
 import jakarta.annotation.Resource;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -17,6 +19,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.util.Date;
+import java.util.Objects;
+import java.util.stream.IntStream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -35,10 +39,14 @@ public class SaleControllerTest {
     @Resource
     private ItemRepository itemRepository;
 
+    @Resource
+    private ShopRepository shopRepository;
+
     @AfterEach
     public void cleanup() {
         salerepository.deleteAll();
         itemRepository.deleteAll();
+        shopRepository.deleteAll();
     }
 
     @Nested
@@ -64,7 +72,7 @@ public class SaleControllerTest {
 
         @Test
         void postSale_whenSaleHasNoItem_receiveBadRequest() {
-            Sale sale = Sale.builder().saleDate(new Date()).number(3).build();
+            Sale sale = createValidSale();
             ResponseEntity<Object> response = testRestTemplate.postForEntity(API_1_0_SALES, sale, Object.class);
             assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
         }
@@ -85,18 +93,36 @@ public class SaleControllerTest {
             ResponseEntity<TestPage<Sale>> response = testRestTemplate.exchange(API_1_0_SALES,
                     HttpMethod.GET, null, new ParameterizedTypeReference<>() {
                     });
-            assertThat(response.getBody().getTotalElements()).isEqualTo(0);
+            assertThat(Objects.requireNonNull(response.getBody()).getTotalElements()).isEqualTo(0);
         }
 
         @Test
         void getSales_whenThereAreASalesInDB_receivePageWithOneSales() {
-            Sale sale = Sale.builder().saleDate(new Date()).number(3).build();
+            Sale sale = createValidSale();
             salerepository.save(sale);
             ResponseEntity<TestPage<Sale>> response = testRestTemplate.exchange(API_1_0_SALES,
                     HttpMethod.GET, null, new ParameterizedTypeReference<>() {
                     });
-            assertThat(response.getBody().getTotalElements()).isEqualTo(1);
+            assertThat(Objects.requireNonNull(response.getBody()).getTotalElements()).isEqualTo(1);
         }
 
+        @Test
+        @Disabled
+        void getSales_whenThereAreALotOfSalesInDB_defaultReceive10Sales() {
+            shopRepository.save(TestUtil.createValidShop());
+            Item item = TestUtil.createValidItem();
+            item.setSaleList(IntStream.rangeClosed(1, 20).mapToObj(x -> createValidSale()).toList());
+            itemRepository.save(item);
+            ResponseEntity<TestPage<Item>> response = testRestTemplate.exchange("/api/1.0/items",
+                    HttpMethod.GET, null, new ParameterizedTypeReference<>() {
+                    });
+            Item retrivedItem = Objects.requireNonNull(response.getBody()).getContent().get(0);
+            assertThat(retrivedItem.getSaleList().size()).isEqualTo(10);
+        }
+
+    }
+
+    private static Sale createValidSale() {
+        return Sale.builder().saleDate(new Date()).number(3).build();
     }
 }

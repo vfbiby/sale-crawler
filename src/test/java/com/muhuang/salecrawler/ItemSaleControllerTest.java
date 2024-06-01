@@ -8,8 +8,6 @@ import com.muhuang.salecrawler.shop.Shop;
 import com.muhuang.salecrawler.shop.ShopRepository;
 import jakarta.annotation.Resource;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -19,7 +17,6 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
 
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
@@ -51,7 +48,7 @@ public class ItemSaleControllerTest {
 
     @Test
     void getItems_whenItemHasNoSale_receiveEmptySale() {
-        Shop validShop = ShopControllerTest.createValidShop();
+        Shop validShop = TestUtil.createValidShop();
         shopRepository.save(validShop);
         Item item = TestUtil.createValidItem();
         item.setShop(validShop);
@@ -65,7 +62,7 @@ public class ItemSaleControllerTest {
 
     @Test
     void getItems_whenItemHasADaySale_receiveSaleListSizeIsOne() {
-        Shop validShop = ShopControllerTest.createValidShop();
+        Shop validShop = TestUtil.createValidShop();
         shopRepository.save(validShop);
         Item item = TestUtil.createValidItem();
         item.setShop(validShop);

@@ -126,7 +126,7 @@ public class PluginCreateItemControllerTest {
         }
 
         private void insertValidShop() {
-            PluginItemDTO pluginItemDTO = TestUtil.createValidShop();
+            PluginItemDTO pluginItemDTO = TestUtil.createValidPluginItemShop();
             Shop shop = Shop.builder().outShopId(pluginItemDTO.getShopId())
                     .shopName(pluginItemDTO.getShopName())
                     .shopUrl(pluginItemDTO.getShopUrl()).build();

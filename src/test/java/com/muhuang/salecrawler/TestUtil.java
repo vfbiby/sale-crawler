@@ -3,14 +3,12 @@ package com.muhuang.salecrawler;
 import com.muhuang.salecrawler.item.Item;
 import com.muhuang.salecrawler.item.ItemDTO;
 import com.muhuang.salecrawler.item.PluginItemDTO;
+import com.muhuang.salecrawler.shop.Shop;
 import com.muhuang.salecrawler.user.User;
 import lombok.SneakyThrows;
 
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.Instant;
 import java.time.LocalDate;
-import java.util.Date;
 import java.util.List;
 
 public class TestUtil {
@@ -24,14 +22,14 @@ public class TestUtil {
         return user;
     }
 
-    static PluginItemDTO createValidShop() {
+    static PluginItemDTO createValidPluginItemShop() {
         return PluginItemDTO.builder().shopId("3423343434")
                 .shopName("TT坏坏")
                 .shopUrl("https://shop105703949.taobao.com").build();
     }
 
     static PluginItemDTO createValidPluginItem() {
-        PluginItemDTO pItem = createValidShop();
+        PluginItemDTO pItem = createValidPluginItemShop();
         ItemDTO item = createItemDTO();
         pItem.setItems(List.of(item));
         return pItem;
@@ -52,5 +50,9 @@ public class TestUtil {
     static Item createItemWithDetail(String itemId, String date, String title, String pic) {
         return Item.builder().itemId(itemId).title(title)
                 .pic(pic).publishedAt(new SimpleDateFormat("yyyy-MM-dd").parse(date)).build();
+    }
+
+    static Shop createValidShop() {
+        return Shop.builder().outShopId("38888273").shopName("SKY").shopUrl("https://sky.taobao.com").build();
     }
 }
