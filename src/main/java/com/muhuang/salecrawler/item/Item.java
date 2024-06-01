@@ -1,11 +1,15 @@
 package com.muhuang.salecrawler.item;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.muhuang.salecrawler.sale.Sale;
 import com.muhuang.salecrawler.shop.Shop;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.Date;
 import java.util.List;
@@ -43,6 +47,7 @@ public class Item {
 
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "item_id")
+    @JsonIgnoreProperties({"item"})
     private List<Sale> saleList;
 
 }

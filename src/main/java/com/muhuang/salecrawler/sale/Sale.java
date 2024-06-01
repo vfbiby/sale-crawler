@@ -1,5 +1,6 @@
 package com.muhuang.salecrawler.sale;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.muhuang.salecrawler.item.Item;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;

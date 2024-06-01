@@ -1,0 +1,16 @@
+GET http://localhost:8080/api/1.0/sales
+Accept: application/json
+
+###
+POST http://localhost:8080/api/1.0/sales
+Content-Type: application/json
+
+{
+  "number": 8,
+  "saleDate": "2023-03-12",
+  "item": {
+    "id": 2
+  }
+}
+
+###
