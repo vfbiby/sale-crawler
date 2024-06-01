@@ -1,6 +1,7 @@
 package com.muhuang.salecrawler.sale;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.muhuang.salecrawler.item.Item;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
@@ -30,5 +31,6 @@ public class Sale {
     @NotNull
     @ManyToOne
     @JoinColumn(name = "item_id")
+    @JsonIgnoreProperties({"saleList"})
     private Item item;
 }
