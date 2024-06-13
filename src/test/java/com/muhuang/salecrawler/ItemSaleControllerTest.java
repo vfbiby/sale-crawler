@@ -48,31 +48,28 @@ public class ItemSaleControllerTest {
 
     @Test
     void getItems_whenItemHasNoSale_receiveEmptySale() {
-        Shop validShop = TestUtil.createValidShop();
-        shopRepository.save(validShop);
         Item item = TestUtil.createValidItem();
-        item.setShop(validShop);
         itemRepository.save(item);
-        ResponseEntity<TestPage<Item>> response = testRestTemplate.exchange("/api/1.0/items",
-                HttpMethod.GET, null, new ParameterizedTypeReference<>() {
-                });
+        ResponseEntity<TestPage<Item>> response = postItem(new ParameterizedTypeReference<>() {
+        });
         List<Item> items = Objects.requireNonNull(response.getBody()).getContent();
         assertThat(items.get(0).getSaleList().isEmpty()).isTrue();
     }
 
     @Test
     void getItems_whenItemHasADaySale_receiveSaleListSizeIsOne() {
-        Shop validShop = TestUtil.createValidShop();
-        shopRepository.save(validShop);
         Item item = TestUtil.createValidItem();
-        item.setShop(validShop);
         item.setSaleList(List.of(createSale()));
         itemRepository.save(item);
-        ResponseEntity<TestPage<Item>> response = testRestTemplate.exchange("/api/1.0/items",
-                HttpMethod.GET, null, new ParameterizedTypeReference<>() {
-                });
+        ResponseEntity<TestPage<Item>> response = postItem(new ParameterizedTypeReference<>() {
+        });
         List<Item> items = Objects.requireNonNull(response.getBody()).getContent();
         assertThat(items.get(0).getSaleList().size()).isEqualTo(1);
+    }
+
+    private ResponseEntity<TestPage<Item>> postItem(ParameterizedTypeReference<TestPage<Item>> responseType) {
+        return testRestTemplate.exchange("/api/1.0/items",
+                HttpMethod.GET, null, responseType);
     }
 
     private static Sale createSale() {
