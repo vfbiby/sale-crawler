@@ -17,6 +17,9 @@ public class SaleController {
 
     @PostMapping
     void saveSales(@Valid @RequestBody Sale sale) {
+        if (saleRepository.findByItemAndSaleDate(sale.getItem(), sale.getSaleDate()) != null) {
+            throw new ItemSaleOfOneDayExist();
+        }
         saleRepository.save(sale);
     }
 

@@ -34,7 +34,7 @@ public class SaleControllerTest {
     private TestRestTemplate testRestTemplate;
 
     @Resource
-    private SaleRepository salerepository;
+    private SaleRepository saleRepository;
 
     @Resource
     private ItemRepository itemRepository;
@@ -44,7 +44,7 @@ public class SaleControllerTest {
 
     @AfterEach
     public void cleanup() {
-        salerepository.deleteAll();
+        saleRepository.deleteAll();
         itemRepository.deleteAll();
         shopRepository.deleteAll();
     }
@@ -63,11 +63,10 @@ public class SaleControllerTest {
 
         @Test
         void postSale_whenSaleIsValid_saleSaveToDatabase() {
-            Item item = TestUtil.createValidItem();
-            itemRepository.save(item);
-            Sale sale = Sale.builder().saleDate(new Date()).number(3).item(item).build();
+            Item inDB = itemRepository.save(TestUtil.createValidItem());
+            Sale sale = Sale.builder().saleDate(new Date()).number(3).item(inDB).build();
             testRestTemplate.postForEntity(API_1_0_SALES, sale, Object.class);
-            assertThat(salerepository.count()).isEqualTo(1);
+            assertThat(saleRepository.count()).isEqualTo(1);
         }
 
         @Test
@@ -75,6 +74,26 @@ public class SaleControllerTest {
             Sale sale = createValidSale();
             ResponseEntity<Object> response = testRestTemplate.postForEntity(API_1_0_SALES, sale, Object.class);
             assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+        }
+
+        @Test
+        void postSale_whenASaleOfAnItemOfADayExist_receiveBadRequest() {
+            Item inDB = itemRepository.save(TestUtil.createValidItem());
+            Sale sale = createValidSale();
+            sale.setItem(inDB);
+            saleRepository.save(sale);
+            ResponseEntity<Object> response = testRestTemplate.postForEntity(API_1_0_SALES, sale, Object.class);
+            assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+        }
+
+        @Test
+        void postSale_whenASaleOfAnItemOfADayExist_saleNotSaveToDatabase() {
+            Item inDB = itemRepository.save(TestUtil.createValidItem());
+            Sale sale = createValidSale();
+            sale.setItem(inDB);
+            saleRepository.save(sale);
+            testRestTemplate.postForEntity(API_1_0_SALES, sale, Object.class);
+            assertThat(saleRepository.count()).isEqualTo(1);
         }
 
     }
@@ -99,7 +118,7 @@ public class SaleControllerTest {
         @Test
         void getSales_whenThereAreASalesInDB_receivePageWithOneSales() {
             Sale sale = createValidSale();
-            salerepository.save(sale);
+            saleRepository.save(sale);
             ResponseEntity<TestPage<Sale>> response = testRestTemplate.exchange(API_1_0_SALES,
                     HttpMethod.GET, null, new ParameterizedTypeReference<>() {
                     });
