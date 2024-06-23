@@ -30,7 +30,7 @@ public class Sale {
 
     @NotNull
     @ManyToOne
-    @JoinColumn(name = "item_id")
+    @JoinColumn(name = "out_item_id")
     @JsonIgnoreProperties({"saleList"})
     private Item item;
 }

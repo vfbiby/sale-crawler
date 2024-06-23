@@ -48,7 +48,7 @@ public class TestUtil {
 
     @SneakyThrows
     static Item createItemWithDetail(String itemId, String date, String title, String pic) {
-        return Item.builder().itemId(itemId).title(title)
+        return Item.builder().outItemId(itemId).title(title)
                 .pic(pic).publishedAt(new SimpleDateFormat("yyyy-MM-dd").parse(date)).build();
     }
 

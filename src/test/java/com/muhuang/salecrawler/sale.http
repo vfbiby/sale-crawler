@@ -6,8 +6,8 @@ POST http://localhost:8080/api/1.0/sales
 Content-Type: application/json
 
 {
-  "number": 8,
-  "saleDate": "2023-03-12",
+  "number": 9,
+  "saleDate": "2023-03-13",
   "item": {
     "id": 24
   }

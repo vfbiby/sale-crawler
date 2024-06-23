@@ -28,7 +28,7 @@ public class Item {
     @NotNull
     @Size(min = 10, max = 30)
     @Column(length = 30)
-    private String itemId;
+    private String outItemId;
 
     @NotNull
     @Size(min = 10, max = 60)
@@ -46,7 +46,7 @@ public class Item {
     private Shop shop;
 
     @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "item_id")
+    @JoinColumn(name = "out_item_id")
     @JsonIgnoreProperties({"item"})
     private List<Sale> saleList;
 

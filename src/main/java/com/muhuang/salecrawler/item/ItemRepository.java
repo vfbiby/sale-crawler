@@ -5,5 +5,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface ItemRepository extends JpaRepository<Item, Long> {
-    Item findByItemId(String itemId);
+    Item findByOutItemId(String itemId);
 }

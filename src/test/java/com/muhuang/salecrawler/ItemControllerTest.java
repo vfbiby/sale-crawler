@@ -82,7 +82,7 @@ public class ItemControllerTest {
         @Test
         void postItem_whenItemIsValid_ItemSaveToDatabaseWithShopInfo() {
             Shop savedShop = shopService.save(createValidShop());
-            Item shop = Item.builder().itemId("3244282383").title("2024气质新款连衣裙").shop(savedShop).build();
+            Item shop = Item.builder().outItemId("3244282383").title("2024气质新款连衣裙").shop(savedShop).build();
             postItem(shop, Object.class);
             Item inDB = itemRepository.findAll().get(0);
             assertThat(inDB.getShop().getId()).isNotNull();
@@ -100,7 +100,7 @@ public class ItemControllerTest {
         @Test
         void postItem_whenItemHasNullItemId_receiveBadRequest() {
             Item item = TestUtil.createValidItem();
-            item.setItemId(null);
+            item.setOutItemId(null);
             ResponseEntity<Object> response = postItem(item, Object.class);
             assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
         }
@@ -108,7 +108,7 @@ public class ItemControllerTest {
         @Test
         void postItem_whenItemIdLessThan10Characters_receiveBadRequest() {
             Item item = TestUtil.createValidItem();
-            item.setItemId("123456789");
+            item.setOutItemId("123456789");
             ResponseEntity<Object> response = postItem(item, Object.class);
             assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
         }
@@ -117,7 +117,7 @@ public class ItemControllerTest {
         void postItem_whenItemIdIs30Characters_receiveOK() {
             Item item = createValidItemWithShop();
             String longString = IntStream.rangeClosed(1, 30).mapToObj(i -> "x").collect(Collectors.joining());
-            item.setItemId(longString);
+            item.setOutItemId(longString);
             ResponseEntity<Object> response = postItem(item, Object.class);
             assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         }
@@ -126,7 +126,7 @@ public class ItemControllerTest {
         void postItem_whenItemIdIsMoreThan30Characters_receiveBadRequest() {
             Item item = TestUtil.createValidItem();
             String longString = IntStream.rangeClosed(1, 31).mapToObj(i -> "x").collect(Collectors.joining());
-            item.setItemId(longString);
+            item.setOutItemId(longString);
             ResponseEntity<Object> response = postItem(item, Object.class);
             assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
         }
@@ -205,7 +205,7 @@ public class ItemControllerTest {
             createOneShopAndTwoItem("32838242344", itemIdTwo);
             ResponseEntity<TestPage<Item>> response = getItems("/api/1.0/items");
             List<Item> items = Objects.requireNonNull(response.getBody()).getContent();
-            assertThat(items.get(0).getItemId()).isEqualTo(itemIdTwo);
+            assertThat(items.get(0).getOutItemId()).isEqualTo(itemIdTwo);
         }
 
         @Test
@@ -214,7 +214,7 @@ public class ItemControllerTest {
             createOneShopAndTwoItem("32838242344", itemIdTwo);
             ResponseEntity<TestPage<Item>> response = getItems("/api/1.0/items?sortBy=publishedAt");
             List<Item> items = Objects.requireNonNull(response.getBody()).getContent();
-            assertThat(items.get(0).getItemId()).isEqualTo(itemIdTwo);
+            assertThat(items.get(0).getOutItemId()).isEqualTo(itemIdTwo);
         }
 
         @Test
@@ -223,7 +223,7 @@ public class ItemControllerTest {
             createOneShopAndTwoItem(itemIdOne, "32838242345");
             ResponseEntity<TestPage<Item>> response = getItems("/api/1.0/items?sortBy=publishedAt&direction=ASC");
             List<Item> items = Objects.requireNonNull(response.getBody()).getContent();
-            assertThat(items.get(0).getItemId()).isEqualTo(itemIdOne);
+            assertThat(items.get(0).getOutItemId()).isEqualTo(itemIdOne);
         }
 
         private void createOneShopAndTwoItem(String itemIdOne, String itemIdTwo) {

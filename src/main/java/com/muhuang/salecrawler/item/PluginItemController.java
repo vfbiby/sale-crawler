@@ -46,7 +46,7 @@ public class PluginItemController {
     }
 
     private static Item.ItemBuilder buildItem(ItemDTO itemDTO, Shop inDB) {
-        return Item.builder().itemId(itemDTO.getItemId()).title(itemDTO.getName())
+        return Item.builder().outItemId(itemDTO.getItemId()).title(itemDTO.getName())
                 .shop(inDB).pic(itemDTO.getPic());
     }
 
