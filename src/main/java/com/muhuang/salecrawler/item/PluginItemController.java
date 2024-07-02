@@ -58,9 +58,11 @@ public class PluginItemController {
         Integer cateId = pluginItemDTO.getCatId();
         String cateName = pluginItemDTO.getCatName();
         Cate cate = Cate.builder().outCateId(cateId).cateName(cateName).build();
-        Cate parentCate = Cate.builder().cateName(pluginItemDTO.getParentCatName()).outCateId(pluginItemDTO.getParentCatId()).build();
-        Cate savedParentCate = cateRepository.save(parentCate);
-        cate.setParent(savedParentCate);
+        if (pluginItemDTO.getParentCatId() != null) {
+            Cate parentCate = Cate.builder().cateName(pluginItemDTO.getParentCatName()).outCateId(pluginItemDTO.getParentCatId()).build();
+            Cate savedParentCate = cateRepository.save(parentCate);
+            cate.setParent(savedParentCate);
+        }
         Optional<Cate> byId = cateRepository.findById(Long.valueOf(cateId));
         return byId.orElseGet(() -> cateRepository.save(cate));
     }

@@ -189,7 +189,7 @@ public class PluginCreateItemControllerTest {
                 postPluginItem(pItem, Object.class);
                 List<Cate> cateList = cateRepository.findAll();
                 System.out.println(cateList);
-                assertThat(cateList.size()).isEqualTo(2);
+                assertThat(cateList.size()).isEqualTo(1);
             }
 
         }
@@ -321,6 +321,15 @@ public class PluginCreateItemControllerTest {
                 ResponseEntity<ApiError> response = postPluginItem(pItem, ApiError.class);
                 Map<String, String> validationErrors = Objects.requireNonNull(response.getBody()).getValidationErrors();
                 assertThat(validationErrors.get("items[0].itemId")).isEqualTo("Item id is in database");
+            }
+
+            @Test
+            void postItem_whenPluginItemParentCateIdIsNull_parentCateNotSaveToDatabase() {
+                PluginItemDTO pItem = TestUtil.createValidPluginItem();
+                pItem.setParentCatId(null);
+                postPluginItem(pItem, Object.class);
+                List<Cate> cateList = cateRepository.findAll();
+                assertThat(cateList.size()).isEqualTo(1);
             }
 
         }
