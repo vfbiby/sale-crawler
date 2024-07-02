@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import java.time.ZoneId;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -60,7 +61,8 @@ public class PluginItemController {
         Cate parentCate = Cate.builder().cateName(pluginItemDTO.getParentCatName()).outCateId(pluginItemDTO.getParentCatId()).build();
         Cate savedParentCate = cateRepository.save(parentCate);
         cate.setParent(savedParentCate);
-        return cateRepository.save(cate);
+        Optional<Cate> byId = cateRepository.findById(Long.valueOf(cateId));
+        return byId.orElseGet(() -> cateRepository.save(cate));
     }
 
     private static Item.ItemBuilder buildItem(ItemDTO itemDTO, Shop inDB) {

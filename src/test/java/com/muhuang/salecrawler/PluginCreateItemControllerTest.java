@@ -181,6 +181,17 @@ public class PluginCreateItemControllerTest {
                 assertThat(item.getCate().getOutCateId()).isEqualTo(1779767080);
             }
 
+            @Test
+            void postItem_whenPluginItemCateIdExistInDb_cateNotSaveToDatabase() {
+                PluginItemDTO pItem = TestUtil.createValidPluginItem();
+                pItem.setParentCatId(null);
+                pItem.setParentCatName(null);
+                postPluginItem(pItem, Object.class);
+                List<Cate> cateList = cateRepository.findAll();
+                System.out.println(cateList);
+                assertThat(cateList.size()).isEqualTo(2);
+            }
+
         }
 
         private void insertValidShop() {
