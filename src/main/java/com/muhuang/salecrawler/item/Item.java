@@ -1,6 +1,7 @@
 package com.muhuang.salecrawler.item;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.muhuang.salecrawler.cate.Cate;
 import com.muhuang.salecrawler.sale.Sale;
 import com.muhuang.salecrawler.shop.Shop;
 import jakarta.persistence.*;
@@ -39,6 +40,10 @@ public class Item {
     private Date publishedAt;
 
     private String pic;
+
+    @ManyToOne
+    @JoinColumn(name = "out_cate_id", referencedColumnName = "outCateId")
+    private Cate cate;
 
     @NotNull
     @ManyToOne
