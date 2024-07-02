@@ -49,13 +49,13 @@ public class PluginItemController {
             return itemBuilder.build();
         });
         List<Item> collect = itemStream.collect(Collectors.toList());
-        System.out.println(collect);
         itemService.saveAll(collect);
         return new GenericResponse("Plugin item saved!");
     }
 
     private Cate getCate(PluginItemDTO pluginItemDTO) {
         Integer cateId = pluginItemDTO.getCatId();
+        if (cateId == null) return null;
         String cateName = pluginItemDTO.getCatName();
         Cate cate = Cate.builder().outCateId(cateId).cateName(cateName).build();
         if (pluginItemDTO.getParentCatId() != null) {

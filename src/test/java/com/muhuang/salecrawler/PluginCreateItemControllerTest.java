@@ -332,6 +332,15 @@ public class PluginCreateItemControllerTest {
                 assertThat(cateList.size()).isEqualTo(1);
             }
 
+            @Test
+            void postItem_whenPluginItemCateIdIsNull_CateNotSaveToDatabase() {
+                PluginItemDTO pItem = TestUtil.createValidPluginItem();
+                pItem.setCatId(null);
+                postPluginItem(pItem, Object.class);
+                List<Cate> cateList = cateRepository.findAll();
+                assertThat(cateList.size()).isEqualTo(0);
+            }
+
         }
 
         private <T> ResponseEntity<T> postPluginItem(PluginItemDTO pItem, Class<T> responseType) {
