@@ -24,6 +24,7 @@ public class TestUtil {
 
     static PluginItemDTO createValidPluginItemShop() {
         return PluginItemDTO.builder().shopId("3423343434")
+                .cateId(1779767080)
                 .shopName("TT坏坏")
                 .shopUrl("https://shop105703949.taobao.com").build();
     }

@@ -1,11 +1,14 @@
 package com.muhuang.salecrawler;
 
+import com.muhuang.salecrawler.cate.Cate;
+import com.muhuang.salecrawler.cate.CateRepository;
 import com.muhuang.salecrawler.item.*;
 import com.muhuang.salecrawler.shared.ApiError;
 import com.muhuang.salecrawler.shop.Shop;
 import com.muhuang.salecrawler.shop.ShopRepository;
 import com.muhuang.salecrawler.shop.ShopService;
 import jakarta.annotation.Resource;
+import org.antlr.v4.runtime.tree.pattern.ParseTreePattern;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
@@ -41,6 +44,9 @@ public class PluginCreateItemControllerTest {
 
     @Resource
     private ShopRepository shopRepository;
+
+    @Resource
+    private CateRepository cateRepository;
 
     @Nested
     class Create {
@@ -121,6 +127,14 @@ public class PluginCreateItemControllerTest {
                 Item inDB = itemRepository.findAll().get(0);
                 assertThat((inDB.getPublishedAt().getTime()))
                         .isEqualTo(Timestamp.valueOf(publishedAt.atStartOfDay()).getTime());
+            }
+
+            @Test
+            void postItem_whenPluginItemHasCateId_cateIdSaveToDatabase() {
+                PluginItemDTO pItem = TestUtil.createValidPluginItem();
+                postPluginItem(pItem, Object.class);
+                Cate cate = cateRepository.findAll().get(0);
+                assertThat(cate.getOutCateId()).isEqualTo(1779767080);
             }
 
         }

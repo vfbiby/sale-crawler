@@ -1,5 +1,7 @@
 package com.muhuang.salecrawler.item;
 
+import com.muhuang.salecrawler.cate.Cate;
+import com.muhuang.salecrawler.cate.CateRepository;
 import com.muhuang.salecrawler.shared.ApiError;
 import com.muhuang.salecrawler.shared.GenericResponse;
 import com.muhuang.salecrawler.shop.Shop;
@@ -23,15 +25,21 @@ public class PluginItemController {
 
     private final ShopRepository shopRepository;
     private final ItemService itemService;
+    private final CateRepository cateRepository;
 
-    public PluginItemController(ShopRepository shopRepository, ItemService itemService) {
+    public PluginItemController(ShopRepository shopRepository, ItemService itemService,
+                                CateRepository cateRepository) {
         this.shopRepository = shopRepository;
         this.itemService = itemService;
+        this.cateRepository = cateRepository;
     }
 
     @PostMapping
     GenericResponse createPluginItems(@Valid @RequestBody PluginItemDTO pluginItemDTO) {
         Shop inDB = shopRepository.findByOutShopId(pluginItemDTO.getShopId());
+        Integer cateId = pluginItemDTO.getCateId();
+        Cate cate = Cate.builder().outCateId(cateId).build();
+        cateRepository.save(cate);
         Stream<Item> itemStream = pluginItemDTO.getItems().stream().map(itemDTO -> {
             Item.ItemBuilder itemBuilder = buildItem(itemDTO, inDB);
             if (pluginItemDTO.getPublishedAt() != null) {
