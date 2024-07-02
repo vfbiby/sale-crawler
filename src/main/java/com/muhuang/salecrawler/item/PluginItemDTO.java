@@ -33,7 +33,13 @@ public class PluginItemDTO {
     @Temporal(TemporalType.TIMESTAMP)
     private LocalDate PublishedAt;
 
-    private Integer cateId;
+    private Integer catId;
+
+    private String catName;
+
+    private Integer parentCatId;
+
+    private String parentCatName;
 
     @Valid
     @NotEmpty(message = "{saleCrawler.constraints.items.empty.message}")

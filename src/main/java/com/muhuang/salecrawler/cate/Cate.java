@@ -19,4 +19,9 @@ public class Cate {
 
     private Integer outCateId;
 
+    private String cateName;
+
+    @ManyToOne
+    @JoinColumn(name = "parent_id")
+    private Cate Parent;
 }
