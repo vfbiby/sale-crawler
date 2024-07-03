@@ -5,7 +5,6 @@ import com.muhuang.salecrawler.cate.CateDTO;
 import com.muhuang.salecrawler.cate.CateRepository;
 import jakarta.annotation.Resource;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +29,11 @@ public class CateListSaveControllerTest {
     @Resource
     private CateRepository cateRepository;
 
+    @BeforeEach
+    void cleanup() {
+        cateRepository.deleteAll();
+    }
+
     @Nested
     class HappyPath {
 
@@ -37,7 +41,7 @@ public class CateListSaveControllerTest {
         void postCateList_whenListIsValid_receiveOK() {
             CateChildrenDTO cateChildrenDTO = CateChildrenDTO.builder().id(1781762418).name("7月新品").build();
             CateDTO cateDTO = CateDTO.builder().id(1782071372).name("07/03 夏季新品")
-                    .url("/nggshow.taobao.com/category-1782071372.htm?search=y&parentCatId=1781762418&parentCatName=7%D4%C2%D0%C2%C6%B7&catName=07%2F03+%CF%C4%BC%BE%D0%C2%C6%B7#bd\"").build();
+                    .url("/nggshow.taobao.com/category-1782071372.htm?search=y").build();
             cateChildrenDTO.setChildren(List.of(cateDTO));
             List<CateChildrenDTO> cateList = List.of(cateChildrenDTO);
             ResponseEntity<Object> response = testRestTemplate.postForEntity(API_1_0_CATES, cateList, Object.class);
@@ -85,7 +89,6 @@ public class CateListSaveControllerTest {
         }
 
         @Test
-        @Disabled
         void postCateList_whenListHas2ParentCate_2cateSaveToDatabase() {
             int parentCateId = 1781762418;
             CateChildrenDTO cateChildrenDTO = CateChildrenDTO.builder().id(parentCateId).name("7月新品").build();
@@ -95,10 +98,10 @@ public class CateListSaveControllerTest {
             assertThat(cateRepository.findAll().size()).isEqualTo(2);
         }
 
-        @BeforeEach
-        void cleanup() {
-            cateRepository.deleteAll();
-        }
+    }
+
+    @Nested
+    class SadPath {
 
     }
 

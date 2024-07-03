@@ -6,7 +6,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/1.0/cates")
@@ -20,15 +19,16 @@ public class CateController {
 
     @PostMapping
     void createCateList(@RequestBody List<CateChildrenDTO> cateChildrenDTOList) {
-        CateChildrenDTO cateChildrenDTO = cateChildrenDTOList.get(0);
-        Cate parent = Cate.builder().outCateId(cateChildrenDTO.getId()).cateName(cateChildrenDTO.getName()).build();
-        cateRepository.save(parent);
-        List<Cate> cateList = cateChildrenDTO.getChildren().stream().map(cateDTO -> {
-            Cate child = Cate.builder().outCateId(cateDTO.getId()).cateName(cateDTO.getName()).build();
-            child.setParent(parent);
-            return child;
-        }).collect(Collectors.toList());
-        cateRepository.saveAll(cateList);
+        cateChildrenDTOList.forEach(cateChildrenDTO -> {
+            Cate parent = Cate.builder().outCateId(cateChildrenDTO.getId()).cateName(cateChildrenDTO.getName()).build();
+            cateRepository.save(parent);
+            List<CateDTO> children = cateChildrenDTO.getChildren();
+            if (children != null && !children.isEmpty()) children.forEach(cateDTO -> {
+                Cate child = Cate.builder().outCateId(cateDTO.getId()).cateName(cateDTO.getName()).build();
+                child.setParent(parent);
+                cateRepository.save(child);
+            });
+        });
     }
 
 }
