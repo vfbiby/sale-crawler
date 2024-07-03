@@ -1,6 +1,5 @@
 package com.muhuang.salecrawler;
 
-import com.muhuang.salecrawler.cate.Cate;
 import com.muhuang.salecrawler.cate.CateRepository;
 import com.muhuang.salecrawler.item.Item;
 import com.muhuang.salecrawler.item.ItemDTO;
@@ -35,6 +34,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class PluginCreateItemControllerTest {
 
     public static final String API_1_0_PLUGIN_ITEMS = "/api/1.0/plugin-items";
+
     @Autowired
     private TestRestTemplate testRestTemplate;
 
@@ -130,66 +130,6 @@ public class PluginCreateItemControllerTest {
                 Item inDB = itemRepository.findAll().get(0);
                 assertThat((inDB.getPublishedAt().getTime()))
                         .isEqualTo(Timestamp.valueOf(publishedAt.atStartOfDay()).getTime());
-            }
-
-            @Test
-            void postItem_whenPluginItemHasCateId_cateIdSaveToDatabase() {
-                PluginItemDTO pItem = TestUtil.createValidPluginItem();
-                postPluginItem(pItem, Object.class);
-                Cate cate = cateRepository.findAll().get(1);
-                assertThat(cate.getOutCateId()).isEqualTo(1779767080);
-            }
-
-            @Test
-            void postItem_whenPluginItemHasCateName_cateNameSaveToDatabase() {
-                PluginItemDTO pItem = TestUtil.createValidPluginItem();
-                postPluginItem(pItem, Object.class);
-                Cate cate = cateRepository.findAll().get(1);
-                assertThat(cate.getCateName()).isEqualTo("06/25福利回馈");
-            }
-
-
-            @Test
-            void postItem_whenPluginItemHasParentCateId_parentCateIdSaveToDatabase() {
-                PluginItemDTO pItem = TestUtil.createValidPluginItem();
-                postPluginItem(pItem, Object.class);
-                Cate cate = cateRepository.findAll().get(0);
-                assertThat(cate.getOutCateId()).isEqualTo(1772652848);
-            }
-
-            @Test
-            void postItem_whenPluginItemHasParentCateName_parentCateNameSaveToDatabase() {
-                PluginItemDTO pItem = TestUtil.createValidPluginItem();
-                postPluginItem(pItem, Object.class);
-                Cate cate = cateRepository.findAll().get(0);
-                assertThat(cate.getCateName()).isEqualTo("6月新品");
-            }
-
-            @Test
-            void postItem_whenPluginItemHasCateIdWithParentCateId_cateIdSaveToDatabaseWithParentCateId() {
-                PluginItemDTO pItem = TestUtil.createValidPluginItem();
-                postPluginItem(pItem, Object.class);
-                Cate cate = cateRepository.findAll().get(1);
-                assertThat(cate.getParent().getOutCateId()).isEqualTo(1772652848);
-            }
-
-            @Test
-            void postItem_whenPluginItemHasCateId_itemSaveToDatabaseWithCateId() {
-                PluginItemDTO pItem = TestUtil.createValidPluginItem();
-                postPluginItem(pItem, Object.class);
-                Item item = itemRepository.findAll().get(0);
-                assertThat(item.getCate().getOutCateId()).isEqualTo(1779767080);
-            }
-
-            @Test
-            void postItem_whenPluginItemCateIdExistInDb_cateNotSaveToDatabase() {
-                PluginItemDTO pItem = TestUtil.createValidPluginItem();
-                pItem.setParentCatId(null);
-                pItem.setParentCatName(null);
-                postPluginItem(pItem, Object.class);
-                List<Cate> cateList = cateRepository.findAll();
-                System.out.println(cateList);
-                assertThat(cateList.size()).isEqualTo(1);
             }
 
         }
@@ -323,27 +263,9 @@ public class PluginCreateItemControllerTest {
                 assertThat(validationErrors.get("items[0].itemId")).isEqualTo("Item id is in database");
             }
 
-            @Test
-            void postItem_whenPluginItemParentCateIdIsNull_parentCateNotSaveToDatabase() {
-                PluginItemDTO pItem = TestUtil.createValidPluginItem();
-                pItem.setParentCatId(null);
-                postPluginItem(pItem, Object.class);
-                List<Cate> cateList = cateRepository.findAll();
-                assertThat(cateList.size()).isEqualTo(1);
-            }
-
-            @Test
-            void postItem_whenPluginItemCateIdIsNull_CateNotSaveToDatabase() {
-                PluginItemDTO pItem = TestUtil.createValidPluginItem();
-                pItem.setCatId(null);
-                postPluginItem(pItem, Object.class);
-                List<Cate> cateList = cateRepository.findAll();
-                assertThat(cateList.size()).isEqualTo(0);
-            }
-
         }
 
-        private <T> ResponseEntity<T> postPluginItem(PluginItemDTO pItem, Class<T> responseType) {
+        public <T> ResponseEntity<T> postPluginItem(PluginItemDTO pItem, Class<T> responseType) {
             return testRestTemplate.postForEntity(API_1_0_PLUGIN_ITEMS, pItem, responseType);
         }
 
