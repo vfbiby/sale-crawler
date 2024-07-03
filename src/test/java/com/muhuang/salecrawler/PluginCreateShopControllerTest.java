@@ -108,6 +108,14 @@ public class PluginCreateShopControllerTest {
             assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
         }
 
+        @Test
+        void postPluginItem_whenPluginItemHasNoOutShopName_receiveBadRequest() {
+            PluginItemDTO pItem = TestUtil.createValidPluginItem();
+            pItem.setShopName(null);
+            ResponseEntity<Object> response = postPluginItem(pItem, Object.class);
+            assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+        }
+
     }
 
     public <T> ResponseEntity<T> postPluginItem(PluginItemDTO pItem, Class<T> responseType) {

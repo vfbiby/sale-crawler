@@ -183,7 +183,7 @@ public class PluginCreateItemControllerTest {
             void postItem_whenShopIsInvalid_receiveApiErrorWithValidationErrors() {
                 PluginItemDTO pItem = new PluginItemDTO();
                 ResponseEntity<ApiError> response = postPluginItem(pItem, ApiError.class);
-                assertThat(Objects.requireNonNull(response.getBody()).getValidationErrors().size()).isEqualTo(2);
+                assertThat(Objects.requireNonNull(response.getBody()).getValidationErrors().size()).isEqualTo(4);
             }
 
             @Test

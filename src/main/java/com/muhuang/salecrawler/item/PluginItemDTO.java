@@ -26,6 +26,7 @@ public class PluginItemDTO {
 //    @ExistsInDatabase
     private String shopId;
 
+    @NotNull
     private String shopName;
 
     @NotNull
