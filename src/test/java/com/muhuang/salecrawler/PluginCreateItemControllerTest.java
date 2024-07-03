@@ -53,8 +53,8 @@ public class PluginCreateItemControllerTest {
         @AfterEach
         public void cleanup() {
             itemRepository.deleteAll();
-            shopRepository.deleteAll();
             cateRepository.deleteAll();
+            shopRepository.deleteAll();
         }
 
         @Nested

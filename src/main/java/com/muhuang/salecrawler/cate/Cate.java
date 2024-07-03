@@ -1,5 +1,6 @@
 package com.muhuang.salecrawler.cate;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.muhuang.salecrawler.shop.Shop;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -12,6 +13,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+@JsonIgnoreProperties({"shop"})
 public class Cate {
 
     @Id
