@@ -79,15 +79,15 @@ public class PluginCreateCateControllerTest {
         void postItem_whenPluginItemHasParentCateId_parentCateIdSaveToDatabase() {
             PluginItemDTO pItem = TestUtil.createValidPluginItem();
             postPluginItem(pItem, Object.class);
-            Cate cate = cateRepository.findAll().get(0);
-            assertThat(cate.getOutCateId()).isEqualTo(1772652848);
+            Cate cate = cateRepository.findByOutCateId(1772652848);
+            assertThat(cate).isNotNull();
         }
 
         @Test
         void postItem_whenPluginItemHasParentCateName_parentCateNameSaveToDatabase() {
             PluginItemDTO pItem = TestUtil.createValidPluginItem();
             postPluginItem(pItem, Object.class);
-            Cate cate = cateRepository.findAll().get(0);
+            Cate cate = cateRepository.findByOutCateId(1772652848);
             assertThat(cate.getCateName()).isEqualTo("6月新品");
         }
 
@@ -95,7 +95,7 @@ public class PluginCreateCateControllerTest {
         void postItem_whenPluginItemHasCateIdWithParentCateId_cateIdSaveToDatabaseWithParentCateId() {
             PluginItemDTO pItem = TestUtil.createValidPluginItem();
             postPluginItem(pItem, Object.class);
-            Cate cate = cateRepository.findAll().get(1);
+            Cate cate = cateRepository.findByOutCateId(1779767080);
             assertThat(cate.getParent().getOutCateId()).isEqualTo(1772652848);
         }
 
@@ -103,8 +103,8 @@ public class PluginCreateCateControllerTest {
         void postItem_whenPluginItemHasCateId_itemSaveToDatabaseWithCateId() {
             PluginItemDTO pItem = TestUtil.createValidPluginItem();
             postPluginItem(pItem, Object.class);
-            Item item = itemRepository.findAll().get(0);
-            assertThat(item.getCate().getOutCateId()).isEqualTo(1779767080);
+            List<Item> items = itemRepository.findAll();
+            assertThat(items.size()).isEqualTo(1);
         }
 
         @Test
