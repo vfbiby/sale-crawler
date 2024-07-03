@@ -5,11 +5,8 @@ import com.muhuang.salecrawler.cate.CateRepository;
 import com.muhuang.salecrawler.item.Item;
 import com.muhuang.salecrawler.item.ItemRepository;
 import com.muhuang.salecrawler.item.PluginItemDTO;
-import com.muhuang.salecrawler.shop.Shop;
 import com.muhuang.salecrawler.shop.ShopRepository;
-import com.muhuang.salecrawler.shop.ShopService;
 import jakarta.annotation.Resource;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -40,19 +37,11 @@ public class PluginCreateCateControllerTest {
     @Resource
     private ShopRepository shopRepository;
 
-    @Resource
-    private ShopService shopService;
-
-    @AfterEach
+    @BeforeEach
     public void cleanup() {
         itemRepository.deleteAll();
         cateRepository.deleteAll();
         shopRepository.deleteAll();
-    }
-
-    @BeforeEach
-    public void setup() {
-        insertValidShop();
     }
 
     @Nested
@@ -109,6 +98,7 @@ public class PluginCreateCateControllerTest {
 
         @Test
         void postItem_whenPluginItemCateIdExistInDb_cateNotSaveToDatabase() {
+            cateRepository.save(Cate.builder().outCateId(1779767080).cateName("NEW ARRIVAL").build());
             PluginItemDTO pItem = TestUtil.createValidPluginItem();
             pItem.setParentCatId(null);
             pItem.setParentCatName(null);
@@ -118,14 +108,6 @@ public class PluginCreateCateControllerTest {
             assertThat(cateList.size()).isEqualTo(1);
         }
 
-    }
-
-    void insertValidShop() {
-        PluginItemDTO pluginItemDTO = TestUtil.createValidPluginItemShop();
-        Shop shop = Shop.builder().outShopId(pluginItemDTO.getShopId())
-                .shopName(pluginItemDTO.getShopName())
-                .shopUrl(pluginItemDTO.getShopUrl()).build();
-        shopService.save(shop);
     }
 
     @Nested
