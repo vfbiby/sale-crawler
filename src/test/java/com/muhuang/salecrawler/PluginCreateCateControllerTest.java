@@ -20,6 +20,7 @@ import java.util.List;
 
 import static com.muhuang.salecrawler.PluginCreateItemControllerTest.API_1_0_PLUGIN_ITEMS;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.catchIndexOutOfBoundsException;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")
@@ -97,6 +98,29 @@ public class PluginCreateCateControllerTest {
         }
 
         @Test
+        void postItem_whenPluginItemCateIdHadParentCateId_parentWillNotBeUpdated() {
+            Cate parentCate = Cate.builder().cateName("New Arrival").outCateId(22).build();
+            cateRepository.save(parentCate);
+            Cate cate = Cate.builder().cateName("连衣裙").outCateId(1779767080).build();
+            cate.setParent(parentCate);
+            cateRepository.save(cate);
+            PluginItemDTO pItem = TestUtil.createValidPluginItem();
+            postPluginItem(pItem, Object.class);
+            Cate byOutCateId = cateRepository.findByOutCateId(1779767080);
+            assertThat(byOutCateId.getParent().getOutCateId()).isEqualTo(22);
+        }
+
+        @Test
+        void postItem_whenPluginItemCateExistAndHadNoParentCate_parentWillBeUpdated() {
+            Cate cate = Cate.builder().cateName("连衣裙").outCateId(1779767080).build();
+            cateRepository.save(cate);
+            PluginItemDTO pItem = TestUtil.createValidPluginItem();
+            postPluginItem(pItem, Object.class);
+            Cate byOutCateId = cateRepository.findByOutCateId(1779767080);
+            assertThat(byOutCateId.getParent().getOutCateId()).isEqualTo(1772652848);
+        }
+
+        @Test
         void postItem_whenPluginItemCateIdExistInDb_cateNotSaveToDatabase() {
             cateRepository.save(Cate.builder().outCateId(1779767080).cateName("NEW ARRIVAL").build());
             PluginItemDTO pItem = TestUtil.createValidPluginItem();
@@ -104,7 +128,6 @@ public class PluginCreateCateControllerTest {
             pItem.setParentCatName(null);
             postPluginItem(pItem, Object.class);
             List<Cate> cateList = cateRepository.findAll();
-            System.out.println(cateList);
             assertThat(cateList.size()).isEqualTo(1);
         }
 

@@ -75,6 +75,10 @@ public class PluginItemController {
             cate.setParent(savedParentCate);
         }
         Optional<Cate> byId = Optional.ofNullable(cateRepository.findByOutCateId(cateId));
+        if (byId.isPresent() && byId.get().getParent() == null) {
+            byId.get().setParent(cate.getParent());
+            cateRepository.save(byId.get());
+        }
         return byId.orElseGet(() -> cateRepository.save(cate));
     }
 
