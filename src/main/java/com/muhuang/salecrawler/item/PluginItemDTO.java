@@ -28,6 +28,7 @@ public class PluginItemDTO {
 
     private String shopName;
 
+    @NotNull
     private String shopUrl;
 
     @Temporal(TemporalType.TIMESTAMP)

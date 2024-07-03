@@ -92,6 +92,22 @@ public class PluginCreateShopControllerTest {
     @Nested
     class SadPath {
 
+        @Test
+        void postPluginItem_whenPluginItemHasNoOutShopId_receiveBadRequest() {
+            PluginItemDTO pItem = TestUtil.createValidPluginItem();
+            pItem.setShopId(null);
+            ResponseEntity<Object> response = postPluginItem(pItem, Object.class);
+            assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+        }
+
+        @Test
+        void postPluginItem_whenPluginItemHasNoOutShopUrl_receiveBadRequest() {
+            PluginItemDTO pItem = TestUtil.createValidPluginItem();
+            pItem.setShopUrl(null);
+            ResponseEntity<Object> response = postPluginItem(pItem, Object.class);
+            assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+        }
+
     }
 
     public <T> ResponseEntity<T> postPluginItem(PluginItemDTO pItem, Class<T> responseType) {
