@@ -1,5 +1,6 @@
 package com.muhuang.salecrawler.cate;
 
+import com.muhuang.salecrawler.shop.Shop;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -18,6 +19,10 @@ public class Cate {
     private Long id;
 
     private Integer outCateId;
+
+    @ManyToOne
+    @JoinColumn(name = "out_shop_id", referencedColumnName = "outShopId")
+    private Shop shop;
 
     private String cateName;
 

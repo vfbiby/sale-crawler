@@ -142,6 +142,7 @@ public class PluginCreateCateControllerTest {
 
         @Test
         void postItem_whenPluginItemCateIdIsNull_CateNotSaveToDatabase() {
+            cateRepository.deleteAll();
             PluginItemDTO pItem = TestUtil.createValidPluginItem();
             pItem.setCatId(null);
             postPluginItem(pItem, Object.class);

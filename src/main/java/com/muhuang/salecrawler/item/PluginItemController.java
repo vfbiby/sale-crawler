@@ -37,20 +37,15 @@ public class PluginItemController {
 
     @PostMapping
     GenericResponse createPluginItems(@Valid @RequestBody PluginItemDTO pluginItemDTO) {
-        Shop inDB = shopRepository.findByOutShopId(pluginItemDTO.getShopId());
-        if (inDB == null) {
-            Shop shop = Shop.builder().outShopId(pluginItemDTO.getShopId())
-                    .shopName(pluginItemDTO.getShopName()).shopUrl(pluginItemDTO.getShopUrl()).build();
-            shopRepository.save(shop);
-        }
-        Cate save = getCate(pluginItemDTO);
+        Shop inDB = getShop(pluginItemDTO);
+        Cate savedCate = getCate(pluginItemDTO, inDB);
         Stream<Item> itemStream = pluginItemDTO.getItems().stream().map(itemDTO -> {
             Item.ItemBuilder itemBuilder = buildItem(itemDTO, inDB);
             if (pluginItemDTO.getPublishedAt() != null) {
                 itemBuilder.publishedAt(Date.from(pluginItemDTO.getPublishedAt()
                         .atStartOfDay(ZoneId.systemDefault()).toInstant()));
             }
-            itemBuilder.cate(save);
+            itemBuilder.cate(savedCate);
             return itemBuilder.build();
         });
         List<Item> collect = itemStream.collect(Collectors.toList());
@@ -58,13 +53,24 @@ public class PluginItemController {
         return new GenericResponse("Plugin item saved!");
     }
 
-    private Cate getCate(PluginItemDTO pluginItemDTO) {
+    private Shop getShop(PluginItemDTO pluginItemDTO) {
+        Shop inDB = shopRepository.findByOutShopId(pluginItemDTO.getShopId());
+        if (inDB == null) {
+            Shop shop = Shop.builder().outShopId(pluginItemDTO.getShopId())
+                    .shopName(pluginItemDTO.getShopName()).shopUrl(pluginItemDTO.getShopUrl()).build();
+            return shopRepository.save(shop);
+        }
+        return inDB;
+    }
+
+    private Cate getCate(PluginItemDTO pluginItemDTO, Shop inDB) {
         Integer cateId = pluginItemDTO.getCatId();
         if (cateId == null) return null;
         String cateName = pluginItemDTO.getCatName();
-        Cate cate = Cate.builder().outCateId(cateId).cateName(cateName).build();
+        Cate cate = Cate.builder().outCateId(cateId).cateName(cateName).shop(inDB).build();
         if (pluginItemDTO.getParentCatId() != null) {
-            Cate parentCate = Cate.builder().cateName(pluginItemDTO.getParentCatName()).outCateId(pluginItemDTO.getParentCatId()).build();
+            Cate parentCate = Cate.builder().cateName(pluginItemDTO.getParentCatName())
+                    .outCateId(pluginItemDTO.getParentCatId()).shop(inDB).build();
             Cate savedParentCate = cateRepository.save(parentCate);
             cate.setParent(savedParentCate);
         }

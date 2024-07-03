@@ -1,14 +1,14 @@
 package com.muhuang.salecrawler;
 
+import com.muhuang.salecrawler.cate.Cate;
 import com.muhuang.salecrawler.cate.CateRepository;
+import com.muhuang.salecrawler.item.Item;
 import com.muhuang.salecrawler.item.ItemRepository;
 import com.muhuang.salecrawler.item.PluginItemDTO;
 import com.muhuang.salecrawler.shop.Shop;
 import com.muhuang.salecrawler.shop.ShopRepository;
 import jakarta.annotation.Resource;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Nested;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
@@ -38,11 +38,11 @@ public class PluginCreateShopControllerTest {
     @Resource
     private ItemRepository itemRepository;
 
-    @AfterEach
+    @BeforeEach
     void setUp() {
-        shopRepository.deleteAll();
-        cateRepository.deleteAll();
         itemRepository.deleteAll();
+        cateRepository.deleteAll();
+        shopRepository.deleteAll();
     }
 
     @Nested
@@ -58,9 +58,35 @@ public class PluginCreateShopControllerTest {
         @Test
         void postPluginItem_whenItemHasValidShop_shopSaveToDatabase() {
             PluginItemDTO pItem = TestUtil.createValidPluginItem();
-            ResponseEntity<Object> response = postPluginItem(pItem, Object.class);
+            postPluginItem(pItem, Object.class);
             List<Shop> all = shopRepository.findAll();
             assertThat(all.size()).isEqualTo(1);
+        }
+
+        @Test
+        void postPluginItem_whenItemHasValidShop_itemSaveToDatabaseWithShop() {
+            PluginItemDTO pItem = TestUtil.createValidPluginItem();
+            postPluginItem(pItem, Object.class);
+            Item item = itemRepository.findAll().get(0);
+            assertThat(item.getShop().getOutShopId()).isEqualTo("3423343434");
+        }
+
+        @Test
+        void postPluginItem_whenItemHasValidShop_cateSaveToDatabaseWithShop() {
+            PluginItemDTO pItem = TestUtil.createValidPluginItem();
+            ResponseEntity<Object> response = postPluginItem(pItem, Object.class);
+            int cateId = 1;
+            Cate cate = cateRepository.findAll().get(cateId);
+            assertThat(cate.getShop().getOutShopId()).isEqualTo("3423343434");
+        }
+
+        @Test
+        void postPluginItem_whenItemHasValidShop_parentCateSaveToDatabaseWithShop() {
+            PluginItemDTO pItem = TestUtil.createValidPluginItem();
+            ResponseEntity<Object> response = postPluginItem(pItem, Object.class);
+            int parentCateId = 0;
+            Cate cate = cateRepository.findAll().get(parentCateId);
+            assertThat(cate.getShop().getOutShopId()).isEqualTo("3423343434");
         }
 
     }
