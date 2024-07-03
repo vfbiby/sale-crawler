@@ -38,6 +38,11 @@ public class PluginItemController {
     @PostMapping
     GenericResponse createPluginItems(@Valid @RequestBody PluginItemDTO pluginItemDTO) {
         Shop inDB = shopRepository.findByOutShopId(pluginItemDTO.getShopId());
+        if (inDB == null) {
+            Shop shop = Shop.builder().outShopId(pluginItemDTO.getShopId())
+                    .shopName(pluginItemDTO.getShopName()).shopUrl(pluginItemDTO.getShopUrl()).build();
+            shopRepository.save(shop);
+        }
         Cate save = getCate(pluginItemDTO);
         Stream<Item> itemStream = pluginItemDTO.getItems().stream().map(itemDTO -> {
             Item.ItemBuilder itemBuilder = buildItem(itemDTO, inDB);

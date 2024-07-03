@@ -23,7 +23,7 @@ public class PluginItemDTO {
     private Long id;
 
     @NotNull(message = "{saleCrawler.constraints.shopId.NotNull.message}")
-    @ExistsInDatabase
+//    @ExistsInDatabase
     private String shopId;
 
     private String shopName;
