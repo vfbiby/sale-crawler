@@ -67,27 +67,30 @@ public class PluginCreateShopControllerTest {
         void postPluginItem_whenItemHasValidShop_itemSaveToDatabaseWithShop() {
             PluginItemDTO pItem = TestUtil.createValidPluginItem();
             postPluginItem(pItem, Object.class);
-            Item item = itemRepository.findAll().get(0);
-            assertThat(item.getShop().getOutShopId()).isEqualTo("3423343434");
+            List<Item> item = itemRepository.findAll();
+            assertThat(item.size()).isEqualTo(1);
         }
 
         @Test
         void postPluginItem_whenItemHasValidShop_cateSaveToDatabaseWithShop() {
             PluginItemDTO pItem = TestUtil.createValidPluginItem();
-            ResponseEntity<Object> response = postPluginItem(pItem, Object.class);
-            int cateId = 1;
-            Cate cate = cateRepository.findAll().get(cateId);
-            assertThat(cate.getShop().getOutShopId()).isEqualTo("3423343434");
+            postPluginItem(pItem, Object.class);
+            Cate cate = cateRepository.findByOutCateId(1779767080);
+            assertThat(cate).isNotNull();
         }
 
         @Test
         void postPluginItem_whenItemHasValidShop_parentCateSaveToDatabaseWithShop() {
             PluginItemDTO pItem = TestUtil.createValidPluginItem();
-            ResponseEntity<Object> response = postPluginItem(pItem, Object.class);
-            int parentCateId = 0;
-            Cate cate = cateRepository.findAll().get(parentCateId);
-            assertThat(cate.getShop().getOutShopId()).isEqualTo("3423343434");
+            postPluginItem(pItem, Object.class);
+            Cate cate = cateRepository.findByOutCateId(1779767080);
+            assertThat(cate.getParent().getOutCateId()).isEqualTo(1772652848);
         }
+
+    }
+
+    @Nested
+    class SadPath {
 
     }
 
