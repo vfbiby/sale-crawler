@@ -52,15 +52,15 @@ public class PluginCreateCateControllerTest {
         void postItem_whenPluginItemHasCateId_cateIdSaveToDatabase() {
             PluginItemDTO pItem = TestUtil.createValidPluginItem();
             postPluginItem(pItem, Object.class);
-            Cate cate = cateRepository.findAll().get(1);
-            assertThat(cate.getOutCateId()).isEqualTo(1779767080);
+            Cate cate = cateRepository.findByOutCateId(1779767080);
+            assertThat(cate).isNotNull();
         }
 
         @Test
         void postItem_whenPluginItemHasCateName_cateNameSaveToDatabase() {
             PluginItemDTO pItem = TestUtil.createValidPluginItem();
             postPluginItem(pItem, Object.class);
-            Cate cate = cateRepository.findAll().get(1);
+            Cate cate = cateRepository.findByOutCateId(1779767080);
             assertThat(cate.getCateName()).isEqualTo("06/25福利回馈");
         }
 
