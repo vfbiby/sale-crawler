@@ -47,9 +47,13 @@ public class ItemControllerTest {
     @Resource
     private ShopRepository shopRepository;
 
+    @Resource
+    private CateRepository cateRepository;
+
     @BeforeEach
     public void cleanup() {
         itemRepository.deleteAll();
+        cateRepository.deleteAll();
         shopRepository.deleteAll();
     }
 

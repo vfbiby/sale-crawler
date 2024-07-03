@@ -46,8 +46,8 @@ public class PluginCreateCateControllerTest {
     @AfterEach
     public void cleanup() {
         itemRepository.deleteAll();
-        shopRepository.deleteAll();
         cateRepository.deleteAll();
+        shopRepository.deleteAll();
     }
 
     @BeforeEach
