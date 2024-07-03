@@ -13,7 +13,7 @@ import java.util.List;
 @AllArgsConstructor
 public class CateChildrenDTO {
 
-    private Long id;
+    private Integer id;
 
     private String name;
 
