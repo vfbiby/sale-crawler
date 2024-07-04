@@ -1,5 +1,6 @@
 package com.muhuang.salecrawler.shop;
 
+import com.muhuang.salecrawler.item.PluginItemDTO;
 import com.muhuang.salecrawler.shared.ApiError;
 import com.muhuang.salecrawler.shared.GenericResponse;
 import jakarta.annotation.Resource;
@@ -32,6 +33,12 @@ public class ShopController {
         return shopService.getShops();
     }
 
+    @PostMapping("/plugin-items")
+    GenericResponse createPluginItems(@Valid @RequestBody PluginItemDTO pluginItemDTO) {
+        shopService.saveShop(pluginItemDTO);
+        return new GenericResponse("Plugin item saved!");
+    }
+
     @ExceptionHandler({MethodArgumentNotValidException.class})
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     ApiError handleValidationException(MethodArgumentNotValidException exception, HttpServletRequest request) {
@@ -48,5 +55,4 @@ public class ShopController {
         }
         return new ApiError(400, "validation error", request.getServletPath(), validationErrors);
     }
-
 }

@@ -30,7 +30,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class PluginCreateItemControllerTest {
 
-    public static final String API_1_0_PLUGIN_ITEMS = "/api/1.0/plugin-items";
+    public static final String API_1_0_PLUGIN_ITEMS = "/api/1.0/shops/plugin-items";
 
     @Autowired
     private TestRestTemplate testRestTemplate;
@@ -112,6 +112,14 @@ public class PluginCreateItemControllerTest {
 
             @Test
             void postItem_whenPluginItemIsValid_itemPicSaveToDatabase() {
+                PluginItemDTO pItem = TestUtil.createValidPluginItem();
+                postPluginItem(pItem, Object.class);
+                Item inDB = itemRepository.findAll().get(0);
+                assertThat(inDB.getPic()).isNotNull();
+            }
+
+            @Test
+            void postItem_whenPluginItemIsValid_itemSaleNameSaveToDatabase() {
                 PluginItemDTO pItem = TestUtil.createValidPluginItem();
                 postPluginItem(pItem, Object.class);
                 Item inDB = itemRepository.findAll().get(0);

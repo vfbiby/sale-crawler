@@ -29,6 +29,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class SaleControllerTest {
 
     public static final String API_1_0_SALES = "/api/1.0/sales";
+    public static final String API_1_0_SHOPS_ITEMS = "/api/1.0/shops/plugin-items";
 
     @Resource
     private TestRestTemplate testRestTemplate;
@@ -132,7 +133,7 @@ public class SaleControllerTest {
             Item item = TestUtil.createValidItem();
             item.setSaleList(IntStream.rangeClosed(1, 20).mapToObj(x -> createValidSale()).toList());
             itemRepository.save(item);
-            ResponseEntity<TestPage<Item>> response = testRestTemplate.exchange("/api/1.0/items",
+            ResponseEntity<TestPage<Item>> response = testRestTemplate.exchange(API_1_0_SHOPS_ITEMS,
                     HttpMethod.GET, null, new ParameterizedTypeReference<>() {
                     });
             Item retrivedItem = Objects.requireNonNull(response.getBody()).getContent().get(0);
