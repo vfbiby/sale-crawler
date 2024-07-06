@@ -11,6 +11,6 @@ public class UniqueItemValidator implements ConstraintValidator<UniqueItem, Stri
 
     @Override
     public boolean isValid(String value, ConstraintValidatorContext constraintValidatorContext) {
-        return itemRepository.findByOutItemId(value) == null;
+        return itemRepository.findByOutItemId(value).isEmpty();
     }
 }

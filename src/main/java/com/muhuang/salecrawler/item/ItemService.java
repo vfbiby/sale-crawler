@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -43,4 +44,12 @@ public class ItemService {
         return itemRepository.findAll(pageRequest);
     }
 
+    /**
+     * 根据 outItemId 查询商品
+     * @param outItemId 商品 id
+     * @return 商品
+     */
+    public Optional<Item> getByOutItemId(String outItemId) {
+        return itemRepository.findByOutItemId(outItemId);
+    }
 }
