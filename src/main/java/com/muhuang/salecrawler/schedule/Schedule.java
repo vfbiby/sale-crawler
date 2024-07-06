@@ -19,4 +19,5 @@ public class Schedule {
 
     private String outItemId;
 
+    private String status;
 }

@@ -20,6 +20,7 @@ public class ScheduleItemSalesScrapingController {
         if (schedule.getOutItemId() == null) {
             throw new ScheduleItemIdNotNullException();
         }
+        schedule.setStatus("pending");
         scheduleRepository.save(schedule);
     }
 
