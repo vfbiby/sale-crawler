@@ -1,8 +1,7 @@
 package com.muhuang.salecrawler.sale;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.muhuang.salecrawler.item.Item;
+import com.muhuang.salecrawler.item.entity.Item;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -10,7 +9,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 @Builder
 @Data
@@ -24,7 +23,7 @@ public class Sale {
     private Long id;
 
     @Temporal(TemporalType.TIMESTAMP)
-    private Date saleDate;
+    private LocalDateTime saleDate;
 
     private int number;
 

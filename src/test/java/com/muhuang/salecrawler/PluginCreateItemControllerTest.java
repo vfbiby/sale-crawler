@@ -1,10 +1,10 @@
 package com.muhuang.salecrawler;
 
 import com.muhuang.salecrawler.cate.CateRepository;
-import com.muhuang.salecrawler.item.Item;
-import com.muhuang.salecrawler.item.ItemDTO;
-import com.muhuang.salecrawler.item.ItemRepository;
-import com.muhuang.salecrawler.item.PluginItemDTO;
+import com.muhuang.salecrawler.item.entity.Item;
+import com.muhuang.salecrawler.item.dto.ItemDTO;
+import com.muhuang.salecrawler.item.repository.ItemRepository;
+import com.muhuang.salecrawler.item.dto.PluginItemDTO;
 import com.muhuang.salecrawler.shared.ApiError;
 import com.muhuang.salecrawler.shop.Shop;
 import com.muhuang.salecrawler.shop.ShopRepository;
@@ -20,6 +20,7 @@ import org.springframework.test.context.ActiveProfiles;
 
 import java.sql.Timestamp;
 import java.time.LocalDate;
+import java.time.temporal.ChronoField;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -120,13 +121,14 @@ public class PluginCreateItemControllerTest {
 
             @Test
             void postItem_whenPluginItemHasPublishedAt_itemSaveToDatabaseWithSpecifyPublishedAt() {
+                final LocalDate publishedAt = LocalDate.now();
+
                 PluginItemDTO pItem = TestUtil.createValidPluginItem();
-                LocalDate publishedAt = LocalDate.now();
                 pItem.setPublishedAt(publishedAt);
                 postPluginItem(pItem, Object.class);
                 Item inDB = itemRepository.findAll().get(0);
-                assertThat((inDB.getPublishedAt().getTime()))
-                        .isEqualTo(Timestamp.valueOf(publishedAt.atStartOfDay()).getTime());
+                assertThat((inDB.getPublishedAt()))
+                        .isEqualTo(publishedAt);
             }
 
         }

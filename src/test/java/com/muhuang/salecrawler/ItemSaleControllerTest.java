@@ -1,10 +1,9 @@
 package com.muhuang.salecrawler;
 
-import com.muhuang.salecrawler.item.Item;
-import com.muhuang.salecrawler.item.ItemRepository;
+import com.muhuang.salecrawler.item.entity.Item;
+import com.muhuang.salecrawler.item.repository.ItemRepository;
 import com.muhuang.salecrawler.sale.Sale;
 import com.muhuang.salecrawler.sale.SaleRepository;
-import com.muhuang.salecrawler.shop.Shop;
 import com.muhuang.salecrawler.shop.ShopRepository;
 import jakarta.annotation.Resource;
 import org.junit.jupiter.api.AfterEach;
@@ -17,6 +16,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
@@ -74,7 +74,7 @@ public class ItemSaleControllerTest {
 
     private static Sale createSale() {
         Sale sale = new Sale();
-        sale.setSaleDate(new Date());
+        sale.setSaleDate(LocalDateTime.now());
         sale.setNumber(8);
         return sale;
     }

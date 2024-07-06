@@ -1,5 +1,6 @@
-package com.muhuang.salecrawler.item;
+package com.muhuang.salecrawler.item.dto;
 
+import com.muhuang.salecrawler.item.UniqueItem;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

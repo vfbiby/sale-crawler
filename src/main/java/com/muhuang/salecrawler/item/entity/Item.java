@@ -1,4 +1,4 @@
-package com.muhuang.salecrawler.item;
+package com.muhuang.salecrawler.item.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.muhuang.salecrawler.cate.Cate;
@@ -12,7 +12,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Date;
+import java.time.LocalDate;
 import java.util.List;
 
 @Data
@@ -28,7 +28,7 @@ public class Item {
 
     @NotNull
     @Size(min = 10, max = 30)
-    @Column(length = 30)
+    @Column(length = 30,unique = true)
     private String outItemId;
 
     @NotNull
@@ -36,8 +36,7 @@ public class Item {
     @Column(length = 60)
     private String title;
 
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date publishedAt;
+    private LocalDate publishedAt;
 
     private String pic;
 

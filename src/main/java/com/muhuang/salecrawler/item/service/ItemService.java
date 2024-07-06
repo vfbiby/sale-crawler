@@ -1,35 +1,28 @@
-package com.muhuang.salecrawler.item;
+package com.muhuang.salecrawler.item.service;
 
-import com.muhuang.salecrawler.sale.SaleService;
+import com.muhuang.salecrawler.item.entity.Item;
+import com.muhuang.salecrawler.item.repository.ItemRepository;
 import com.muhuang.salecrawler.shop.Shop;
 import com.muhuang.salecrawler.shop.ShopRepository;
-import com.muhuang.salecrawler.taobao.TaobaoHttpClient;
-import com.muhuang.salecrawler.taobao.TaobaoSaleMonthlyResult;
 import jakarta.annotation.Resource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
+import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
 public class ItemService {
 
-    public static final String TOKEN = "rqPZ2yJQgNp1SQuR";
     @Resource
     private ItemRepository itemRepository;
 
     @Resource
     private ShopRepository shopRepository;
-
-    @Resource
-    private TaobaoHttpClient taobaoHttpClient;
-
-    @Resource
-    private SaleService saleService;
 
     public void save(Item item) {
         Shop inDB = shopRepository.findByOutShopId(item.getShop().getOutShopId());
@@ -40,7 +33,7 @@ public class ItemService {
 
     private static void setPublishedAt(Item item) {
         if (item.getPublishedAt() == null)
-            item.setPublishedAt(new Date());
+            item.setPublishedAt(LocalDate.now());
     }
 
     public void saveAll(List<Item> collect) {
@@ -54,15 +47,11 @@ public class ItemService {
     }
 
     /**
-     * 收藏
-     *
-     * @param itemId 商品id
+     * 根据 outItemId 查询商品
+     * @param outItemId 商品 id
+     * @return 商品
      */
-    public void favorite(Long itemId) {
-        Item item = itemRepository.getReferenceById(itemId);
-        TaobaoSaleMonthlyResult saleMonthlyResult = taobaoHttpClient.getMonthlySaleNum(item.getOutItemId(), TOKEN);
-        if (saleMonthlyResult.saleMonthlyNum() > 0) {
-            saleService.save(saleMonthlyResult.saleMonthlyNum(), item);
-        }
+    public Optional<Item> getByOutItemId(String outItemId) {
+        return itemRepository.findByOutItemId(outItemId);
     }
 }

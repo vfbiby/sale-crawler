@@ -1,7 +1,11 @@
-package com.muhuang.salecrawler.item;
+package com.muhuang.salecrawler.item.controller;
 
 import com.muhuang.salecrawler.cate.Cate;
 import com.muhuang.salecrawler.cate.CateRepository;
+import com.muhuang.salecrawler.item.entity.Item;
+import com.muhuang.salecrawler.item.dto.ItemDTO;
+import com.muhuang.salecrawler.item.dto.PluginItemDTO;
+import com.muhuang.salecrawler.item.service.ItemService;
 import com.muhuang.salecrawler.shared.ApiError;
 import com.muhuang.salecrawler.shared.GenericResponse;
 import com.muhuang.salecrawler.shop.Shop;
@@ -42,8 +46,7 @@ public class PluginItemController {
         Stream<Item> itemStream = pluginItemDTO.getItems().stream().map(itemDTO -> {
             Item.ItemBuilder itemBuilder = buildItem(itemDTO, inDB);
             if (pluginItemDTO.getPublishedAt() != null) {
-                itemBuilder.publishedAt(Date.from(pluginItemDTO.getPublishedAt()
-                        .atStartOfDay(ZoneId.systemDefault()).toInstant()));
+                itemBuilder.publishedAt(pluginItemDTO.getPublishedAt());
             }
             itemBuilder.cate(savedCate);
             return itemBuilder.build();
