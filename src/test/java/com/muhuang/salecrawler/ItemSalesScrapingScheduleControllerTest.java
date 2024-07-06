@@ -1,8 +1,8 @@
 package com.muhuang.salecrawler;
 
-import com.muhuang.salecrawler.item.Item;
-import com.muhuang.salecrawler.item.ItemRepository;
-import com.muhuang.salecrawler.item.ItemSalesScrapingScheduleRepository;
+import com.muhuang.salecrawler.item.entity.Item;
+import com.muhuang.salecrawler.item.repository.ItemRepository;
+import com.muhuang.salecrawler.item.repository.ItemSalesScrapingScheduleRepository;
 import com.muhuang.salecrawler.shared.ApiError;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;

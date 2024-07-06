@@ -1,4 +1,4 @@
-package com.muhuang.salecrawler.item;
+package com.muhuang.salecrawler.item.entity;
 
 import lombok.Getter;
 

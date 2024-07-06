@@ -1,5 +1,10 @@
-package com.muhuang.salecrawler.item;
+package com.muhuang.salecrawler.item.controller;
 
+import com.muhuang.salecrawler.item.*;
+import com.muhuang.salecrawler.item.entity.Item;
+import com.muhuang.salecrawler.item.entity.ItemSalesScrapingSchedule;
+import com.muhuang.salecrawler.item.repository.ItemSalesScrapingScheduleRepository;
+import com.muhuang.salecrawler.item.service.ItemService;
 import com.muhuang.salecrawler.shared.GenericResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PathVariable;

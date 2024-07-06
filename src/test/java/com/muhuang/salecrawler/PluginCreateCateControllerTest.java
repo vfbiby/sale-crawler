@@ -2,9 +2,9 @@ package com.muhuang.salecrawler;
 
 import com.muhuang.salecrawler.cate.Cate;
 import com.muhuang.salecrawler.cate.CateRepository;
-import com.muhuang.salecrawler.item.Item;
-import com.muhuang.salecrawler.item.ItemRepository;
-import com.muhuang.salecrawler.item.PluginItemDTO;
+import com.muhuang.salecrawler.item.entity.Item;
+import com.muhuang.salecrawler.item.repository.ItemRepository;
+import com.muhuang.salecrawler.item.dto.PluginItemDTO;
 import com.muhuang.salecrawler.shop.ShopRepository;
 import jakarta.annotation.Resource;
 import org.junit.jupiter.api.BeforeEach;
@@ -20,7 +20,6 @@ import java.util.List;
 
 import static com.muhuang.salecrawler.PluginCreateItemControllerTest.API_1_0_PLUGIN_ITEMS;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.catchIndexOutOfBoundsException;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")

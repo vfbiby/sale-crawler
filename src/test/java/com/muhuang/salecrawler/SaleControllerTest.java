@@ -1,7 +1,7 @@
 package com.muhuang.salecrawler;
 
-import com.muhuang.salecrawler.item.Item;
-import com.muhuang.salecrawler.item.ItemRepository;
+import com.muhuang.salecrawler.item.entity.Item;
+import com.muhuang.salecrawler.item.repository.ItemRepository;
 import com.muhuang.salecrawler.sale.Sale;
 import com.muhuang.salecrawler.sale.SaleRepository;
 import com.muhuang.salecrawler.shop.ShopRepository;

@@ -1,8 +1,8 @@
 package com.muhuang.salecrawler;
 
-import com.muhuang.salecrawler.item.Item;
-import com.muhuang.salecrawler.item.ItemDTO;
-import com.muhuang.salecrawler.item.PluginItemDTO;
+import com.muhuang.salecrawler.item.entity.Item;
+import com.muhuang.salecrawler.item.dto.ItemDTO;
+import com.muhuang.salecrawler.item.dto.PluginItemDTO;
 import com.muhuang.salecrawler.shop.Shop;
 import com.muhuang.salecrawler.user.User;
 import lombok.SneakyThrows;

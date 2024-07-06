@@ -1,5 +1,7 @@
-package com.muhuang.salecrawler.item;
+package com.muhuang.salecrawler.item.service;
 
+import com.muhuang.salecrawler.item.entity.Item;
+import com.muhuang.salecrawler.item.repository.ItemRepository;
 import com.muhuang.salecrawler.shop.Shop;
 import com.muhuang.salecrawler.shop.ShopRepository;
 import jakarta.annotation.Resource;

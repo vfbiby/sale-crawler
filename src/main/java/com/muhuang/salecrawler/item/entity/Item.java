@@ -1,4 +1,4 @@
-package com.muhuang.salecrawler.item;
+package com.muhuang.salecrawler.item.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.muhuang.salecrawler.cate.Cate;

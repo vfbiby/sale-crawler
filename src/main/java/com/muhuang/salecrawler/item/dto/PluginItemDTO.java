@@ -1,6 +1,5 @@
-package com.muhuang.salecrawler.item;
+package com.muhuang.salecrawler.item.dto;
 
-import com.muhuang.salecrawler.shop.ExistsInDatabase;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
 import jakarta.validation.Valid;

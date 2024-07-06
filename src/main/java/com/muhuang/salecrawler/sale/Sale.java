@@ -1,8 +1,7 @@
 package com.muhuang.salecrawler.sale;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.muhuang.salecrawler.item.Item;
+import com.muhuang.salecrawler.item.entity.Item;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;

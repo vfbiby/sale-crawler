@@ -1,5 +1,6 @@
-package com.muhuang.salecrawler.item;
+package com.muhuang.salecrawler.item.controller;
 
+import com.muhuang.salecrawler.item.entity.ItemSalesScrapingStatus;
 import jakarta.persistence.AttributeConverter;
 import jakarta.persistence.Converter;
 

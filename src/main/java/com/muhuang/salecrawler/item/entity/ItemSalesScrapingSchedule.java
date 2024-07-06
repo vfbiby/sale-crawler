@@ -1,5 +1,6 @@
-package com.muhuang.salecrawler.item;
+package com.muhuang.salecrawler.item.entity;
 
+import com.muhuang.salecrawler.item.controller.ItemSalesScrapingStatusConvert;
 import jakarta.persistence.*;
 import lombok.*;
 

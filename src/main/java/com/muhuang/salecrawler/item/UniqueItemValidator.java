@@ -1,5 +1,6 @@
 package com.muhuang.salecrawler.item;
 
+import com.muhuang.salecrawler.item.repository.ItemRepository;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 import org.springframework.beans.factory.annotation.Autowired;

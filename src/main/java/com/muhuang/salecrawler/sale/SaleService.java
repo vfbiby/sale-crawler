@@ -1,6 +1,6 @@
 package com.muhuang.salecrawler.sale;
 
-import com.muhuang.salecrawler.item.Item;
+import com.muhuang.salecrawler.item.entity.Item;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

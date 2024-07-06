@@ -1,5 +1,6 @@
-package com.muhuang.salecrawler.item;
+package com.muhuang.salecrawler.item.repository;
 
+import com.muhuang.salecrawler.item.entity.ItemSalesScrapingSchedule;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 /**
