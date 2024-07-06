@@ -1,18 +1,12 @@
 package com.muhuang.salecrawler.item.controller;
 
-import com.muhuang.salecrawler.item.*;
-import com.muhuang.salecrawler.item.entity.Item;
-import com.muhuang.salecrawler.item.entity.ItemSalesScrapingSchedule;
-import com.muhuang.salecrawler.item.repository.ItemSalesScrapingScheduleRepository;
-import com.muhuang.salecrawler.item.service.ItemService;
+import com.muhuang.salecrawler.item.service.ItemSalesScrapingScheduleService;
 import com.muhuang.salecrawler.shared.GenericResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.time.LocalDateTime;
 
 /**
  * 商品销量抓取 Controller
@@ -23,8 +17,7 @@ import java.time.LocalDateTime;
 @RequestMapping("/api/1.0/items")
 @RequiredArgsConstructor
 public class ItemSalesScrapingScheduleController {
-    private final ItemSalesScrapingScheduleRepository itemSalesScrapingScheduleRepository;
-    private final ItemService itemService;
+    private final ItemSalesScrapingScheduleService itemSalesScrapingScheduleService;
 
     /**
      * 创建一个商品销量抓取计划
@@ -33,12 +26,8 @@ public class ItemSalesScrapingScheduleController {
      */
     @PostMapping("/{itemId}/schedule")
     public GenericResponse createItemSalesSchedule(@PathVariable(value = "itemId") String outItemId) {
-        Item item = itemService.getByOutItemId(outItemId)
-                .orElseThrow(ItemNotFoundException::new);
-        itemSalesScrapingScheduleRepository.save(ItemSalesScrapingSchedule.builder()
-                .item(item)
-                .createdAt(LocalDateTime.now())
-                .build());
+        itemSalesScrapingScheduleService.create(outItemId);
         return new GenericResponse("商品销量抓取计划创建成功");
     }
+
 }
