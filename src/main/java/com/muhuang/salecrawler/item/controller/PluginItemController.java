@@ -46,8 +46,7 @@ public class PluginItemController {
         Stream<Item> itemStream = pluginItemDTO.getItems().stream().map(itemDTO -> {
             Item.ItemBuilder itemBuilder = buildItem(itemDTO, inDB);
             if (pluginItemDTO.getPublishedAt() != null) {
-                itemBuilder.publishedAt(Date.from(pluginItemDTO.getPublishedAt()
-                        .atStartOfDay(ZoneId.systemDefault()).toInstant()));
+                itemBuilder.publishedAt(pluginItemDTO.getPublishedAt());
             }
             itemBuilder.cate(savedCate);
             return itemBuilder.build();

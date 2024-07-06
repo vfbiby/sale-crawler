@@ -47,13 +47,13 @@ public class TestUtil {
 
     static Item createValidItem() {
         return createItemWithDetail("32838242344",
-                LocalDate.now().toString(), "2024气质新款夏装连衣裙", "https://xx.taobao.com/v.img");
+                LocalDate.now(), "2024气质新款夏装连衣裙", "https://xx.taobao.com/v.img");
     }
 
     @SneakyThrows
-    static Item createItemWithDetail(String itemId, String date, String title, String pic) {
+    static Item createItemWithDetail(String itemId, LocalDate date, String title, String pic) {
         return Item.builder().outItemId(itemId).title(title)
-                .pic(pic).publishedAt(new SimpleDateFormat("yyyy-MM-dd").parse(date)).build();
+                .pic(pic).publishedAt(date).build();
     }
 
     static Shop createValidShop() {

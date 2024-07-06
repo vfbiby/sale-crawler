@@ -10,7 +10,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -33,7 +33,7 @@ public class ItemService {
 
     private static void setPublishedAt(Item item) {
         if (item.getPublishedAt() == null)
-            item.setPublishedAt(new Date());
+            item.setPublishedAt(LocalDate.now());
     }
 
     public void saveAll(List<Item> collect) {

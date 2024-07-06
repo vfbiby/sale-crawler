@@ -12,7 +12,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Date;
+import java.time.LocalDate;
 import java.util.List;
 
 @Data
@@ -36,8 +36,7 @@ public class Item {
     @Column(length = 60)
     private String title;
 
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date publishedAt;
+    private LocalDate publishedAt;
 
     private String pic;
 

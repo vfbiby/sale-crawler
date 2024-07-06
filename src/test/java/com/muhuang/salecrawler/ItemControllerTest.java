@@ -20,6 +20,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -233,8 +234,8 @@ public class ItemControllerTest {
 
         private void createOneShopAndTwoItem(String itemIdOne, String itemIdTwo) {
             Shop shopInDB = shopRepository.save(createValidShop());
-            Item item1 = createValidItemWithDate(itemIdOne, "2022-06-25");
-            Item item2 = createValidItemWithDate(itemIdTwo, "2023-06-25");
+            Item item1 = createValidItemWithDate(itemIdOne, LocalDate.of(2022, 6, 25));
+            Item item2 = createValidItemWithDate(itemIdTwo, LocalDate.of(2023, 6, 25));
             item1.setShop(shopInDB);
             item2.setShop(shopInDB);
             itemRepository.saveAll(List.of(item1, item2));
@@ -242,7 +243,7 @@ public class ItemControllerTest {
 
     }
 
-    private static Item createValidItemWithDate(String itemId, String date) {
+    private static Item createValidItemWithDate(String itemId, LocalDate date) {
         return TestUtil.createItemWithDetail(itemId, date, "2024气质新款连衣裙", "https://x.taobao.com/v.img");
     }
 

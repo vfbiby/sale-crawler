@@ -20,6 +20,7 @@ import org.springframework.test.context.ActiveProfiles;
 
 import java.sql.Timestamp;
 import java.time.LocalDate;
+import java.time.temporal.ChronoField;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -120,13 +121,14 @@ public class PluginCreateItemControllerTest {
 
             @Test
             void postItem_whenPluginItemHasPublishedAt_itemSaveToDatabaseWithSpecifyPublishedAt() {
+                final LocalDate publishedAt = LocalDate.now();
+
                 PluginItemDTO pItem = TestUtil.createValidPluginItem();
-                LocalDate publishedAt = LocalDate.now();
                 pItem.setPublishedAt(publishedAt);
                 postPluginItem(pItem, Object.class);
                 Item inDB = itemRepository.findAll().get(0);
-                assertThat((inDB.getPublishedAt().getTime()))
-                        .isEqualTo(Timestamp.valueOf(publishedAt.atStartOfDay()).getTime());
+                assertThat((inDB.getPublishedAt()))
+                        .isEqualTo(publishedAt);
             }
 
         }
