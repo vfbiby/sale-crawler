@@ -16,6 +16,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
@@ -73,7 +74,7 @@ public class ItemSaleControllerTest {
 
     private static Sale createSale() {
         Sale sale = new Sale();
-        sale.setSaleDate(new Date());
+        sale.setSaleDate(LocalDateTime.now());
         sale.setNumber(8);
         return sale;
     }

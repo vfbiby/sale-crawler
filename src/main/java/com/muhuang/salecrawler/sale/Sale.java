@@ -9,7 +9,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 @Builder
 @Data
@@ -23,7 +23,7 @@ public class Sale {
     private Long id;
 
     @Temporal(TemporalType.TIMESTAMP)
-    private Date saleDate;
+    private LocalDateTime saleDate;
 
     private int number;
 

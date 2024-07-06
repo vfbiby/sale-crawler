@@ -4,6 +4,7 @@ import com.muhuang.salecrawler.item.entity.Item;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
 /**
@@ -23,7 +24,7 @@ public class SaleService {
     public void save(int monthlySaleNum, Item item) {
         Sale sale = Sale.builder()
                 .item(item)
-                .saleDate(new Date())
+                .saleDate(LocalDateTime.now())
                 .number(monthlySaleNum)
                 .build();
         saleRepository.save(sale);
