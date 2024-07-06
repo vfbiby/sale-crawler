@@ -1,5 +1,6 @@
 package com.muhuang.salecrawler.schedule;
 
+import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,10 +17,7 @@ public class ScheduleItemSalesScrapingController {
     }
 
     @PostMapping
-    void createSchedule(@RequestBody Schedule schedule) throws ScheduleItemIdNotNullException {
-        if (schedule.getOutItemId() == null) {
-            throw new ScheduleItemIdNotNullException();
-        }
+    void createSchedule(@Valid @RequestBody Schedule schedule) throws ScheduleItemIdNotNullException {
         schedule.setStatus("pending");
         scheduleRepository.save(schedule);
     }

@@ -3,6 +3,7 @@ package com.muhuang.salecrawler;
 import com.muhuang.salecrawler.schedule.Schedule;
 import com.muhuang.salecrawler.schedule.ScheduleRepository;
 import jakarta.annotation.Resource;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
@@ -18,8 +19,14 @@ public class PostScheduleTest {
 
     @Resource
     private TestRestTemplate restTestTemplate;
+
     @Resource
     private ScheduleRepository scheduleRepository;
+
+    @BeforeEach
+    void cleanup() {
+        scheduleRepository.deleteAll();
+    }
 
     @Test
     void postSchedule_whenItemIsValid_receiveOK() {
