@@ -17,6 +17,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @ActiveProfiles("test")
 public class PostScheduleTest {
 
+    public static final String API_1_0_SCHEDULES = "/api/1.0/schedules";
     @Resource
     private TestRestTemplate restTestTemplate;
 
@@ -61,7 +62,7 @@ public class PostScheduleTest {
     }
 
     private ResponseEntity<Object> postSchedule(Schedule schedule) {
-        return restTestTemplate.postForEntity("/api/1.0/schedules", schedule, Object.class);
+        return restTestTemplate.postForEntity(API_1_0_SCHEDULES, schedule, Object.class);
     }
 
 
