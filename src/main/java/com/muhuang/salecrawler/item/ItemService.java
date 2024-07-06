@@ -31,11 +31,11 @@ public class ItemService {
     @Resource
     private SaleService saleService;
 
-    public void save(Item item) {
+    public Item save(Item item) {
         Shop inDB = shopRepository.findByOutShopId(item.getShop().getOutShopId());
         item.setShop(inDB);
         setPublishedAt(item);
-        itemRepository.save(item);
+        return itemRepository.save(item);
     }
 
     private static void setPublishedAt(Item item) {
