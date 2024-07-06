@@ -20,7 +20,7 @@ public class Cate {
     @GeneratedValue
     private Long id;
 
-    @Column
+    @Column(unique = true)
     private Integer outCateId;
 
     @ManyToOne
