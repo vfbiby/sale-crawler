@@ -1,0 +1,10 @@
+POST http://localhost:8080/api/1.0/NotesRate
+Content-Type: application/json
+
+{
+  "noteNumber": 83,
+  "videoNoteNumber": 22,
+  "hundredLikePercent": "83.3"
+}
+
+###
