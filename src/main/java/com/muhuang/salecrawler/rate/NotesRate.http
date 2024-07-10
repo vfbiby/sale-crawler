@@ -2,9 +2,24 @@ POST http://localhost:8080/api/1.0/NotesRate
 Content-Type: application/json
 
 {
-  "noteNumber": 83,
-  "videoNoteNumber": 22,
-  "hundredLikePercent": "83.3"
+  "noteNumber": 33,
+  "videoNoteNumber": 31,
+  "hundredLikePercent": "84.8",
+  "thousandLikePercent": "54.5",
+  "impMedian": 313411,
+  "impMedianBeyondRate": "90.0",
+  "readMedian": 53676,
+  "readMedianBeyondRate": "89.0",
+  "interactionMedian": 1952,
+  "interactionRate": "8.6",
+  "interactionBeyondRate": "85.3",
+  "likeMedian": 1309,
+  "collectMedian": 566,
+  "commentMedian": 77,
+  "shareMedian": 69,
+  "videoFullViewRate": "17.1",
+  "videoFullViewBeyondRate": "58.5",
+  "picture3sViewRate": "74.5"
 }
 
 ###

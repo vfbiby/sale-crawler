@@ -11,14 +11,12 @@ public class NotesRate {
     @GeneratedValue
     private Long id;
 
+    private String kocId;
     private int noteNumber;
-
     private int videoNoteNumber;
-
     private double hundredLikePercent;
-
-//                    "thousandLikePercent":"54.5",
-//                    "noteType":[
+    private double thousandLikePercent;
+    //                    "noteType":[
 //
 //    {
 //        "contentTag":"时尚",
@@ -31,21 +29,21 @@ public class NotesRate {
 //    }
 //    ],
 //            "tradeNames":null,
-//            "impMedian":313411,
-//            "impMedianBeyondRate":"90.0",
-//            "readMedian":53676,
-//            "readMedianBeyondRate":"89.0",
-//            "interactionMedian":1952,
-//            "interactionRate":"8.6",
-//            "interactionBeyondRate":"85.3",
-//            "likeMedian":1309,
-//            "collectMedian":566,
-//            "commentMedian":77,
-//            "shareMedian":69,
-//            "videoFullViewRate":"17.1",
-//            "videoFullViewBeyondRate":"58.5",
-//            "picture3sViewRate":"74.5",
-//            "pagePercentVo":
+    private int impMedian;
+    private double impMedianBeyondRate;
+    private int readMedian;
+    private double readMedianBeyondRate;
+    private int interactionMedian;
+    private double interactionRate;
+    private double interactionBeyondRate;
+    private int likeMedian;
+    private int collectMedian;
+    private int commentMedian;
+    private int shareMedian;
+    private double videoFullViewRate;
+    private double videoFullViewBeyondRate;
+    private double picture3sViewRate;
+    //            "pagePercentVo":
 //
 //    {
 //        "impHomefeedPercent":0.716,
@@ -103,7 +101,7 @@ public class NotesRate {
 //            "longTermFollowPagePercent":"1.0",
 //            "longTermOtherPagePercent":"14.5"
 //    },
-//            "mEngagementNum":2171,
-//            "mFollowCnt":172
+    private int mEngagementNum;
+    private int mFollowCnt;
 
 }
