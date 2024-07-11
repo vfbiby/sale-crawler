@@ -18,15 +18,16 @@ public class PagePercentVo {
     private Long id;
 
     private double impHomefeedPercent;
-//            "impSearchPercent":0.077,
-//            "impFollowPercent":0.05,
-//            "impDetailPercent":0.134,
-//            "impNearbyPercent":0,
-//            "impOtherPercent":0.02300000000000002,
-//            "readHomefeedPercent":0.664,
-//            "readSearchPercent":0.075,
-//            "readFollowPercent":0.099,
-//            "readDetailPercent":0.136,
-//            "readNearbyPercent":0,
-//            "readOtherPercent":0.02599999999999994
+    private double impSearchPercent;
+    private double impFollowPercent;
+    private double impDetailPercent;
+    private double impNearbyPercent;
+    private double impOtherPercent;
+    private double readHomefeedPercent;
+    private double readSearchPercent;
+    private double readFollowPercent;
+    private double readDetailPercent;
+    private double readNearbyPercent;
+    private double readOtherPercent;
+
 }

@@ -87,4 +87,15 @@ public class NotesRateControllerTest {
         assertThat(noteRates.get().getLongTermCommonNoteVo().getStartPublishTime()).isEqualTo(now);
     }
 
+    @Test
+    void postNotesRate_whenNotesRateHasAFieldInChildrenEntity_thisFieldNotSetToChildrenField() {
+        NotesRate notesRate = new NotesRate();
+        notesRate.setNoteNumber(33);
+        LongTermCommonNoteVo longTermCommonNoteVo = LongTermCommonNoteVo.builder().noteNumber(44).build();
+        notesRate.setLongTermCommonNoteVo(longTermCommonNoteVo);
+        ResponseEntity<NotesRate> response = testRestTemplate.postForEntity("/api/1.0/NotesRate", notesRate, NotesRate.class);
+        Optional<NotesRate> noteRates = notesRateRepository.findById(response.getBody().getId());
+        assertThat(noteRates.get().getLongTermCommonNoteVo().getNoteNumber()).isEqualTo(44);
+    }
+
 }

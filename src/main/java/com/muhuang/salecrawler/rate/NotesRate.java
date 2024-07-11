@@ -47,32 +47,11 @@ public class NotesRate {
     @OneToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "page_percent_vo_id")
     private PagePercentVo pagePercentVo;
-    //
-//    {
-//    },
+
     @OneToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "long_term_common_note_vo_id")
     private LongTermCommonNoteVo longTermCommonNoteVo;
-    //
-//    {
-//        "startPublishTime":"2023-11-14",
-//            "endPublishTime":"2024-01-13",
-//            "noteNumber":42,
-//            "recentReadNum":58479,
-//            "recentReadBeyondRate":"70.5",
-//            "longTermReadNum":12446,
-//            "longTermReadBeyondRate":"76.7",
-//            "recentSearchPagePercent":"9.0",
-//            "recentFindPagePercent":"47.8",
-//            "recentKolHomePagePercent":"8.7",
-//            "recentFollowPagePercent":"32.2",
-//            "recentOtherPagePercent":"2.3",
-//            "longTermSearchPagePercent":"58.2",
-//            "longTermFindPagePercent":"6.1",
-//            "longTermKolHomePagePercent":"28.8",
-//            "longTermFollowPagePercent":"0.6",
-//            "longTermOtherPagePercent":"6.3"
-//    },
+
     private int mEngagementNum;
     private int mFollowCnt;
 
