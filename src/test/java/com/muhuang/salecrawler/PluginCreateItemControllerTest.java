@@ -172,15 +172,6 @@ public class PluginCreateItemControllerTest {
             }
 
             @Test
-            @Disabled
-            void postItem_whenShopIsValidButShopIsNotInDB_receiveBadRequest() {
-                PluginItemDTO pItem = TestUtil.createValidPluginItem();
-                pItem.setShopId("not-in-db-shop");
-                ResponseEntity<Object> response = postPluginItem(pItem, Object.class);
-                assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
-            }
-
-            @Test
             void postItem_whenShopIsInvalid_receiveApiError() {
                 PluginItemDTO pItem = new PluginItemDTO();
                 ResponseEntity<ApiError> response = postPluginItem(pItem, ApiError.class);
