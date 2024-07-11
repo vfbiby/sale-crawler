@@ -1,13 +1,20 @@
 package com.muhuang.salecrawler.rate;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.muhuang.salecrawler.shared.BaseEntity;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.List;
 
 @Data
 @Entity
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class NotesRate extends BaseEntity {
 
     private String kocId;
@@ -34,7 +41,9 @@ public class NotesRate extends BaseEntity {
     private double videoFullViewRate;
     private double videoFullViewBeyondRate;
     private double picture3sViewRate;
+    @JsonProperty("mEngagementNum")
     private int mEngagementNum;
+    @JsonProperty("mFollowCnt")
     private int mFollowCnt;
 
 

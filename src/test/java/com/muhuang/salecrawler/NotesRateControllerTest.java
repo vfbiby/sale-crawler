@@ -1,13 +1,16 @@
 package com.muhuang.salecrawler;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.muhuang.salecrawler.rate.*;
 import jakarta.annotation.Resource;
+import org.apache.hc.client5.http.classic.methods.HttpHead;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.time.LocalDate;
@@ -101,6 +104,34 @@ public class NotesRateControllerTest {
         ResponseEntity<NotesRate> response = postNotesRate(notesRate);
         Optional<NotesRate> noteRates = notesRateRepository.findById(response.getBody().getId());
         assertThat(noteRates.get().getNoteType().get(0).getContentTag()).isEqualTo("fashion");
+    }
+
+    @Test
+    @DisplayName("three CamelCase property should use JsonProperty annotation on entity field")
+    void postNotesRate_whenNotesRateIsValid_NoteRateSaveToDatabaseWithMEngagementNum() {
+        //if you construct an object to post, it will success when testing, but failed at product environment
+        String jsonToPost = """
+                {
+                    "mEngagementNum": 1711
+                  }""";
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.setContentType(MediaType.APPLICATION_JSON);
+        HttpEntity<String> stringHttpEntity = new HttpEntity<>(jsonToPost, httpHeaders);
+        NotesRate response = new TestRestTemplate().postForObject("http://localhost:8080/api/1.0/NotesRate", stringHttpEntity, NotesRate.class);
+        assertThat(response.getMEngagementNum()).isEqualTo(1711);
+    }
+
+    @Test
+    void postNotesRate_whenNotesRateIsValid_NoteRateSaveToDatabaseWithMFollowCnt() {
+        String jsonToPost = """
+                {
+                    "mFollowCnt": 172
+                  }""";
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.setContentType(MediaType.APPLICATION_JSON);
+        HttpEntity<String> stringHttpEntity = new HttpEntity<>(jsonToPost, httpHeaders);
+        NotesRate response = new TestRestTemplate().postForObject("http://localhost:8080/api/1.0/NotesRate", stringHttpEntity, NotesRate.class);
+        assertThat(response.getMFollowCnt()).isEqualTo(172);
     }
 
     private ResponseEntity<NotesRate> postNotesRate(NotesRate notesRate) {
