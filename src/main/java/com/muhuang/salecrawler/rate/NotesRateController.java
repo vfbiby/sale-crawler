@@ -19,6 +19,8 @@ public class NotesRateController {
     @PostMapping
     void createNotesRate(@RequestBody NotesRate notesRate) {
         ModelMapper modelMapper = new ModelMapper();
+        modelMapper.typeMap(NotesRate.class, LongTermCommonNoteVo.class).addMapping(
+                src -> src.getLongTermCommonNoteVo().getStartPublishTime(), LongTermCommonNoteVo::setStartPublishTime);
         PagePercentVo pagePercentVo = modelMapper.map(notesRate, PagePercentVo.class);
         LongTermCommonNoteVo longTermCommonNoteVo = modelMapper.map(notesRate, LongTermCommonNoteVo.class);
         notesRate.setPagePercentVo(pagePercentVo);

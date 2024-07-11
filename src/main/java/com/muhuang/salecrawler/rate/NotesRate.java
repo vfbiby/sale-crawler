@@ -44,13 +44,13 @@ public class NotesRate {
     private double videoFullViewBeyondRate;
     private double picture3sViewRate;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "page_percent_vo_id")
     private PagePercentVo pagePercentVo;
     //
 //    {
 //    },
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "long_term_common_note_vo_id")
     private LongTermCommonNoteVo longTermCommonNoteVo;
     //
@@ -72,27 +72,6 @@ public class NotesRate {
 //            "longTermKolHomePagePercent":"28.8",
 //            "longTermFollowPagePercent":"0.6",
 //            "longTermOtherPagePercent":"6.3"
-//    },
-//            "longTermCooperateNoteVo":
-//
-//    {
-//        "startPublishTime":"2023-11-14",
-//            "endPublishTime":"2024-01-13",
-//            "noteNumber":4,
-//            "recentReadNum":53462,
-//            "recentReadBeyondRate":"78.6",
-//            "longTermReadNum":7871,
-//            "longTermReadBeyondRate":"74.7",
-//            "recentSearchPagePercent":"6.6",
-//            "recentFindPagePercent":"42.6",
-//            "recentKolHomePagePercent":"12.4",
-//            "recentFollowPagePercent":"35.9",
-//            "recentOtherPagePercent":"2.5",
-//            "longTermSearchPagePercent":"14.4",
-//            "longTermFindPagePercent":"5.0",
-//            "longTermKolHomePagePercent":"65.1",
-//            "longTermFollowPagePercent":"1.0",
-//            "longTermOtherPagePercent":"14.5"
 //    },
     private int mEngagementNum;
     private int mFollowCnt;
