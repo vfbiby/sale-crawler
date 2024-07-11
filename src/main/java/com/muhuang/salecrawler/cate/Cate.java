@@ -1,6 +1,7 @@
 package com.muhuang.salecrawler.cate;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.muhuang.salecrawler.shared.BaseEntity;
 import com.muhuang.salecrawler.shop.Shop;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -14,11 +15,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 @JsonIgnoreProperties({"shop"})
-public class Cate {
-
-    @Id
-    @GeneratedValue
-    private Long id;
+public class Cate extends BaseEntity {
 
     @Column
     private Integer outCateId;

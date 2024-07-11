@@ -1,5 +1,6 @@
 package com.muhuang.salecrawler.schedule;
 
+import com.muhuang.salecrawler.shared.BaseEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -12,11 +13,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class Schedule {
-
-    @Id
-    @GeneratedValue
-    private Long id;
+public class Schedule extends BaseEntity {
 
     @NotNull
     private String outItemId;

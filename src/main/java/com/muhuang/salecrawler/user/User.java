@@ -22,7 +22,7 @@ import java.util.Collection;
 public class User implements UserDetails {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.AUTO)
     @JsonView(Views.Base.class)
     private long id;
 

@@ -1,5 +1,6 @@
 package com.muhuang.salecrawler.shop;
 
+import com.muhuang.salecrawler.shared.BaseEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -16,11 +17,7 @@ import org.hibernate.validator.constraints.URL;
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
-public class Shop {
-
-    @Id
-    @GeneratedValue
-    private Long id;
+public class Shop extends BaseEntity {
 
     @NotNull
     @Column(unique = true)

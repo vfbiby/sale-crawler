@@ -1,5 +1,6 @@
 package com.muhuang.salecrawler.rate;
 
+import com.muhuang.salecrawler.shared.BaseEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -13,11 +14,7 @@ import java.time.LocalDate;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class LongTermCommonNoteVo {
-
-    @Id
-    @GeneratedValue
-    private Long id;
+public class LongTermCommonNoteVo extends BaseEntity {
 
     private LocalDate startPublishTime;
     private LocalDate endPublishTime;

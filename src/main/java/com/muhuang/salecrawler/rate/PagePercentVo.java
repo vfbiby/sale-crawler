@@ -1,5 +1,6 @@
 package com.muhuang.salecrawler.rate;
 
+import com.muhuang.salecrawler.shared.BaseEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,11 +12,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class PagePercentVo {
-
-    @Id
-    @GeneratedValue
-    private Long id;
+public class PagePercentVo extends BaseEntity {
 
     private double impHomefeedPercent;
     private double impSearchPercent;
