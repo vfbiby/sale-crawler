@@ -3,6 +3,7 @@ package com.muhuang.salecrawler.item;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.muhuang.salecrawler.cate.Cate;
 import com.muhuang.salecrawler.sale.Sale;
+import com.muhuang.salecrawler.shared.BaseEntity;
 import com.muhuang.salecrawler.shop.Shop;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
@@ -20,11 +21,7 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Item {
-
-    @Id
-    @GeneratedValue
-    private Long id;
+public class Item extends BaseEntity {
 
     @NotNull
     @Size(min = 10, max = 30)
