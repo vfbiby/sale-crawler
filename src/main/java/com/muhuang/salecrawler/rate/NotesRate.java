@@ -18,7 +18,7 @@ public class NotesRate extends BaseEntity {
 
     @OneToMany(cascade = CascadeType.PERSIST, fetch = FetchType.EAGER)
     @JoinColumn(name = "notes_rate_id")
-    private List<NoteType> noteTypeList;
+    private List<NoteType> noteType;
 
     private int impMedian;
     private double impMedianBeyondRate;
@@ -34,6 +34,9 @@ public class NotesRate extends BaseEntity {
     private double videoFullViewRate;
     private double videoFullViewBeyondRate;
     private double picture3sViewRate;
+    private int mEngagementNum;
+    private int mFollowCnt;
+
 
     @OneToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "page_percent_vo_id")
@@ -42,8 +45,5 @@ public class NotesRate extends BaseEntity {
     @OneToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "long_term_common_note_vo_id")
     private LongTermCommonNoteVo longTermCommonNoteVo;
-
-    private int mEngagementNum;
-    private int mFollowCnt;
 
 }

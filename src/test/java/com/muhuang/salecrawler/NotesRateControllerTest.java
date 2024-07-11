@@ -2,19 +2,13 @@ package com.muhuang.salecrawler;
 
 import com.muhuang.salecrawler.rate.*;
 import jakarta.annotation.Resource;
-import org.hibernate.Hibernate;
-import org.hibernate.Session;
-import org.hibernate.SessionBuilder;
-import org.hibernate.SessionFactory;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
-import org.springframework.data.jpa.provider.HibernateUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.event.annotation.BeforeTestClass;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -103,10 +97,10 @@ public class NotesRateControllerTest {
     @Test
     void postNotesRate_whenNotesRateIsValid_NoteRateSaveToDatabaseWithNoteType() {
         NotesRate notesRate = new NotesRate();
-        notesRate.setNoteTypeList(List.of(NoteType.builder().contentTag("fashion").percent(88.2).build()));
+        notesRate.setNoteType(List.of(NoteType.builder().contentTag("fashion").percent(88.2).build()));
         ResponseEntity<NotesRate> response = postNotesRate(notesRate);
         Optional<NotesRate> noteRates = notesRateRepository.findById(response.getBody().getId());
-        assertThat(noteRates.get().getNoteTypeList().get(0).getContentTag()).isEqualTo("fashion");
+        assertThat(noteRates.get().getNoteType().get(0).getContentTag()).isEqualTo("fashion");
     }
 
     private ResponseEntity<NotesRate> postNotesRate(NotesRate notesRate) {
