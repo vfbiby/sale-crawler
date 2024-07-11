@@ -44,14 +44,16 @@ public class NotesRate {
     private double videoFullViewBeyondRate;
     private double picture3sViewRate;
 
-    @OneToOne(cascade = CascadeType.PERSIST)
+    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "page_percent_vo_id")
     private PagePercentVo pagePercentVo;
     //
 //    {
 //    },
-//            "longTermCommonNoteVo":
-//
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "long_term_common_note_vo_id")
+    private LongTermCommonNoteVo longTermCommonNoteVo;
+    //
 //    {
 //        "startPublishTime":"2023-11-14",
 //            "endPublishTime":"2024-01-13",

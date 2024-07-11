@@ -20,7 +20,9 @@ public class NotesRateController {
     void createNotesRate(@RequestBody NotesRate notesRate) {
         ModelMapper modelMapper = new ModelMapper();
         PagePercentVo pagePercentVo = modelMapper.map(notesRate, PagePercentVo.class);
+        LongTermCommonNoteVo longTermCommonNoteVo = modelMapper.map(notesRate, LongTermCommonNoteVo.class);
         notesRate.setPagePercentVo(pagePercentVo);
+        notesRate.setLongTermCommonNoteVo(longTermCommonNoteVo);
         notesRateRepository.save(notesRate);
     }
 

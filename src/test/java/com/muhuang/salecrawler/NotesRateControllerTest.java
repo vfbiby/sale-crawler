@@ -1,5 +1,6 @@
 package com.muhuang.salecrawler;
 
+import com.muhuang.salecrawler.rate.LongTermCommonNoteVo;
 import com.muhuang.salecrawler.rate.NotesRate;
 import com.muhuang.salecrawler.rate.NotesRateRepository;
 import com.muhuang.salecrawler.rate.PagePercentVo;
@@ -51,6 +52,16 @@ public class NotesRateControllerTest {
         testRestTemplate.postForEntity("/api/1.0/NotesRate", notesRate, Object.class);
         List<NotesRate> noteRates = notesRateRepository.findAll();
         assertThat(noteRates.get(0).getPagePercentVo()).isNotNull();
+    }
+
+    @Test
+    void postNotesRate_whenNotesRateIsValid_NoteRateSaveToDatabaseWithLongTermCommonNoteVo() {
+        NotesRate notesRate = new NotesRate();
+        LongTermCommonNoteVo longTermCommonNoteVo = LongTermCommonNoteVo.builder().build();
+        notesRate.setLongTermCommonNoteVo(longTermCommonNoteVo);
+        testRestTemplate.postForEntity("/api/1.0/NotesRate", notesRate, Object.class);
+        List<NotesRate> noteRates = notesRateRepository.findAll();
+        assertThat(noteRates.get(0).getLongTermCommonNoteVo()).isNotNull();
     }
 
 }
