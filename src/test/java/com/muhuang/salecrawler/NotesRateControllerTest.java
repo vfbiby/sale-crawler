@@ -8,8 +8,10 @@ import org.apache.hc.client5.http.classic.methods.HttpHead;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.web.ServerProperties;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext;
 import org.springframework.http.*;
 import org.springframework.test.context.ActiveProfiles;
 
@@ -28,6 +30,9 @@ public class NotesRateControllerTest {
 
     @Resource
     private NotesRateRepository notesRateRepository;
+
+    @Autowired
+    private ServletWebServerApplicationContext webServerApplicationContext;
 
     @Test
     void postNotesRate_whenNotesRateIsValid_receiveOK() {
@@ -117,7 +122,8 @@ public class NotesRateControllerTest {
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.setContentType(MediaType.APPLICATION_JSON);
         HttpEntity<String> stringHttpEntity = new HttpEntity<>(jsonToPost, httpHeaders);
-        NotesRate response = new TestRestTemplate().postForObject("http://localhost:8080/api/1.0/NotesRate", stringHttpEntity, NotesRate.class);
+        int port = webServerApplicationContext.getWebServer().getPort();
+        NotesRate response = new TestRestTemplate().postForObject("http://localhost:" + port + "/api/1.0/NotesRate", stringHttpEntity, NotesRate.class);
         assertThat(response.getMEngagementNum()).isEqualTo(1711);
     }
 
@@ -130,7 +136,8 @@ public class NotesRateControllerTest {
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.setContentType(MediaType.APPLICATION_JSON);
         HttpEntity<String> stringHttpEntity = new HttpEntity<>(jsonToPost, httpHeaders);
-        NotesRate response = new TestRestTemplate().postForObject("http://localhost:8080/api/1.0/NotesRate", stringHttpEntity, NotesRate.class);
+        int port = webServerApplicationContext.getWebServer().getPort();
+        NotesRate response = new TestRestTemplate().postForObject("http://localhost:" + port + "/api/1.0/NotesRate", stringHttpEntity, NotesRate.class);
         assertThat(response.getMFollowCnt()).isEqualTo(172);
     }
 
