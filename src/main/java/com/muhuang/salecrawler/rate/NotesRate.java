@@ -3,6 +3,8 @@ package com.muhuang.salecrawler.rate;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.util.List;
+
 @Data
 @Entity
 public class NotesRate {
@@ -16,19 +18,11 @@ public class NotesRate {
     private int videoNoteNumber;
     private double hundredLikePercent;
     private double thousandLikePercent;
-    //                    "noteType":[
-//
-//    {
-//        "contentTag":"时尚",
-//            "percent":"87.9"
-//    },
-//
-//    {
-//        "contentTag":"出行旅游",
-//            "percent":"6.1"
-//    }
-//    ],
-//            "tradeNames":null,
+
+    @OneToMany(cascade = CascadeType.PERSIST, fetch = FetchType.EAGER)
+    @JoinColumn(name = "notes_rate_id")
+    private List<NoteType> noteTypeList;
+
     private int impMedian;
     private double impMedianBeyondRate;
     private int readMedian;
