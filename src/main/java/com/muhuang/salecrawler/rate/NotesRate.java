@@ -43,21 +43,12 @@ public class NotesRate {
     private double videoFullViewRate;
     private double videoFullViewBeyondRate;
     private double picture3sViewRate;
-    //            "pagePercentVo":
-//
+
+    @OneToOne(cascade = CascadeType.PERSIST)
+    @JoinColumn(name = "page_percent_vo_id")
+    private PagePercentVo pagePercentVo;
+    //
 //    {
-//        "impHomefeedPercent":0.716,
-//            "impSearchPercent":0.077,
-//            "impFollowPercent":0.05,
-//            "impDetailPercent":0.134,
-//            "impNearbyPercent":0,
-//            "impOtherPercent":0.02300000000000002,
-//            "readHomefeedPercent":0.664,
-//            "readSearchPercent":0.075,
-//            "readFollowPercent":0.099,
-//            "readDetailPercent":0.136,
-//            "readNearbyPercent":0,
-//            "readOtherPercent":0.02599999999999994
 //    },
 //            "longTermCommonNoteVo":
 //

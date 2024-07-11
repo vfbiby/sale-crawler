@@ -1,5 +1,6 @@
 package com.muhuang.salecrawler.rate;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,6 +18,9 @@ public class NotesRateController {
 
     @PostMapping
     void createNotesRate(@RequestBody NotesRate notesRate) {
+        ModelMapper modelMapper = new ModelMapper();
+        PagePercentVo pagePercentVo = modelMapper.map(notesRate, PagePercentVo.class);
+        notesRate.setPagePercentVo(pagePercentVo);
         notesRateRepository.save(notesRate);
     }
 
