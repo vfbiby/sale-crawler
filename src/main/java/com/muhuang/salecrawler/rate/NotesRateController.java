@@ -17,7 +17,8 @@ public class NotesRateController {
     }
 
     @PostMapping
-    void createNotesRate(@RequestBody NotesRate notesRate) {
+    NotesRate createNotesRate(@RequestBody NotesRate notesRate) {
+        System.out.println(notesRate);
         ModelMapper modelMapper = new ModelMapper();
         modelMapper.typeMap(NotesRate.class, LongTermCommonNoteVo.class).addMapping(
                 src -> src.getLongTermCommonNoteVo().getStartPublishTime(), LongTermCommonNoteVo::setStartPublishTime);
@@ -25,7 +26,7 @@ public class NotesRateController {
         LongTermCommonNoteVo longTermCommonNoteVo = modelMapper.map(notesRate, LongTermCommonNoteVo.class);
         notesRate.setPagePercentVo(pagePercentVo);
         notesRate.setLongTermCommonNoteVo(longTermCommonNoteVo);
-        notesRateRepository.save(notesRate);
+        return notesRateRepository.save(notesRate);
     }
 
 }

@@ -14,8 +14,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.time.LocalDate;
-import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -57,6 +57,16 @@ public class NotesRateControllerTest {
     }
 
     @Test
+    void postNotesRate_whenNotesRateIsValid_pagePercentVoFieldsSaveToDatabase() {
+        NotesRate notesRate = new NotesRate();
+        PagePercentVo pagePercentVo = PagePercentVo.builder().impHomefeedPercent(88.2).build();
+        notesRate.setPagePercentVo(pagePercentVo);
+        ResponseEntity<NotesRate> response = testRestTemplate.postForEntity("/api/1.0/NotesRate", notesRate, NotesRate.class);
+        Optional<NotesRate> noteRates = notesRateRepository.findById(response.getBody().getId());
+        assertThat(noteRates.get().getPagePercentVo().getImpHomefeedPercent()).isEqualTo(88.2);
+    }
+
+    @Test
     void postNotesRate_whenNotesRateIsValid_NoteRateSaveToDatabaseWithLongTermCommonNoteVo() {
         NotesRate notesRate = new NotesRate();
         LongTermCommonNoteVo longTermCommonNoteVo = LongTermCommonNoteVo.builder().build();
@@ -64,6 +74,17 @@ public class NotesRateControllerTest {
         testRestTemplate.postForEntity("/api/1.0/NotesRate", notesRate, Object.class);
         List<NotesRate> noteRates = notesRateRepository.findAll();
         assertThat(noteRates.get(0).getLongTermCommonNoteVo()).isNotNull();
+    }
+
+    @Test
+    void postNotesRate_whenNotesRateIsValid_longTermCommonNoteVoFieldsSaveToDatabase() {
+        NotesRate notesRate = new NotesRate();
+        LocalDate now = LocalDate.now();
+        LongTermCommonNoteVo longTermCommonNoteVo = LongTermCommonNoteVo.builder().startPublishTime(now).build();
+        notesRate.setLongTermCommonNoteVo(longTermCommonNoteVo);
+        ResponseEntity<NotesRate> response = testRestTemplate.postForEntity("/api/1.0/NotesRate", notesRate, NotesRate.class);
+        Optional<NotesRate> noteRates = notesRateRepository.findById(response.getBody().getId());
+        assertThat(noteRates.get().getLongTermCommonNoteVo().getStartPublishTime()).isEqualTo(now);
     }
 
 }
