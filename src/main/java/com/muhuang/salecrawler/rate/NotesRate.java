@@ -1,5 +1,6 @@
 package com.muhuang.salecrawler.rate;
 
+import com.muhuang.salecrawler.shared.BaseEntity;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -7,11 +8,7 @@ import java.util.List;
 
 @Data
 @Entity
-public class NotesRate {
-
-    @Id
-    @GeneratedValue
-    private Long id;
+public class NotesRate extends BaseEntity {
 
     private String kocId;
     private int noteNumber;
