@@ -14,11 +14,4 @@ public class UserVM {
 
     private String image;
 
-    public UserVM(User user) {
-        this.setId(user.getId());
-        this.setDisplayName(user.getDisplayName());
-        this.setUsername(user.getUsername());
-        this.setImage(user.getImage());
-    }
-
 }

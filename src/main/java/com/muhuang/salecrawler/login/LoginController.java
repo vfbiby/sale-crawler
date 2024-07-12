@@ -3,6 +3,7 @@ package com.muhuang.salecrawler.login;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.muhuang.salecrawler.configuration.AuthServices;
 import com.muhuang.salecrawler.user.User;
+import com.muhuang.salecrawler.user.UserMapper;
 import com.muhuang.salecrawler.user.UserVM;
 import com.muhuang.salecrawler.user.Views;
 import org.springframework.security.core.Authentication;
@@ -24,7 +25,7 @@ public class LoginController {
     @PostMapping
     UserVM handleLogin(Authentication authentication) {
         UserDetails userDetails = authService.loadUserByUsername(authentication.getName());
-        return new UserVM((User) userDetails);
+        return UserMapper.INSTANCE.userToUserVM((User) userDetails);
     }
 
 }
