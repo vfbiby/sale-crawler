@@ -1,8 +1,9 @@
 package com.muhuang.salecrawler.user;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonView;
-import jakarta.persistence.*;
+import com.muhuang.salecrawler.shared.BaseEntity;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -19,17 +20,10 @@ import java.util.Collection;
 @AllArgsConstructor
 @Builder
 @Table(name = "users")
-public class User implements UserDetails {
+public class User extends BaseEntity implements UserDetails {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @JsonView(Views.Base.class)
-    private long id;
-
-    @JsonView(Views.Base.class)
     private String displayName;
 
-    @JsonView(Views.Base.class)
     private String username;
 
     private String password;
@@ -40,7 +34,6 @@ public class User implements UserDetails {
         return AuthorityUtils.createAuthorityList("Role_USER");
     }
 
-    @JsonView(Views.Base.class)
     private String image;
 
     @Override

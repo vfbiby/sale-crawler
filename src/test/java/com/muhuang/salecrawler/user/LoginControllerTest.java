@@ -2,9 +2,6 @@ package com.muhuang.salecrawler.user;
 
 import com.muhuang.salecrawler.share.TestUtil;
 import com.muhuang.salecrawler.shared.ApiError;
-import com.muhuang.salecrawler.user.User;
-import com.muhuang.salecrawler.user.UserRepository;
-import com.muhuang.salecrawler.user.UserService;
 import jakarta.annotation.Resource;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
@@ -87,11 +84,10 @@ public class LoginControllerTest {
     void postLogin_withValidCredentials_receiveLoggedInUserId() {
         User inDB = userService.save(TestUtil.createValidUser());
         authenticate();
-        ResponseEntity<Map<String, Object>> response = login(new ParameterizedTypeReference<>() {
+        ResponseEntity<UserVM> response = login(new ParameterizedTypeReference<>() {
         });
-        Map<String, Object> body = response.getBody();
-        Integer id = (Integer) Objects.requireNonNull(body).get("id");
-        assertThat(id).isEqualTo(inDB.getId());
+        UserVM body = response.getBody();
+        assertThat(body.getId()).isEqualTo(inDB.getId());
     }
 
     @Test
