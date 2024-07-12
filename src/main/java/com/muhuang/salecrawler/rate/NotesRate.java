@@ -22,7 +22,7 @@ public class NotesRate extends BaseEntity {
     @Column(updatable = false)
     private LocalDate captureDate;
 
-    @NotNull
+    @NotNull(message = "{saleCrawler.constraints.notesRate.type.NotNull.message}")
     @Enumerated(EnumType.STRING)
     private NotesType type;
 

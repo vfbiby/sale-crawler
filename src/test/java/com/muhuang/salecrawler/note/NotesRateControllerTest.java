@@ -227,6 +227,15 @@ public class NotesRateControllerTest {
         assertThat(validationErrors.get("userId")).isEqualTo("koc userId must not be null");
     }
 
+    @Test
+    void postNotesRate_whenNotesRateHasNullType_receiveMessageOfNullErrorsForType() {
+        NotesRate notesRate = getNotesRate();
+        notesRate.setType(null);
+        ResponseEntity<ApiError> response = postNotesRate(notesRate, ApiError.class);
+        Map<String, String> validationErrors = response.getBody().getValidationErrors();
+        assertThat(validationErrors.get("type")).isEqualTo("notesRate type must not be null");
+    }
+
     private <T> ResponseEntity<T> postNotesRate(NotesRate notesRate, Class<T> responseType) {
         return testRestTemplate.postForEntity(API_1_0_NOTES_RATE, notesRate, responseType);
     }
