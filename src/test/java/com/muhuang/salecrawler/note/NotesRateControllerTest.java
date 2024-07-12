@@ -41,7 +41,7 @@ public class NotesRateControllerTest {
 
     @Test
     void postNotesRate_whenNotesRateIsValid_receiveOK() {
-        NotesRate notesRate = new NotesRate();
+        NotesRate notesRate = getNotesRate();
         ResponseEntity<Object> response = testRestTemplate.postForEntity(API_1_0_NOTES_RATE, notesRate, Object.class);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
     }
@@ -65,7 +65,7 @@ public class NotesRateControllerTest {
 
     @Test
     void postNotesRate_whenNotesRateIsValid_NoteRateSaveToDatabaseWithPagePercentVo() {
-        NotesRate notesRate = new NotesRate();
+        NotesRate notesRate = getNotesRate();
         notesRate.setPagePercentVo(PagePercentVo.builder().build());
         ResponseEntity<NotesRate> response = postNotesRate(notesRate, NotesRate.class);
         Optional<NotesRate> noteRates = notesRateRepository.findById(response.getBody().getId());
@@ -74,7 +74,7 @@ public class NotesRateControllerTest {
 
     @Test
     void postNotesRate_whenNotesRateIsValid_pagePercentVoFieldsSaveToDatabase() {
-        NotesRate notesRate = new NotesRate();
+        NotesRate notesRate = getNotesRate();
         PagePercentVo pagePercentVo = PagePercentVo.builder().impHomefeedPercent(88.2).build();
         notesRate.setPagePercentVo(pagePercentVo);
         ResponseEntity<NotesRate> response = postNotesRate(notesRate, NotesRate.class);
@@ -84,7 +84,7 @@ public class NotesRateControllerTest {
 
     @Test
     void postNotesRate_whenNotesRateIsValid_NoteRateSaveToDatabaseWithLongTermCommonNoteVo() {
-        NotesRate notesRate = new NotesRate();
+        NotesRate notesRate = getNotesRate();
         LongTermCommonNoteVo longTermCommonNoteVo = LongTermCommonNoteVo.builder().build();
         notesRate.setLongTermCommonNoteVo(longTermCommonNoteVo);
         ResponseEntity<NotesRate> response = postNotesRate(notesRate, NotesRate.class);
@@ -94,7 +94,7 @@ public class NotesRateControllerTest {
 
     @Test
     void postNotesRate_whenNotesRateIsValid_longTermCommonNoteVoFieldsSaveToDatabase() {
-        NotesRate notesRate = new NotesRate();
+        NotesRate notesRate = getNotesRate();
         LocalDate now = LocalDate.now();
         LongTermCommonNoteVo longTermCommonNoteVo = LongTermCommonNoteVo.builder().startPublishTime(now).build();
         notesRate.setLongTermCommonNoteVo(longTermCommonNoteVo);
@@ -105,7 +105,7 @@ public class NotesRateControllerTest {
 
     @Test
     void postNotesRate_whenNotesRateHasAFieldInChildrenEntity_thisFieldNotSetToChildrenField() {
-        NotesRate notesRate = new NotesRate();
+        NotesRate notesRate = getNotesRate();
         notesRate.setNoteNumber(33);
         LongTermCommonNoteVo longTermCommonNoteVo = LongTermCommonNoteVo.builder().noteNumber(44).build();
         notesRate.setLongTermCommonNoteVo(longTermCommonNoteVo);
@@ -116,7 +116,7 @@ public class NotesRateControllerTest {
 
     @Test
     void postNotesRate_whenNotesRateIsValid_NoteRateSaveToDatabaseWithNoteType() {
-        NotesRate notesRate = new NotesRate();
+        NotesRate notesRate = getNotesRate();
         notesRate.setNoteType(List.of(NoteType.builder().contentTag("fashion").percent(88.2).build()));
         ResponseEntity<NotesRate> response = postNotesRate(notesRate, NotesRate.class);
         Optional<NotesRate> noteRates = notesRateRepository.findById(response.getBody().getId());
@@ -125,7 +125,7 @@ public class NotesRateControllerTest {
 
     @Test
     void postNotesRate_whenNotesRateIsValid_NoteRateSaveToDatabaseWithCalculatedProperty() {
-        NotesRate notesRate = new NotesRate();
+        NotesRate notesRate = getNotesRate();
         notesRate.setUserId("5bb0275645c6e8000154f64c");
         notesRate.setCaptureDate(LocalDate.parse("2024-07-12"));
         notesRate.setType(NotesType.D30);
@@ -139,6 +139,8 @@ public class NotesRateControllerTest {
         //if you construct an object to post, it will success when testing, but failed at product environment
         String jsonToPost = """
                 {
+                    "userId": "5bb0275645c6e8000154f64c",
+                    "type": "D30",
                     "mEngagementNum": 1711
                   }""";
         HttpHeaders httpHeaders = new HttpHeaders();
@@ -154,6 +156,8 @@ public class NotesRateControllerTest {
     void postNotesRate_whenNotesRateIsValid_NoteRateSaveToDatabaseWithMFollowCnt() {
         String jsonToPost = """
                 {
+                    "userId": "5bb0275645c6e8000154f64c",
+                    "type": "D30",
                     "mFollowCnt": 172
                   }""";
         HttpHeaders httpHeaders = new HttpHeaders();
@@ -169,6 +173,22 @@ public class NotesRateControllerTest {
     void postNotesRate_whenNotesRateIsExist_receiveBadRequest() {
         NotesRate notesRate = getNotesRate();
         notesRateRepository.save(notesRate);
+        ResponseEntity<NotesRate> response = postNotesRate(notesRate, NotesRate.class);
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+    }
+
+    @Test
+    void postNotesRate_whenNotesRateHasNullUserId_receiveBadRequest() {
+        NotesRate notesRate = getNotesRate();
+        notesRate.setUserId(null);
+        ResponseEntity<NotesRate> response = postNotesRate(notesRate, NotesRate.class);
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+    }
+
+    @Test
+    void postNotesRate_whenNotesRateHasNullType_receiveBadRequest() {
+        NotesRate notesRate = getNotesRate();
+        notesRate.setType(null);
         ResponseEntity<NotesRate> response = postNotesRate(notesRate, NotesRate.class);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
     }
@@ -196,6 +216,15 @@ public class NotesRateControllerTest {
         ResponseEntity<ApiError> response = postNotesRate(notesRate, ApiError.class);
         Map<String, String> validationErrors = response.getBody().getValidationErrors();
         assertThat(validationErrors.get("NotesRate")).isEqualTo("NotesRate of today exist!");
+    }
+
+    @Test
+    void postNotesRate_whenNotesRateHasNullUserId_receiveMessageOfNullErrorsForUserId() {
+        NotesRate notesRate = getNotesRate();
+        notesRate.setUserId(null);
+        ResponseEntity<ApiError> response = postNotesRate(notesRate, ApiError.class);
+        Map<String, String> validationErrors = response.getBody().getValidationErrors();
+        assertThat(validationErrors.get("userId")).isEqualTo("koc userId must not be null");
     }
 
     private <T> ResponseEntity<T> postNotesRate(NotesRate notesRate, Class<T> responseType) {
