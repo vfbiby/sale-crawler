@@ -1,5 +1,6 @@
-package com.muhuang.salecrawler;
+package com.muhuang.salecrawler.user;
 
+import com.muhuang.salecrawler.share.TestUtil;
 import com.muhuang.salecrawler.user.User;
 import com.muhuang.salecrawler.user.UserRepository;
 import com.muhuang.salecrawler.user.UserService;

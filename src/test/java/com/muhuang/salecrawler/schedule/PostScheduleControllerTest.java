@@ -1,4 +1,4 @@
-package com.muhuang.salecrawler;
+package com.muhuang.salecrawler.schedule;
 
 import com.muhuang.salecrawler.schedule.Schedule;
 import com.muhuang.salecrawler.schedule.ScheduleRepository;

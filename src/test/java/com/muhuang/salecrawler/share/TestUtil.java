@@ -1,4 +1,4 @@
-package com.muhuang.salecrawler;
+package com.muhuang.salecrawler.share;
 
 import com.muhuang.salecrawler.item.Item;
 import com.muhuang.salecrawler.item.ItemDTO;
@@ -13,7 +13,7 @@ import java.util.List;
 
 public class TestUtil {
 
-    static User createValidUser() {
+     public static User createValidUser() {
         User user = new User();
         user.setDisplayName("test-display");
         user.setUsername("test-username");
@@ -22,7 +22,7 @@ public class TestUtil {
         return user;
     }
 
-    static PluginItemDTO createValidPluginItemShop() {
+     public static PluginItemDTO createValidPluginItemShop() {
         return PluginItemDTO.builder().shopId("3423343434")
                 .catId(1779767080)
                 .catName("06/25福利回馈")
@@ -32,7 +32,7 @@ public class TestUtil {
                 .shopUrl("https://shop105703949.taobao.com").build();
     }
 
-    static PluginItemDTO createValidPluginItem() {
+     public static PluginItemDTO createValidPluginItem() {
         PluginItemDTO pItem = createValidPluginItemShop();
         ItemDTO item = createItemDTO();
         pItem.setItems(List.of(item));
@@ -45,18 +45,18 @@ public class TestUtil {
                 .pic("https://img.taobao.com/main.jpg").build();
     }
 
-    static Item createValidItem() {
+     public static Item createValidItem() {
         return createItemWithDetail("32838242344",
                 LocalDate.now().toString(), "2024气质新款夏装连衣裙", "https://xx.taobao.com/v.img");
     }
 
     @SneakyThrows
-    static Item createItemWithDetail(String itemId, String date, String title, String pic) {
+    public static Item createItemWithDetail(String itemId, String date, String title, String pic) {
         return Item.builder().outItemId(itemId).title(title)
                 .pic(pic).publishedAt(new SimpleDateFormat("yyyy-MM-dd").parse(date)).build();
     }
 
-    static Shop createValidShop() {
+     public static Shop createValidShop() {
         return Shop.builder().outShopId("38888273").shopName("SKY").shopUrl("https://sky.taobao.com").build();
     }
 }

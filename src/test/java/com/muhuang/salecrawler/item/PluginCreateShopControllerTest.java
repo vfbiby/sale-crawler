@@ -1,10 +1,8 @@
-package com.muhuang.salecrawler;
+package com.muhuang.salecrawler.item;
 
+import com.muhuang.salecrawler.share.TestUtil;
 import com.muhuang.salecrawler.cate.Cate;
 import com.muhuang.salecrawler.cate.CateRepository;
-import com.muhuang.salecrawler.item.Item;
-import com.muhuang.salecrawler.item.ItemRepository;
-import com.muhuang.salecrawler.item.PluginItemDTO;
 import com.muhuang.salecrawler.shop.Shop;
 import com.muhuang.salecrawler.shop.ShopRepository;
 import jakarta.annotation.Resource;
@@ -18,7 +16,7 @@ import org.springframework.test.context.ActiveProfiles;
 
 import java.util.List;
 
-import static com.muhuang.salecrawler.PluginCreateItemControllerTest.API_1_0_PLUGIN_ITEMS;
+import static com.muhuang.salecrawler.item.PluginCreateItemControllerTest.API_1_0_PLUGIN_ITEMS;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 

@@ -1,10 +1,9 @@
-package com.muhuang.salecrawler;
+package com.muhuang.salecrawler.item;
 
+import com.muhuang.salecrawler.share.TestUtil;
 import com.muhuang.salecrawler.cate.Cate;
 import com.muhuang.salecrawler.cate.CateRepository;
-import com.muhuang.salecrawler.item.Item;
-import com.muhuang.salecrawler.item.ItemRepository;
-import com.muhuang.salecrawler.item.PluginItemDTO;
+import com.muhuang.salecrawler.sale.SaleRepository;
 import com.muhuang.salecrawler.shop.ShopRepository;
 import jakarta.annotation.Resource;
 import org.junit.jupiter.api.BeforeEach;
@@ -18,9 +17,8 @@ import org.springframework.test.context.ActiveProfiles;
 
 import java.util.List;
 
-import static com.muhuang.salecrawler.PluginCreateItemControllerTest.API_1_0_PLUGIN_ITEMS;
+import static com.muhuang.salecrawler.item.PluginCreateItemControllerTest.API_1_0_PLUGIN_ITEMS;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.catchIndexOutOfBoundsException;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")
@@ -38,8 +36,12 @@ public class PluginCreateCateControllerTest {
     @Resource
     private ShopRepository shopRepository;
 
+    @Resource
+    private SaleRepository saleRepository;
+
     @BeforeEach
     public void cleanup() {
+//        saleRepository.deleteAll();
         itemRepository.deleteAll();
         cateRepository.deleteAll();
         shopRepository.deleteAll();

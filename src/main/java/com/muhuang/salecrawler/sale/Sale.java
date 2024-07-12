@@ -3,6 +3,7 @@ package com.muhuang.salecrawler.sale;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.muhuang.salecrawler.item.Item;
+import com.muhuang.salecrawler.shared.BaseEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -17,11 +18,7 @@ import java.util.Date;
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
-public class Sale {
-
-    @Id
-    @GeneratedValue
-    private Long id;
+public class Sale extends BaseEntity {
 
     @Temporal(TemporalType.TIMESTAMP)
     private Date saleDate;

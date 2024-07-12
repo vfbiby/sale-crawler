@@ -1,10 +1,7 @@
-package com.muhuang.salecrawler;
+package com.muhuang.salecrawler.item;
 
+import com.muhuang.salecrawler.share.TestUtil;
 import com.muhuang.salecrawler.cate.CateRepository;
-import com.muhuang.salecrawler.item.Item;
-import com.muhuang.salecrawler.item.ItemDTO;
-import com.muhuang.salecrawler.item.ItemRepository;
-import com.muhuang.salecrawler.item.PluginItemDTO;
 import com.muhuang.salecrawler.shared.ApiError;
 import com.muhuang.salecrawler.shop.Shop;
 import com.muhuang.salecrawler.shop.ShopRepository;
@@ -50,7 +47,7 @@ public class PluginCreateItemControllerTest {
     @Nested
     class Create {
 
-        @AfterEach
+        @BeforeEach
         public void cleanup() {
             itemRepository.deleteAll();
             cateRepository.deleteAll();

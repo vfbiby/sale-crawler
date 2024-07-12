@@ -1,9 +1,13 @@
-package com.muhuang.salecrawler;
+package com.muhuang.salecrawler.shop;
 
+import com.muhuang.salecrawler.share.TestPage;
+import com.muhuang.salecrawler.share.TestUtil;
+import com.muhuang.salecrawler.cate.CateRepository;
+import com.muhuang.salecrawler.item.ItemRepository;
+import com.muhuang.salecrawler.sale.SaleRepository;
 import com.muhuang.salecrawler.shared.ApiError;
 import com.muhuang.salecrawler.shared.GenericResponse;
-import com.muhuang.salecrawler.shop.Shop;
-import com.muhuang.salecrawler.shop.ShopRepository;
+import jakarta.annotation.Resource;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -27,14 +31,26 @@ public class ShopControllerTest {
 
     public static final String API_1_0_SHOP = "/api/1.0/shops";
 
-    @Autowired
+    @Resource
     private ShopRepository shopRepository;
 
     @Autowired
     private TestRestTemplate testRestTemplate;
 
+    @Resource
+    private ItemRepository itemRepository;
+
+    @Resource
+    private SaleRepository saleRepository;
+
+    @Resource
+    private CateRepository cateRepository;
+
     @BeforeEach
     public void cleanup() {
+        cateRepository.deleteAll();
+        saleRepository.deleteAll();
+        itemRepository.deleteAll();
         shopRepository.deleteAll();
     }
 

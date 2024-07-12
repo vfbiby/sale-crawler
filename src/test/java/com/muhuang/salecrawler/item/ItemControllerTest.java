@@ -1,14 +1,12 @@
-package com.muhuang.salecrawler;
+package com.muhuang.salecrawler.item;
 
+import com.muhuang.salecrawler.share.TestPage;
+import com.muhuang.salecrawler.share.TestUtil;
 import com.muhuang.salecrawler.cate.CateRepository;
-import com.muhuang.salecrawler.item.Item;
-import com.muhuang.salecrawler.item.ItemRepository;
-import com.muhuang.salecrawler.item.ItemService;
 import com.muhuang.salecrawler.shop.Shop;
 import com.muhuang.salecrawler.shop.ShopRepository;
 import com.muhuang.salecrawler.shop.ShopService;
 import jakarta.annotation.Resource;
-import org.h2.util.TempFileDeleter;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;

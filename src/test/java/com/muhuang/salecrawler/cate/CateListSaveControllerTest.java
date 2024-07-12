@@ -1,4 +1,4 @@
-package com.muhuang.salecrawler;
+package com.muhuang.salecrawler.cate;
 
 import com.muhuang.salecrawler.cate.CateChildrenDTO;
 import com.muhuang.salecrawler.cate.CateDTO;

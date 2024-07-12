@@ -1,4 +1,4 @@
-package com.muhuang.salecrawler;
+package com.muhuang.salecrawler.shop;
 
 import com.muhuang.salecrawler.shop.Shop;
 import com.muhuang.salecrawler.shop.ShopRepository;

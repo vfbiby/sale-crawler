@@ -1,4 +1,4 @@
-package com.muhuang.salecrawler;
+package com.muhuang.salecrawler.share;
 
 import lombok.Data;
 import org.springframework.data.domain.Page;

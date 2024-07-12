@@ -1,10 +1,10 @@
-package com.muhuang.salecrawler;
+package com.muhuang.salecrawler.item;
 
-import com.muhuang.salecrawler.item.Item;
-import com.muhuang.salecrawler.item.ItemRepository;
+import com.muhuang.salecrawler.share.TestPage;
+import com.muhuang.salecrawler.share.TestUtil;
+import com.muhuang.salecrawler.cate.CateRepository;
 import com.muhuang.salecrawler.sale.Sale;
 import com.muhuang.salecrawler.sale.SaleRepository;
-import com.muhuang.salecrawler.shop.Shop;
 import com.muhuang.salecrawler.shop.ShopRepository;
 import jakarta.annotation.Resource;
 import org.junit.jupiter.api.AfterEach;
@@ -36,11 +36,15 @@ public class ItemSaleControllerTest {
     @Resource
     private SaleRepository saleRepository;
 
+    @Resource
+    private CateRepository cateRepository;
+
     @Autowired
     private TestRestTemplate testRestTemplate;
 
     @AfterEach
     public void cleanup() {
+        cateRepository.deleteAll();
         saleRepository.deleteAll();
         itemRepository.deleteAll();
         shopRepository.deleteAll();
@@ -57,7 +61,7 @@ public class ItemSaleControllerTest {
     }
 
     @Test
-    void getItems_whenItemHasADaySale_receiveSaleListSizeIsOne() {
+    void getItems_whenItemHasOneDaySale_receiveSaleListSizeIsOne() {
         Item item = TestUtil.createValidItem();
         item.setSaleList(List.of(createSale()));
         itemRepository.save(item);

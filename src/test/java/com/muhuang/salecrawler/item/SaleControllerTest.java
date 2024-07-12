@@ -1,7 +1,7 @@
-package com.muhuang.salecrawler;
+package com.muhuang.salecrawler.item;
 
-import com.muhuang.salecrawler.item.Item;
-import com.muhuang.salecrawler.item.ItemRepository;
+import com.muhuang.salecrawler.share.TestPage;
+import com.muhuang.salecrawler.share.TestUtil;
 import com.muhuang.salecrawler.sale.Sale;
 import com.muhuang.salecrawler.sale.SaleRepository;
 import com.muhuang.salecrawler.shop.ShopRepository;
