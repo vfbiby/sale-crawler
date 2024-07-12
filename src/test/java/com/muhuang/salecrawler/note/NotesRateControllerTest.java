@@ -180,6 +180,14 @@ public class NotesRateControllerTest {
         assertThat(response.getBody().getUrl()).isEqualTo(API_1_0_NOTES_RATE);
     }
 
+    @Test
+    void postNotesRate_whenNotesRateIsExist_receiveApiErrorWithValidationErrors() {
+        NotesRate notesRate = getNotesRate();
+        notesRateRepository.save(notesRate);
+        ResponseEntity<ApiError> response = postNotesRate(notesRate, ApiError.class);
+        assertThat(response.getBody().getValidationErrors().size()).isEqualTo(1);
+    }
+
     private <T> ResponseEntity<T> postNotesRate(NotesRate notesRate, Class<T> responseType) {
         return testRestTemplate.postForEntity(API_1_0_NOTES_RATE, notesRate, responseType);
     }
