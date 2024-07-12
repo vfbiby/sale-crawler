@@ -15,7 +15,6 @@ public class NotesRateController {
 
     @PostMapping
     NotesRate createNotesRate(@RequestBody NotesRate notesRate) {
-        System.out.println(notesRate);
         return notesRateRepository.save(notesRate);
     }
 

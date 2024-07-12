@@ -1,14 +1,10 @@
 package com.muhuang.salecrawler.note;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.muhuang.salecrawler.rate.*;
 import jakarta.annotation.Resource;
-import org.apache.hc.client5.http.classic.methods.HttpHead;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.web.ServerProperties;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext;
@@ -112,6 +108,16 @@ public class NotesRateControllerTest {
     }
 
     @Test
+    void postNotesRate_whenNotesRateIsValid_NoteRateSaveToDatabaseWithCalculatedProperty() {
+        NotesRate notesRate = new NotesRate();
+        notesRate.setUserId("5bb0275645c6e8000154f64c");
+        notesRate.setCaptureDate(LocalDate.parse("2024-07-12"));
+        notesRate.setType(NotesType.D30);
+        ResponseEntity<NotesRate> response = postNotesRate(notesRate);
+        assertThat(response.getBody().getUniqueNotesRateId()).isEqualTo("5bb0275645c6e8000154f64c2024-07-12D30");
+    }
+
+    @Test
     @DisplayName("three CamelCase property should use JsonProperty annotation on entity field")
     void postNotesRate_whenNotesRateIsValid_NoteRateSaveToDatabaseWithMEngagementNum() {
         //if you construct an object to post, it will success when testing, but failed at product environment
@@ -123,7 +129,8 @@ public class NotesRateControllerTest {
         httpHeaders.setContentType(MediaType.APPLICATION_JSON);
         HttpEntity<String> stringHttpEntity = new HttpEntity<>(jsonToPost, httpHeaders);
         int port = webServerApplicationContext.getWebServer().getPort();
-        NotesRate response = new TestRestTemplate().postForObject("http://localhost:" + port + "/api/1.0/NotesRate", stringHttpEntity, NotesRate.class);
+        String url = "http://localhost:" + port + "/api/1.0/NotesRate";
+        NotesRate response = new TestRestTemplate().postForObject(url, stringHttpEntity, NotesRate.class);
         assertThat(response.getMEngagementNum()).isEqualTo(1711);
     }
 
@@ -137,7 +144,8 @@ public class NotesRateControllerTest {
         httpHeaders.setContentType(MediaType.APPLICATION_JSON);
         HttpEntity<String> stringHttpEntity = new HttpEntity<>(jsonToPost, httpHeaders);
         int port = webServerApplicationContext.getWebServer().getPort();
-        NotesRate response = new TestRestTemplate().postForObject("http://localhost:" + port + "/api/1.0/NotesRate", stringHttpEntity, NotesRate.class);
+        String url = "http://localhost:" + port + "/api/1.0/NotesRate";
+        NotesRate response = new TestRestTemplate().postForObject(url, stringHttpEntity, NotesRate.class);
         assertThat(response.getMFollowCnt()).isEqualTo(172);
     }
 

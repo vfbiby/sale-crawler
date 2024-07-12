@@ -3,6 +3,7 @@ Content-Type: application/json
 
 {
   "userId": "5bb0275645c6e8000154f64c",
+  "type": "D30",
   "noteNumber": 33,
   "videoNoteNumber": 31,
   "hundredLikePercent": "84.8",

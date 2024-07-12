@@ -8,6 +8,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Data
@@ -17,8 +18,22 @@ import java.util.List;
 @AllArgsConstructor
 public class NotesRate extends BaseEntity {
 
-    @JsonProperty("userId")
-    private String kocId;
+    @Column(updatable = false)
+    private LocalDate captureDate;
+
+    @Enumerated(EnumType.STRING)
+    private NotesType type;
+
+    private String uniqueNotesRateId;
+
+    @PrePersist
+    private void onLoad() {
+        if (this.getCaptureDate() == null)
+            this.setCaptureDate(LocalDate.now());
+        this.setUniqueNotesRateId(userId + captureDate.toString() + type);
+    }
+
+    private String userId;
     private int noteNumber;
     private int videoNoteNumber;
     private double hundredLikePercent;
