@@ -10,6 +10,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/1.0/NotesRate")
@@ -22,6 +23,11 @@ public class NotesRateController {
     @PostMapping
     NotesRate createNotesRate(@Valid @RequestBody NotesRate notesRate) {
         return notesRateService.save(notesRate);
+    }
+
+    @GetMapping
+    List<NotesRate> getNotesRate() {
+        return notesRateService.findAll();
     }
 
     @ExceptionHandler({NotesRateExistException.class})

@@ -3,6 +3,7 @@ package com.muhuang.salecrawler.rate;
 import jakarta.annotation.Resource;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -18,5 +19,9 @@ public class NotesRateService {
             throw new NotesRateExistException("NotesRate of today exist!");
         }
         return notesRateRepository.save(notesRate);
+    }
+
+    public List<NotesRate> findAll() {
+        return notesRateRepository.findAll();
     }
 }
