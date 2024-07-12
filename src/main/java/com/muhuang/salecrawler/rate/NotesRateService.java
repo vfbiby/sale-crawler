@@ -15,7 +15,7 @@ public class NotesRateService {
         String uniqueNotesRateId = notesRate.generateUniqueNotesRateId();
         Optional<NotesRate> byUniqueNotesRateId = notesRateRepository.findByUniqueNotesRateId(uniqueNotesRateId);
         if (byUniqueNotesRateId.isPresent()){
-            throw new NotesRateExistException();
+            throw new NotesRateExistException("NotesRate of today exist!");
         }
         return notesRateRepository.save(notesRate);
     }

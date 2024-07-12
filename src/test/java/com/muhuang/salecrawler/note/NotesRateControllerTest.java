@@ -15,6 +15,7 @@ import org.springframework.test.context.ActiveProfiles;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -186,6 +187,15 @@ public class NotesRateControllerTest {
         notesRateRepository.save(notesRate);
         ResponseEntity<ApiError> response = postNotesRate(notesRate, ApiError.class);
         assertThat(response.getBody().getValidationErrors().size()).isEqualTo(1);
+    }
+
+    @Test
+    void postNotesRate_whenNotesRateIsExist_receiveMessageOfExistingNotesRate() {
+        NotesRate notesRate = getNotesRate();
+        notesRateRepository.save(notesRate);
+        ResponseEntity<ApiError> response = postNotesRate(notesRate, ApiError.class);
+        Map<String, String> validationErrors = response.getBody().getValidationErrors();
+        assertThat(validationErrors.get("NotesRate")).isEqualTo("NotesRate of today exist!");
     }
 
     private <T> ResponseEntity<T> postNotesRate(NotesRate notesRate, Class<T> responseType) {
