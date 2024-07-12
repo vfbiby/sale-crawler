@@ -17,6 +17,7 @@ import java.util.List;
 @AllArgsConstructor
 public class NotesRate extends BaseEntity {
 
+    @JsonProperty("userId")
     private String kocId;
     private int noteNumber;
     private int videoNoteNumber;
