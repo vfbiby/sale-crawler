@@ -1,5 +1,6 @@
 package com.muhuang.salecrawler.rate;
 
+import jakarta.annotation.Resource;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -7,15 +8,12 @@ import org.springframework.web.bind.annotation.*;
 @CrossOrigin
 public class NotesRateController {
 
-    private final NotesRateRepository notesRateRepository;
-
-    public NotesRateController(NotesRateRepository notesRateRepository) {
-        this.notesRateRepository = notesRateRepository;
-    }
+    @Resource
+    private NotesRateService notesRateService;
 
     @PostMapping
     NotesRate createNotesRate(@RequestBody NotesRate notesRate) {
-        return notesRateRepository.save(notesRate);
+        return notesRateService.save(notesRate);
     }
 
 }

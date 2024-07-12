@@ -1,7 +1,9 @@
 package com.muhuang.salecrawler.note;
 
 import com.muhuang.salecrawler.rate.*;
+import com.muhuang.salecrawler.shared.ApiError;
 import jakarta.annotation.Resource;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +23,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @ActiveProfiles("test")
 public class NotesRateControllerTest {
 
+    public static final String API_1_0_NOTES_RATE = "/api/1.0/NotesRate";
     @Autowired
     private TestRestTemplate testRestTemplate;
 
@@ -30,28 +33,40 @@ public class NotesRateControllerTest {
     @Autowired
     private ServletWebServerApplicationContext webServerApplicationContext;
 
+    @BeforeEach
+    void cleanup() {
+        notesRateRepository.deleteAll();
+    }
+
     @Test
     void postNotesRate_whenNotesRateIsValid_receiveOK() {
         NotesRate notesRate = new NotesRate();
-        ResponseEntity<Object> response = testRestTemplate.postForEntity("/api/1.0/NotesRate", notesRate, Object.class);
+        ResponseEntity<Object> response = testRestTemplate.postForEntity(API_1_0_NOTES_RATE, notesRate, Object.class);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
     }
 
     @Test
     void postNotesRate_whenNotesRateIsValid_NotesRateSaveToDatabase() {
+        NotesRate notesRate = getNotesRate();
+        postNotesRate(notesRate, NotesRate.class);
+        assertThat(notesRateRepository.findAll()).hasSize(1);
+    }
+
+    private static NotesRate getNotesRate() {
         NotesRate notesRate = new NotesRate();
         notesRate.setNoteNumber(33);
         notesRate.setVideoNoteNumber(22);
         notesRate.setHundredLikePercent(84.8);
-        postNotesRate(notesRate);
-        assertThat(notesRateRepository.findAll()).hasSize(1);
+        notesRate.setUserId("5bb0275645c6e8000154f64c");
+        notesRate.setType(NotesType.D30);
+        return notesRate;
     }
 
     @Test
     void postNotesRate_whenNotesRateIsValid_NoteRateSaveToDatabaseWithPagePercentVo() {
         NotesRate notesRate = new NotesRate();
         notesRate.setPagePercentVo(PagePercentVo.builder().build());
-        ResponseEntity<NotesRate> response = postNotesRate(notesRate);
+        ResponseEntity<NotesRate> response = postNotesRate(notesRate, NotesRate.class);
         Optional<NotesRate> noteRates = notesRateRepository.findById(response.getBody().getId());
         assertThat(noteRates.get().getPagePercentVo()).isNotNull();
     }
@@ -61,7 +76,7 @@ public class NotesRateControllerTest {
         NotesRate notesRate = new NotesRate();
         PagePercentVo pagePercentVo = PagePercentVo.builder().impHomefeedPercent(88.2).build();
         notesRate.setPagePercentVo(pagePercentVo);
-        ResponseEntity<NotesRate> response = postNotesRate(notesRate);
+        ResponseEntity<NotesRate> response = postNotesRate(notesRate, NotesRate.class);
         Optional<NotesRate> noteRates = notesRateRepository.findById(response.getBody().getId());
         assertThat(noteRates.get().getPagePercentVo().getImpHomefeedPercent()).isEqualTo(88.2);
     }
@@ -71,7 +86,7 @@ public class NotesRateControllerTest {
         NotesRate notesRate = new NotesRate();
         LongTermCommonNoteVo longTermCommonNoteVo = LongTermCommonNoteVo.builder().build();
         notesRate.setLongTermCommonNoteVo(longTermCommonNoteVo);
-        ResponseEntity<NotesRate> response = postNotesRate(notesRate);
+        ResponseEntity<NotesRate> response = postNotesRate(notesRate, NotesRate.class);
         Optional<NotesRate> noteRates = notesRateRepository.findById(response.getBody().getId());
         assertThat(noteRates.get().getLongTermCommonNoteVo()).isNotNull();
     }
@@ -82,7 +97,7 @@ public class NotesRateControllerTest {
         LocalDate now = LocalDate.now();
         LongTermCommonNoteVo longTermCommonNoteVo = LongTermCommonNoteVo.builder().startPublishTime(now).build();
         notesRate.setLongTermCommonNoteVo(longTermCommonNoteVo);
-        ResponseEntity<NotesRate> response = postNotesRate(notesRate);
+        ResponseEntity<NotesRate> response = postNotesRate(notesRate, NotesRate.class);
         Optional<NotesRate> noteRates = notesRateRepository.findById(response.getBody().getId());
         assertThat(noteRates.get().getLongTermCommonNoteVo().getStartPublishTime()).isEqualTo(now);
     }
@@ -93,7 +108,7 @@ public class NotesRateControllerTest {
         notesRate.setNoteNumber(33);
         LongTermCommonNoteVo longTermCommonNoteVo = LongTermCommonNoteVo.builder().noteNumber(44).build();
         notesRate.setLongTermCommonNoteVo(longTermCommonNoteVo);
-        ResponseEntity<NotesRate> response = postNotesRate(notesRate);
+        ResponseEntity<NotesRate> response = postNotesRate(notesRate, NotesRate.class);
         Optional<NotesRate> noteRates = notesRateRepository.findById(response.getBody().getId());
         assertThat(noteRates.get().getLongTermCommonNoteVo().getNoteNumber()).isEqualTo(44);
     }
@@ -102,7 +117,7 @@ public class NotesRateControllerTest {
     void postNotesRate_whenNotesRateIsValid_NoteRateSaveToDatabaseWithNoteType() {
         NotesRate notesRate = new NotesRate();
         notesRate.setNoteType(List.of(NoteType.builder().contentTag("fashion").percent(88.2).build()));
-        ResponseEntity<NotesRate> response = postNotesRate(notesRate);
+        ResponseEntity<NotesRate> response = postNotesRate(notesRate, NotesRate.class);
         Optional<NotesRate> noteRates = notesRateRepository.findById(response.getBody().getId());
         assertThat(noteRates.get().getNoteType().get(0).getContentTag()).isEqualTo("fashion");
     }
@@ -113,7 +128,7 @@ public class NotesRateControllerTest {
         notesRate.setUserId("5bb0275645c6e8000154f64c");
         notesRate.setCaptureDate(LocalDate.parse("2024-07-12"));
         notesRate.setType(NotesType.D30);
-        ResponseEntity<NotesRate> response = postNotesRate(notesRate);
+        ResponseEntity<NotesRate> response = postNotesRate(notesRate, NotesRate.class);
         assertThat(response.getBody().getUniqueNotesRateId()).isEqualTo("5bb0275645c6e8000154f64c2024-07-12D30");
     }
 
@@ -129,7 +144,7 @@ public class NotesRateControllerTest {
         httpHeaders.setContentType(MediaType.APPLICATION_JSON);
         HttpEntity<String> stringHttpEntity = new HttpEntity<>(jsonToPost, httpHeaders);
         int port = webServerApplicationContext.getWebServer().getPort();
-        String url = "http://localhost:" + port + "/api/1.0/NotesRate";
+        String url = "http://localhost:" + port + API_1_0_NOTES_RATE;
         NotesRate response = new TestRestTemplate().postForObject(url, stringHttpEntity, NotesRate.class);
         assertThat(response.getMEngagementNum()).isEqualTo(1711);
     }
@@ -144,13 +159,29 @@ public class NotesRateControllerTest {
         httpHeaders.setContentType(MediaType.APPLICATION_JSON);
         HttpEntity<String> stringHttpEntity = new HttpEntity<>(jsonToPost, httpHeaders);
         int port = webServerApplicationContext.getWebServer().getPort();
-        String url = "http://localhost:" + port + "/api/1.0/NotesRate";
+        String url = "http://localhost:" + port + API_1_0_NOTES_RATE;
         NotesRate response = new TestRestTemplate().postForObject(url, stringHttpEntity, NotesRate.class);
         assertThat(response.getMFollowCnt()).isEqualTo(172);
     }
 
-    private ResponseEntity<NotesRate> postNotesRate(NotesRate notesRate) {
-        return testRestTemplate.postForEntity("/api/1.0/NotesRate", notesRate, NotesRate.class);
+    @Test
+    void postNotesRate_whenNotesRateIsExist_receiveBadRequest() {
+        NotesRate notesRate = getNotesRate();
+        notesRateRepository.save(notesRate);
+        ResponseEntity<NotesRate> response = postNotesRate(notesRate, NotesRate.class);
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+    }
+
+    @Test
+    void postNotesRate_whenNotesRateIsExist_receiveApiError() {
+        NotesRate notesRate = getNotesRate();
+        notesRateRepository.save(notesRate);
+        ResponseEntity<ApiError> response = postNotesRate(notesRate, ApiError.class);
+        assertThat(response.getBody().getUrl()).isEqualTo(API_1_0_NOTES_RATE);
+    }
+
+    private <T> ResponseEntity<T> postNotesRate(NotesRate notesRate, Class<T> responseType) {
+        return testRestTemplate.postForEntity(API_1_0_NOTES_RATE, notesRate, responseType);
     }
 
 }

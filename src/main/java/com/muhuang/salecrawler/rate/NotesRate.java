@@ -28,9 +28,17 @@ public class NotesRate extends BaseEntity {
 
     @PrePersist
     private void onLoad() {
+        generateCaptureDate();
+        this.setUniqueNotesRateId(getNotesRateId());
+    }
+
+    private void generateCaptureDate() {
         if (this.getCaptureDate() == null)
             this.setCaptureDate(LocalDate.now());
-        this.setUniqueNotesRateId(userId + captureDate.toString() + type);
+    }
+
+    private String getNotesRateId() {
+        return userId + captureDate.toString() + type;
     }
 
     private String userId;
@@ -71,4 +79,8 @@ public class NotesRate extends BaseEntity {
     @JoinColumn(name = "long_term_common_note_vo_id")
     private LongTermCommonNoteVo longTermCommonNoteVo;
 
+    public String generateUniqueNotesRateId() {
+        generateCaptureDate();
+        return getNotesRateId();
+    }
 }
