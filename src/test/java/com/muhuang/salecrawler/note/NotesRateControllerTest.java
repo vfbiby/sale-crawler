@@ -59,7 +59,7 @@ public class NotesRateControllerTest {
         notesRate.setVideoNoteNumber(22);
         notesRate.setHundredLikePercent(84.8);
         notesRate.setUserId("5bb0275645c6e8000154f64c");
-        notesRate.setType(NotesType.D30);
+        notesRate.setType(NotesType.L30);
         return notesRate;
     }
 
@@ -128,9 +128,9 @@ public class NotesRateControllerTest {
         NotesRate notesRate = getNotesRate();
         notesRate.setUserId("5bb0275645c6e8000154f64c");
         notesRate.setCaptureDate(LocalDate.parse("2024-07-12"));
-        notesRate.setType(NotesType.D30);
+        notesRate.setType(NotesType.L30);
         ResponseEntity<NotesRate> response = postNotesRate(notesRate, NotesRate.class);
-        assertThat(response.getBody().getUniqueNotesRateId()).isEqualTo("5bb0275645c6e8000154f64c2024-07-12D30");
+        assertThat(response.getBody().getUniqueNotesRateId()).isEqualTo("5bb0275645c6e8000154f64c2024-07-12L30");
     }
 
     @Test
@@ -140,7 +140,7 @@ public class NotesRateControllerTest {
         String jsonToPost = """
                 {
                     "userId": "5bb0275645c6e8000154f64c",
-                    "type": "D30",
+                    "type": "L30",
                     "mEngagementNum": 1711
                   }""";
         HttpHeaders httpHeaders = new HttpHeaders();
@@ -157,7 +157,7 @@ public class NotesRateControllerTest {
         String jsonToPost = """
                 {
                     "userId": "5bb0275645c6e8000154f64c",
-                    "type": "D30",
+                    "type": "L30",
                     "mFollowCnt": 172
                   }""";
         HttpHeaders httpHeaders = new HttpHeaders();

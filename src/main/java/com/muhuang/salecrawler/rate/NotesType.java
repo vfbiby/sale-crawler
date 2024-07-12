@@ -2,8 +2,8 @@ package com.muhuang.salecrawler.rate;
 
 public enum NotesType {
 
-    D30("30"),
-    D90("90");
+    L30("30"),
+    L90("90");
 
     NotesType(String days) {
     }
