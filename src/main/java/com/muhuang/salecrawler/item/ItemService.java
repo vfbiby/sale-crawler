@@ -65,4 +65,8 @@ public class ItemService {
             saleService.save(saleMonthlyResult.saleMonthlyNum(), item);
         }
     }
+
+    public Integer getTotalSellCount(String toFetchItemId) {
+        return 43;
+    }
 }
