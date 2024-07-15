@@ -6,7 +6,12 @@ import com.muhuang.salecrawler.item.PluginItemDTO;
 import com.muhuang.salecrawler.shop.Shop;
 import com.muhuang.salecrawler.user.User;
 import lombok.SneakyThrows;
+import org.springframework.core.io.ClassPathResource;
 
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
@@ -14,7 +19,7 @@ import java.util.List;
 
 public class TestUtil {
 
-     public static User createValidUser() {
+    public static User createValidUser() {
         User user = new User();
         user.setDisplayName("test-display");
         user.setUsername("test-username");
@@ -23,7 +28,7 @@ public class TestUtil {
         return user;
     }
 
-     public static PluginItemDTO createValidPluginItemShop() {
+    public static PluginItemDTO createValidPluginItemShop() {
         return PluginItemDTO.builder().shopId("3423343434")
                 .catId(1779767080)
                 .catName("06/25福利回馈")
@@ -33,7 +38,7 @@ public class TestUtil {
                 .shopUrl("https://shop105703949.taobao.com").build();
     }
 
-     public static PluginItemDTO createValidPluginItem() {
+    public static PluginItemDTO createValidPluginItem() {
         PluginItemDTO pItem = createValidPluginItemShop();
         ItemDTO item = createItemDTO();
         pItem.setItems(List.of(item));
@@ -46,7 +51,7 @@ public class TestUtil {
                 .pic("https://img.taobao.com/main.jpg").build();
     }
 
-     public static Item createValidItem() {
+    public static Item createValidItem() {
         return createItemWithDetail("32838242344",
                 LocalDate.now().toString(), "2024气质新款夏装连衣裙", "https://xx.taobao.com/v.img");
     }
@@ -60,7 +65,18 @@ public class TestUtil {
         }
     }
 
-     public static Shop createValidShop() {
+    public static Shop createValidShop() {
         return Shop.builder().outShopId("38888273").shopName("SKY").shopUrl("https://sky.taobao.com").build();
+    }
+
+    public static String readJsonFromResources(String fileName) {
+        try {
+            ClassPathResource resource = new ClassPathResource(fileName); // 文件路径相对于resources目录
+            // 获取文件内容并转为字符串
+            return Files.readString(Paths.get(resource.getURI()));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
     }
 }
