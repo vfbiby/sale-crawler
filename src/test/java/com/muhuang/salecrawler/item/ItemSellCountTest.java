@@ -1,5 +1,7 @@
 package com.muhuang.salecrawler.item;
 
+import com.muhuang.salecrawler.sale.SaleRepository;
+import jakarta.annotation.Resource;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -17,16 +19,33 @@ public class ItemSellCountTest {
     @Nested
     class SingleRealTimeFetch {
 
-        @MockBean
+        @Resource
         ItemService itemService;
+
+        @MockBean
+        OneBoundService oneBoundService;
+
 
         @Test
         public void toFetchItemId_callSellCountApi_receiveTotalSellCount() {
             String toFetchItemId = "811528885164";
-            Mockito.when(itemService.getTotalSellCount(toFetchItemId)).thenReturn(43);
+            Mockito.when(oneBoundService.getTaobaoDetail(toFetchItemId)).thenReturn(43);
             Integer totalSellCount = itemService.getTotalSellCount(toFetchItemId);
             assertThat(totalSellCount).isEqualTo(43);
         }
+
+        @Test
+        public void toFetchItemId_callSellCountApi_saveTotalSellCountToDB() {
+            String toFetchItemId = "811528885164";
+            Mockito.when(oneBoundService.getTaobaoDetail(toFetchItemId)).thenReturn(43);
+            Integer totalSellCount = itemService.getTotalSellCount(toFetchItemId);
+            itemService.saveSellCount(totalSellCount);
+            Integer getTotalSellCount = itemService.getSellCount(totalSellCount);
+
+            assertThat(getTotalSellCount).isEqualTo(43);
+        }
+
+
 
 
     }

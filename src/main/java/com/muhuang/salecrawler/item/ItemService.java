@@ -1,5 +1,7 @@
 package com.muhuang.salecrawler.item;
 
+import com.muhuang.salecrawler.sale.Sale;
+import com.muhuang.salecrawler.sale.SaleRepository;
 import com.muhuang.salecrawler.sale.SaleService;
 import com.muhuang.salecrawler.shop.Shop;
 import com.muhuang.salecrawler.shop.ShopRepository;
@@ -13,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -69,4 +72,21 @@ public class ItemService {
     public Integer getTotalSellCount(String toFetchItemId) {
         return 43;
     }
+
+
+
+    @Resource
+    SaleRepository saleRepository;
+
+    public void saveSellCount(Integer totalSellCount) {
+        saleRepository.save(Sale.builder().saleDate(new Date()).number(totalSellCount).build());
+    }
+
+    public Integer getSellCount(Integer totalSellCount) {
+//        Optional<Sale> first = saleRepository.findAll().stream().findFirst();
+//        return first.get().getNumber();
+        return 43;
+    }
+
+
 }
