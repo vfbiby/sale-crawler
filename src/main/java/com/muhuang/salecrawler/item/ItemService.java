@@ -1,6 +1,5 @@
 package com.muhuang.salecrawler.item;
 
-import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -76,7 +75,7 @@ public class ItemService {
     @Resource
     OneBoundService oneBoundService;
 
-    public Integer getTotalSellCount(String toFetchItemId) {
+    public Integer getTotalSellCountByOneBound(String toFetchItemId) {
         String json = oneBoundService.getTaobaoDetail(toFetchItemId);
         return parseSellCount(json);
     }
@@ -98,13 +97,17 @@ public class ItemService {
     @Resource
     SaleRepository saleRepository;
 
-    public void saveSellCount(Integer totalSellCount) {
-        saleRepository.save(Sale.builder().saleDate(new Date()).number(totalSellCount).build());
+    public void saveSellCount(Integer totalSellCount, String itemId) {
+        Sale sale = Sale.builder()
+                .saleDate(new Date())
+                .number(totalSellCount)
+//                .item(Item.builder().outItemId(itemId).build())
+                .build();
+        saleRepository.save(sale);
     }
 
-    public Integer getSellCount(Integer totalSellCount) {
-        Optional<Sale> first = saleRepository.findAll().stream().findFirst();
-        return first.get().getNumber();
+    public Integer getTotalSellCountBySelfDB(String itemId) {
+        return saleRepository.findAll().stream().findFirst().get().getNumber();
     }
 
 
