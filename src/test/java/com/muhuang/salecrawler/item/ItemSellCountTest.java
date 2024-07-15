@@ -1,12 +1,19 @@
 package com.muhuang.salecrawler.item;
 
+import com.muhuang.salecrawler.sale.Sale;
+import com.muhuang.salecrawler.sale.SaleRepository;
+import com.muhuang.salecrawler.share.TestUtil;
 import jakarta.annotation.Resource;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ActiveProfiles;
+
+import java.util.Date;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -17,29 +24,53 @@ public class ItemSellCountTest {
     @Nested
     class SingleRealTimeFetch {
 
+        private final String toFetchItemId = "32838242344";
+
         @Resource
         ItemService itemService;
 
         @MockBean
         OneBoundService oneBoundService;
 
+        @Resource
+        ItemRepository itemRepository;
+
+        @Resource
+        SaleRepository saleRepository;
+
+        @BeforeEach
+        public void setup() {
+            itemRepository.save(TestUtil.createValidItem());
+            Mockito.when(oneBoundService.getTaobaoDetail(toFetchItemId)).thenReturn(mockJson);
+        }
+
+        @AfterEach
+        public void cleanup() {
+            itemRepository.deleteAll();
+            saleRepository.deleteAll();
+        }
+
         @Test
         public void toFetchItemId_callSellCountApi_receiveTotalSellCount() {
-            String toFetchItemId = "811528885164";
-            Mockito.when(oneBoundService.getTaobaoDetail(toFetchItemId)).thenReturn(mockJson);
             Integer totalSellCount = itemService.getTotalSellCountByOneBound(toFetchItemId);
             assertThat(totalSellCount).isEqualTo(16);
         }
 
         @Test
         public void toFetchItemId_callSellCountApi_saveTotalSellCountToDB() {
-            String toFetchItemId = "811528885164";
-            Mockito.when(oneBoundService.getTaobaoDetail(toFetchItemId)).thenReturn(mockJson);
             Integer totalSellCount = itemService.getTotalSellCountByOneBound(toFetchItemId);
             itemService.saveSellCount(totalSellCount, toFetchItemId);
-            Integer getTotalSellCount = itemService.getTotalSellCountBySelfDB(toFetchItemId);
+            Sale sale = itemService.getSale(toFetchItemId, new Date());
+            assertThat(sale.getNumber()).isEqualTo(16);
+        }
 
-            assertThat(getTotalSellCount).isEqualTo(16);
+        @Test
+        public void toFetchItemId_callSellCountApi_sellCountIsAssociatedItem() {
+            Integer totalSellCount = itemService.getTotalSellCountByOneBound(toFetchItemId);
+            itemService.saveSellCount(totalSellCount, toFetchItemId);
+            Sale sale = itemService.getSale(toFetchItemId, new Date());
+
+            assertThat(sale.getItem().getOutItemId()).isEqualTo(toFetchItemId);
         }
 
 

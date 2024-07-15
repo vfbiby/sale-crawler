@@ -12,7 +12,7 @@ import java.util.Date;
 @Service
 @RequiredArgsConstructor
 public class SaleService {
-    private final SaleRepository saleRepository;
+    private SaleRepository saleRepository;
 
     /**
      * 保存月度销量
