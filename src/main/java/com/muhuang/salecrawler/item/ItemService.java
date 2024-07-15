@@ -103,9 +103,8 @@ public class ItemService {
     }
 
     public Integer getSellCount(Integer totalSellCount) {
-//        Optional<Sale> first = saleRepository.findAll().stream().findFirst();
-//        return first.get().getNumber();
-        return 43;
+        Optional<Sale> first = saleRepository.findAll().stream().findFirst();
+        return first.get().getNumber();
     }
 
 

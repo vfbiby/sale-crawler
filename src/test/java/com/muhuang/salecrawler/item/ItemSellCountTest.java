@@ -41,7 +41,7 @@ public class ItemSellCountTest {
             itemService.saveSellCount(totalSellCount);
             Integer getTotalSellCount = itemService.getSellCount(totalSellCount);
 
-            assertThat(getTotalSellCount).isEqualTo(43);
+            assertThat(getTotalSellCount).isEqualTo(16);
         }
 
 
