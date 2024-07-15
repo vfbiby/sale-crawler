@@ -13,6 +13,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ActiveProfiles;
 
+import java.time.Duration;
 import java.util.Date;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -25,6 +26,7 @@ public class ItemSellCountTest {
     class SingleRealTimeFetch {
 
         private final String toFetchItemId = "32838242344";
+        private final Date now = new Date();
 
         @Resource
         ItemService itemService;
@@ -58,19 +60,29 @@ public class ItemSellCountTest {
 
         @Test
         public void toFetchItemId_callSellCountApi_saveTotalSellCountToDB() {
-            Integer totalSellCount = itemService.getTotalSellCountByOneBound(toFetchItemId);
-            itemService.saveSellCount(totalSellCount, toFetchItemId);
-            Sale sale = itemService.getSale(toFetchItemId, new Date());
+            Sale sale = getCurrentDaySale();
             assertThat(sale.getNumber()).isEqualTo(16);
         }
 
         @Test
         public void toFetchItemId_callSellCountApi_sellCountIsAssociatedItem() {
-            Integer totalSellCount = itemService.getTotalSellCountByOneBound(toFetchItemId);
-            itemService.saveSellCount(totalSellCount, toFetchItemId);
-            Sale sale = itemService.getSale(toFetchItemId, new Date());
-
+            Sale sale = getCurrentDaySale();
             assertThat(sale.getItem().getOutItemId()).isEqualTo(toFetchItemId);
+        }
+
+        @Test
+        public void toFetchItemId_callSellCountApi_saveInterDaySellCountToDB() {
+            Date yesterday = Date.from(now.toInstant().minus(Duration.ofDays(1)));
+            itemService.saveSellCount(10, toFetchItemId, yesterday);
+            Sale sale = getCurrentDaySale();
+
+            assertThat(sale.getInterdaySellCount()).isEqualTo(6);
+        }
+
+        private Sale getCurrentDaySale() {
+            Integer totalSellCount = itemService.getTotalSellCountByOneBound(toFetchItemId);
+            itemService.saveSellCount(totalSellCount, toFetchItemId, now);
+            return itemService.getSale(toFetchItemId, now);
         }
 
 

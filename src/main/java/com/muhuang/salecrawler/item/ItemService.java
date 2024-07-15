@@ -15,21 +15,16 @@ import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
-import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.ZoneId;
+import java.time.*;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -107,18 +102,22 @@ public class ItemService {
     @Resource
     SaleRepository saleRepository;
 
-    public void saveSellCount(Integer totalSellCount, String itemId) {
+    public void saveSellCount(Integer totalSellCount, String itemId, Date saleDate) {
         Item item = itemRepository.findByOutItemId(itemId);
+        int yesterdayTotalSellCount = getYesterdayTotalSellCount(itemId, saleDate);
         Sale sale = Sale.builder()
-                .saleDate(new Date())
+                .saleDate(saleDate)
                 .number(totalSellCount)
+                .interdaySellCount(totalSellCount - yesterdayTotalSellCount)
                 .item(item)
                 .build();
         saleRepository.save(sale);
     }
 
-    public Integer getTotalSellCountBySelfDB(String itemId) {
-        return saleRepository.findAll().stream().findFirst().get().getNumber();
+    private int getYesterdayTotalSellCount(String toFetchItemId, Date saleDate) {
+        Date yesterday = Date.from(saleDate.toInstant().minus(Duration.ofDays(1)));
+        Sale yestedaySale = getSale(toFetchItemId, yesterday);
+        return yestedaySale.getNumber();
     }
 
 
@@ -140,7 +139,7 @@ public class ItemService {
                 return query.where(ps.toArray(new Predicate[ps.size()])).getRestriction();
             }
         });
-        return sale.stream().findFirst().get();
+        return sale.stream().findFirst().orElse(Sale.builder().number(0).build());
     }
 
 }

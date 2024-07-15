@@ -7,6 +7,7 @@ import com.muhuang.salecrawler.shop.Shop;
 import com.muhuang.salecrawler.user.User;
 import lombok.SneakyThrows;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.List;
@@ -50,10 +51,13 @@ public class TestUtil {
                 LocalDate.now().toString(), "2024气质新款夏装连衣裙", "https://xx.taobao.com/v.img");
     }
 
-    @SneakyThrows
     public static Item createItemWithDetail(String itemId, String date, String title, String pic) {
-        return Item.builder().outItemId(itemId).title(title)
-                .pic(pic).publishedAt(new SimpleDateFormat("yyyy-MM-dd").parse(date)).build();
+        try {
+            return Item.builder().outItemId(itemId).title(title)
+                    .pic(pic).publishedAt(new SimpleDateFormat("yyyy-MM-dd").parse(date)).build();
+        } catch (ParseException e) {
+            throw new RuntimeException(e);
+        }
     }
 
      public static Shop createValidShop() {
