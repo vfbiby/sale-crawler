@@ -21,6 +21,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.*;
 import java.util.ArrayList;
 import java.util.Date;
@@ -142,6 +144,23 @@ public class ItemService {
         return sale.stream().findFirst().orElse(Sale.builder().number(0).build());
     }
 
+    void saveSellCount(Integer sellCount, String itemId) throws ParseException {
+        Date yesterday = Date.from(new Date().toInstant().minus(Duration.ofDays(1)));
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        String format = simpleDateFormat.format(yesterday);
+        Date date = simpleDateFormat.parse(format);
+        saveSellCount(sellCount, itemId, date);
+    }
+
+    private void extracted(Integer sellCount, String itemId, Date parse) {
+        Item inDB = itemRepository.findByOutItemId(itemId);
+        Sale sale1 = Sale.builder()
+                .number(sellCount)
+                .saleDate(parse)
+                .item(inDB)
+                .build();
+        saleRepository.save(sale1);
+    }
 }
 
 
