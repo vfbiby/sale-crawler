@@ -21,8 +21,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.time.*;
 import java.util.ArrayList;
 import java.util.Date;
@@ -147,22 +145,8 @@ public class ItemService {
     }
 
     Sale saveSellCount(Integer sellCount, String itemId) {
-        Date date = getFormatedYesterday();
+        Date date = DateUtil.getFormatedYesterday();
         return saveSellCount(sellCount, itemId, date);
-    }
-
-    private static Date getFormatedYesterday() {
-        Date yesterday = Date.from(new Date().toInstant().minus(Duration.ofDays(1)));
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        String format = simpleDateFormat.format(yesterday);
-
-        Date formatedYesterday = null;
-        try {
-            formatedYesterday = simpleDateFormat.parse(format);
-        } catch (ParseException e) {
-            throw new RuntimeException(e);
-        }
-        return formatedYesterday;
     }
 
 }
