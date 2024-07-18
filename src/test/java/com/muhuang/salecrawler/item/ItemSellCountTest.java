@@ -103,9 +103,8 @@ public class ItemSellCountTest {
 
             Integer totalSellCount = itemService.getTotalSellCountByOneBound(itemId);
             itemService.saveSellCount(totalSellCount, itemId);
-            Sale sale = saleRepository.findAll().get(0);
+            Sale sale = saleRepository.findAll().get(1);
 
-            System.out.println(saleRepository.findAll());
             assertThat(sale.getInterdaySellCount()).isEqualTo(6);
         }
 
