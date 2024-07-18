@@ -128,8 +128,6 @@ public class ItemService {
 
 
     public Sale getSale(String toFetchItemId, Date date) {
-//        Sale sale = saleRepository.findAll().stream().findFirst().get();
-//        return sale;
         List<Sale> sale = saleRepository.findAll(new Specification<Sale>() {
             @Override
             public Predicate toPredicate(Root<Sale> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
@@ -149,27 +147,24 @@ public class ItemService {
     }
 
     Sale saveSellCount(Integer sellCount, String itemId) {
-        Date yesterday = Date.from(new Date().toInstant().minus(Duration.ofDays(1)));
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        String format = simpleDateFormat.format(yesterday);
-        Date date = null;
-        try {
-            date = simpleDateFormat.parse(format);
-        } catch (ParseException e) {
-            throw new RuntimeException(e);
-        }
+        Date date = getFormatedYesterday();
         return saveSellCount(sellCount, itemId, date);
     }
 
-    private void extracted(Integer sellCount, String itemId, Date parse) {
-        Item inDB = itemRepository.findByOutItemId(itemId);
-        Sale sale1 = Sale.builder()
-                .number(sellCount)
-                .saleDate(parse)
-                .item(inDB)
-                .build();
-        saleRepository.save(sale1);
+    private static Date getFormatedYesterday() {
+        Date yesterday = Date.from(new Date().toInstant().minus(Duration.ofDays(1)));
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        String format = simpleDateFormat.format(yesterday);
+
+        Date formatedYesterday = null;
+        try {
+            formatedYesterday = simpleDateFormat.parse(format);
+        } catch (ParseException e) {
+            throw new RuntimeException(e);
+        }
+        return formatedYesterday;
     }
+
 }
 
 
