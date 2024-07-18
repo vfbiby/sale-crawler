@@ -105,7 +105,7 @@ public class ItemService {
     @Resource
     SaleRepository saleRepository;
 
-    public void saveSellCount(Integer totalSellCount, String itemId, Date saleDate) {
+    public Sale saveSellCount(Integer totalSellCount, String itemId, Date saleDate) {
         Item item = itemRepository.findByOutItemId(itemId);
         if (Objects.isNull(item)) {
             throw new SaleAssociatedItemMustNotBeNullException("找不到 itemId=" + itemId + " 的商品！");
@@ -114,10 +114,10 @@ public class ItemService {
         Sale sale = Sale.builder()
                 .saleDate(saleDate)
                 .number(totalSellCount)
-                .interdaySellCount(totalSellCount - yesterdayTotalSellCount)
+                .incrementalSellCount(totalSellCount - yesterdayTotalSellCount)
                 .item(item)
                 .build();
-        saleRepository.save(sale);
+        return saleRepository.save(sale);
     }
 
     private int getYesterdayTotalSellCount(String toFetchItemId, Date saleDate) {
@@ -148,12 +148,12 @@ public class ItemService {
         return sale.stream().findFirst().orElse(Sale.builder().number(0).build());
     }
 
-    void saveSellCount(Integer sellCount, String itemId) throws ParseException {
+    Sale saveSellCount(Integer sellCount, String itemId) throws ParseException {
         Date yesterday = Date.from(new Date().toInstant().minus(Duration.ofDays(1)));
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
         String format = simpleDateFormat.format(yesterday);
         Date date = simpleDateFormat.parse(format);
-        saveSellCount(sellCount, itemId, date);
+        return saveSellCount(sellCount, itemId, date);
     }
 
     private void extracted(Integer sellCount, String itemId, Date parse) {
