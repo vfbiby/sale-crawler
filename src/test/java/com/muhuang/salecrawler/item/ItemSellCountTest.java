@@ -70,7 +70,7 @@ public class ItemSellCountTest {
         }
 
         @Test
-        public void saveSellCount_ItemIsValid_sellCountAssociatedWithItem() throws ParseException {
+        public void saveSellCount_ItemIsValid_sellCountAssociatedWithItem() {
             Integer sellCount = itemService.getTotalSellCountByOneBound(itemId);
             itemService.saveSellCount(sellCount, itemId);
             Sale sale = saleRepository.findAll().get(0);
@@ -78,7 +78,7 @@ public class ItemSellCountTest {
         }
 
         @Test
-        public void saveSellCount_ItemIsValid_sellCountDateTypeIsJavaSqlTimestamp() throws ParseException {
+        public void saveSellCount_ItemIsValid_sellCountDateTypeIsJavaSqlTimestamp() {
             itemService.saveSellCount(1, itemId);
             Sale sale = saleRepository.findAll().get(0);
             assertThat(sale.getSaleDate().getClass()).isEqualTo(Timestamp.class);
@@ -97,7 +97,15 @@ public class ItemSellCountTest {
         }
 
         @Test
-        public void saveSellCount_ItemIsValid_saveInterDaySellCountToDB() throws ParseException {
+        public void saveSellCount_ItemIsValidAndSellDateIsFirstDay_saveIncrementalSellCountIsEqualSellCount() {
+            Integer totalSellCount = itemService.getTotalSellCountByOneBound(itemId);
+            Sale sale = itemService.saveSellCount(totalSellCount, itemId);
+
+            assertThat(sale.getIncrementalSellCount()).isEqualTo(totalSellCount);
+        }
+
+        @Test
+        public void saveSellCount_ItemIsValid_saveIncrementalSellCountToDB() {
             Date dayBeforeYesterday = Date.from(now.toInstant().minus(Duration.ofDays(2)));
             itemService.saveSellCount(10, itemId, dayBeforeYesterday);
 
@@ -107,33 +115,29 @@ public class ItemSellCountTest {
             assertThat(sale.getIncrementalSellCount()).isEqualTo(6);
         }
 
-        //第一天存sellCount时，sellCount和当天销量一样
-        //如果sale没有关联item，应该抛出异常
-        @Test
-        public void saveSellCount_ItemIsNull_throwSaleAssociatedItemMustNotBeNullException() {
-            itemRepository.deleteAll();
-            assertThatThrownBy(() -> itemService.saveSellCount(1, itemId))
-                    .isInstanceOf(SaleAssociatedItemMustNotBeNullException.class);
+        @Nested
+        class SadPath {
+            @Test
+            public void saveSellCount_ItemIsNull_throwSaleAssociatedItemMustNotBeNullException() {
+                itemRepository.deleteAll();
+                assertThatThrownBy(() -> itemService.saveSellCount(1, itemId))
+                        .isInstanceOf(SaleAssociatedItemMustNotBeNullException.class);
+            }
+
+            @Test
+            public void saveSellCount_throwSaleAssociatedItemMustNotBeNullException_hasItemIdMessage() {
+                itemRepository.deleteAll();
+                assertThatThrownBy(() -> itemService.saveSellCount(1, itemId))
+                        .hasMessage("找不到 itemId=32838242344 的商品！");
+            }
+
+            @Test
+            public void saveItem_ItemIdIsDuplicate_throwDataIntegrityViolationException() {
+                assertThatThrownBy(() -> itemRepository.save(TestUtil.createValidItem()))
+                        .isInstanceOf(DataIntegrityViolationException.class);
+            }
         }
 
-        @Test
-        public void saveSellCount_throwSaleAssociatedItemMustNotBeNullException_hasItemIdMessage() {
-            itemRepository.deleteAll();
-            assertThatThrownBy(() -> itemService.saveSellCount(1, itemId))
-                    .hasMessage("找不到 itemId=32838242344 的商品！");
-        }
-
-        @Test
-        public void saveItem_ItemIdIsDuplicate_throwDataIntegrityViolationException() {
-            assertThatThrownBy(() -> itemRepository.save(TestUtil.createValidItem()))
-                    .isInstanceOf(DataIntegrityViolationException.class);
-        }
-
-
-        private Sale getCurrentDaySale() {
-            Integer totalSellCount = itemService.getTotalSellCountByOneBound(itemId);
-            itemService.saveSellCount(totalSellCount, itemId, now);
-            return itemService.getSale(itemId, now);
-        }
     }
+
 }
