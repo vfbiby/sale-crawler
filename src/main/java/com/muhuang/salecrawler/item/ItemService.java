@@ -27,6 +27,7 @@ import java.time.*;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -106,6 +107,9 @@ public class ItemService {
 
     public void saveSellCount(Integer totalSellCount, String itemId, Date saleDate) {
         Item item = itemRepository.findByOutItemId(itemId);
+        if (Objects.isNull(item)) {
+            throw new SaleAssociatedItemMustNotBeNullException("找不到 itemId=" + itemId + " 的商品！");
+        }
         int yesterdayTotalSellCount = getYesterdayTotalSellCount(itemId, saleDate);
         Sale sale = Sale.builder()
                 .saleDate(saleDate)

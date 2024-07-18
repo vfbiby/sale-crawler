@@ -25,7 +25,7 @@ public class Item extends BaseEntity {
 
     @NotNull
     @Size(min = 10, max = 30)
-    @Column(length = 30)
+    @Column(length = 30, unique = true)
     private String outItemId;
 
     @NotNull
