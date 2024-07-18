@@ -74,7 +74,7 @@ public class ItemSellCountTest {
         }
 
         @Test
-        public void saveSellCount_ItemIsValid_sellCountDateTypeIsJavaSqlTimestamp() {
+        public void saveSellCount_ItemIsValid_sellCountDateTypeIsJavaUtilDate() {
             Sale sale = itemService.saveSellCount(1, itemId);
             assertThat(sale.getSaleDate().getClass()).isEqualTo(Date.class);
         }
