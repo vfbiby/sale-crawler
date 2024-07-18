@@ -11,9 +11,6 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.test.context.ActiveProfiles;
 
-import java.sql.Timestamp;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.time.Duration;
 import java.util.Date;
 
@@ -72,27 +69,21 @@ public class ItemSellCountTest {
         @Test
         public void saveSellCount_ItemIsValid_sellCountAssociatedWithItem() {
             Integer sellCount = itemService.getTotalSellCountByOneBound(itemId);
-            itemService.saveSellCount(sellCount, itemId);
-            Sale sale = saleRepository.findAll().get(0);
+            Sale sale = itemService.saveSellCount(sellCount, itemId);
             assertThat(sale.getItem().getOutItemId()).isEqualTo(itemId);
         }
 
         @Test
         public void saveSellCount_ItemIsValid_sellCountDateTypeIsJavaSqlTimestamp() {
-            itemService.saveSellCount(1, itemId);
-            Sale sale = saleRepository.findAll().get(0);
-            assertThat(sale.getSaleDate().getClass()).isEqualTo(Timestamp.class);
+            Sale sale = itemService.saveSellCount(1, itemId);
+            assertThat(sale.getSaleDate().getClass()).isEqualTo(Date.class);
         }
 
         @Test
-        public void saveSellCount_ItemIsValid_sellCountDateIsYesterday() throws ParseException {
-            Date yesterday = Date.from(new Date().toInstant().minus(Duration.ofDays(1)));
-            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
-            String format = simpleDateFormat.format(yesterday);
-            Timestamp formatedYesterday = new Timestamp(simpleDateFormat.parse(format).getTime());
+        public void saveSellCount_ItemIsValid_sellCountDateIsYesterday() {
+            Date formatedYesterday = DateUtil.getFormatedYesterday();
             Integer sellCount = itemService.getTotalSellCountByOneBound(itemId);
-            itemService.saveSellCount(sellCount, itemId);
-            Sale sale = saleRepository.findAll().get(0);
+            Sale sale = itemService.saveSellCount(sellCount, itemId);
             assertThat(sale.getSaleDate()).isEqualTo(formatedYesterday);
         }
 
