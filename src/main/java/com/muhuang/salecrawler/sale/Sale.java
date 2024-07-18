@@ -1,6 +1,5 @@
 package com.muhuang.salecrawler.sale;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.muhuang.salecrawler.item.Item;
 import com.muhuang.salecrawler.shared.BaseEntity;
@@ -23,7 +22,7 @@ public class Sale extends BaseEntity {
 
     private int number;
 
-    private int interdaySellCount;
+    private int incrementalSellCount;
 
     @NotNull
     @ManyToOne

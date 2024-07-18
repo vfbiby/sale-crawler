@@ -97,15 +97,14 @@ public class ItemSellCountTest {
         }
 
         @Test
-        public void toFetchItemId_callSellCountApi_saveInterDaySellCountToDB() throws ParseException {
+        public void saveSellCount_ItemIsValid_saveInterDaySellCountToDB() throws ParseException {
             Date dayBeforeYesterday = Date.from(now.toInstant().minus(Duration.ofDays(2)));
             itemService.saveSellCount(10, itemId, dayBeforeYesterday);
 
             Integer totalSellCount = itemService.getTotalSellCountByOneBound(itemId);
-            itemService.saveSellCount(totalSellCount, itemId);
-            Sale sale = saleRepository.findAll().get(1);
+            Sale sale = itemService.saveSellCount(totalSellCount, itemId);
 
-            assertThat(sale.getInterdaySellCount()).isEqualTo(6);
+            assertThat(sale.getIncrementalSellCount()).isEqualTo(6);
         }
 
         //第一天存sellCount时，sellCount和当天销量一样
