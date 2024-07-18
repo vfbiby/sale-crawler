@@ -124,8 +124,10 @@ public class ItemSellCountTest {
 
             @Test
             public void saveItem_ItemIdIsDuplicate_throwDataIntegrityViolationException() {
-                assertThatThrownBy(() -> itemRepository.save(TestUtil.createValidItem()))
-                        .isInstanceOf(DataIntegrityViolationException.class);
+                assertThatThrownBy(() -> {
+                    itemRepository.save(TestUtil.createValidItem());
+                    itemRepository.save(TestUtil.createValidItem());
+                }).isInstanceOf(DataIntegrityViolationException.class);
             }
         }
 
