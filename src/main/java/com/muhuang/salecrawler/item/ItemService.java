@@ -148,11 +148,16 @@ public class ItemService {
         return sale.stream().findFirst().orElse(Sale.builder().number(0).build());
     }
 
-    Sale saveSellCount(Integer sellCount, String itemId) throws ParseException {
+    Sale saveSellCount(Integer sellCount, String itemId) {
         Date yesterday = Date.from(new Date().toInstant().minus(Duration.ofDays(1)));
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
         String format = simpleDateFormat.format(yesterday);
-        Date date = simpleDateFormat.parse(format);
+        Date date = null;
+        try {
+            date = simpleDateFormat.parse(format);
+        } catch (ParseException e) {
+            throw new RuntimeException(e);
+        }
         return saveSellCount(sellCount, itemId, date);
     }
 
