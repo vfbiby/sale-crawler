@@ -3,11 +3,13 @@ package com.muhuang.salecrawler.rate;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.muhuang.salecrawler.shared.BaseEntity;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Data
@@ -17,7 +19,17 @@ import java.util.List;
 @AllArgsConstructor
 public class NotesRate extends BaseEntity {
 
-    private String kocId;
+    @Column(updatable = false)
+    private LocalDate captureDate;
+
+    @NotNull(message = "{saleCrawler.constraints.notesRate.type.NotNull.message}")
+    @Enumerated(EnumType.STRING)
+    private NotesType type;
+
+    private String uniqueNotesRateId;
+
+    @NotNull(message = "{saleCrawler.constraints.notesRate.userId.NotNull.message}")
+    private String userId;
     private int noteNumber;
     private int videoNoteNumber;
     private double hundredLikePercent;
@@ -54,5 +66,25 @@ public class NotesRate extends BaseEntity {
     @OneToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "long_term_common_note_vo_id")
     private LongTermCommonNoteVo longTermCommonNoteVo;
+
+    public String generateUniqueNotesRateId() {
+        onLoad();
+        return getUniqueNotesRateId();
+    }
+
+    @PrePersist
+    private void onLoad() {
+        generateCaptureDate();
+        this.setUniqueNotesRateId(getNotesRateId());
+    }
+
+    private void generateCaptureDate() {
+        if (this.getCaptureDate() == null)
+            this.setCaptureDate(LocalDate.now());
+    }
+
+    private String getNotesRateId() {
+        return userId + captureDate.toString() + type;
+    }
 
 }
