@@ -2,6 +2,10 @@ package com.muhuang.salecrawler.item;
 
 import com.muhuang.salecrawler.sale.Sale;
 import com.muhuang.salecrawler.sale.SaleRepository;
+import com.muhuang.salecrawler.schedule.Schedule;
+import com.muhuang.salecrawler.schedule.ScheduleRepository;
+import com.muhuang.salecrawler.schedule.ScheduleService;
+import com.muhuang.salecrawler.schedule.ScheduleStatus;
 import com.muhuang.salecrawler.share.TestUtil;
 import jakarta.annotation.Resource;
 import org.junit.jupiter.api.*;
@@ -13,6 +17,7 @@ import org.springframework.test.context.ActiveProfiles;
 
 import java.time.Duration;
 import java.util.Date;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -132,5 +137,93 @@ public class ItemSellCountTest {
         }
 
     }
+
+
+    @Nested
+    class QueueScheduleFetch {
+
+        @Resource
+        ScheduleRepository scheduleRepository;
+
+        @Resource
+        ScheduleService scheduleService;
+
+        @BeforeEach
+        void cleanup() {
+            scheduleRepository.deleteAll();
+        }
+
+        @Nested
+        class AddToBeCrawledItemsToSchedule {
+
+            @Test
+            public void toCrawledItemIds_callAddToBeCrawledItems_receiveNewRecords() {
+                List<String> itemIds = List.of("111", "222");
+                scheduleService.addToBeCrawledItems(itemIds);
+
+                assertThat(scheduleRepository.count()).isEqualTo(itemIds.size());
+            }
+
+            @Test
+            public void toCrawledItemIds_callAddToBeCrawledItemsAndParamsIsNull_receiveEmptyRecords() {
+                scheduleService.addToBeCrawledItems(null);
+
+                assertThat(scheduleRepository.count()).isEqualTo(0);
+            }
+
+            @Test
+            public void toCrawledItemIds_callAddToBeCrawledItemsAndParamsIsEmpty_receiveEmptyRecords() {
+                scheduleService.addToBeCrawledItems(List.of());
+
+                assertThat(scheduleRepository.count()).isEqualTo(0);
+            }
+
+            @Test
+            public void toCrawledItemIds_callAddToBeCrawledItemsAndItemIdIsPending_notSaveRecord() {
+                scheduleRepository.save(Schedule.builder().outItemId("111").status(ScheduleStatus.PENDING).build());
+                scheduleService.addToBeCrawledItems(List.of("111"));
+
+                assertThat(scheduleRepository.findAll().get(0).getStatus()).isEqualTo(ScheduleStatus.PENDING);
+            }
+
+        }
+
+        @Test
+        public void scheduleTable_callGetToBeCrawledItemIdsAndAllRecordsAreReadyStatus_receiveToCrawledItemIds() {
+            scheduleRepository.save(Schedule.builder().outItemId("111").status(ScheduleStatus.READY).build());
+            scheduleRepository.save(Schedule.builder().outItemId("222").status(ScheduleStatus.READY).build());
+            List<String> toCrawledItemIds = scheduleService.getToBeCrawledItemIds();
+
+            assertThat(toCrawledItemIds).isEqualTo(List.of("111", "222"));
+        }
+
+        @Test
+        public void scheduleTable_callGetToBeCrawledItemIdsAndAllRecordsArePendingStatus_receiveEmptyList() {
+            scheduleRepository.save(Schedule.builder().outItemId("111").status(ScheduleStatus.PENDING).build());
+            scheduleRepository.save(Schedule.builder().outItemId("222").status(ScheduleStatus.PENDING).build());
+            List<String> toCrawledItemIds = scheduleService.getToBeCrawledItemIds();
+
+            assertThat(toCrawledItemIds.isEmpty()).isTrue();
+        }
+
+        @Test
+        public void scheduleTable_callGetToBeCrawledItemIdsAndRecordsHasAllStatus_receiveToCrawledItemIds() {
+            scheduleRepository.save(Schedule.builder().outItemId("111").status(ScheduleStatus.PENDING).build());
+            scheduleRepository.save(Schedule.builder().outItemId("222").status(ScheduleStatus.READY).build());
+            List<String> toCrawledItemIds = scheduleService.getToBeCrawledItemIds();
+
+            assertThat(toCrawledItemIds).isEqualTo(List.of("222"));
+        }
+
+        @Test
+        public void scheduleTable_callGetToBeCrawledItemIdsAndHasNoneRecords_receiveEmptyList() {
+            List<String> toCrawledItemIds = scheduleService.getToBeCrawledItemIds();
+
+            assertThat(toCrawledItemIds.isEmpty()).isTrue();
+        }
+
+
+    }
+
 
 }

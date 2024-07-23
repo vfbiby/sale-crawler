@@ -18,5 +18,8 @@ public class Schedule extends BaseEntity {
     @NotNull
     private String outItemId;
 
-    private String status;
+    @Enumerated(value = EnumType.STRING)
+    private ScheduleStatus status;
 }
+
+
