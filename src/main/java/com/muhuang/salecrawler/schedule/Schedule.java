@@ -24,6 +24,13 @@ public class Schedule extends BaseEntity {
     public boolean isRunning() {
         return ScheduleStatus.RUNNING.equals(this.status);
     }
+
+    public void checkStatus() {
+        if (isRunning()) {
+            throw new ItemIsCrawlingException(String.format("itemId=%s的商品，正在爬取并存储销量信息！", outItemId));
+        }
+    }
+
 }
 
 

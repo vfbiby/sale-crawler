@@ -1,6 +1,7 @@
 package com.muhuang.salecrawler.schedule;
 
 import com.muhuang.salecrawler.item.ItemService;
+import com.muhuang.salecrawler.item.SaleAssociatedItemMustNotBeNullException;
 import com.muhuang.salecrawler.sale.Sale;
 import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
@@ -8,14 +9,15 @@ import org.springframework.util.CollectionUtils;
 
 import java.util.List;
 import java.util.Set;
+import java.util.function.*;
 import java.util.stream.Collectors;
 
 @Service
 public class ScheduleService {
 
-    private ScheduleRepository scheduleRepository;
+    private final ScheduleRepository scheduleRepository;
 
-    private ItemService itemService;
+    private final ItemService itemService;
 
     public ScheduleService(ScheduleRepository scheduleRepository, ItemService itemService) {
         this.scheduleRepository = scheduleRepository;
@@ -32,55 +34,74 @@ public class ScheduleService {
         if (CollectionUtils.isEmpty(itemIds)) {
             return;
         }
-        Set<String> pendingItemIds =
-                scheduleRepository.findAll(Example.of(Schedule.builder().status(ScheduleStatus.RUNNING).build()))
-                        .stream().map(Schedule::getOutItemId)
-                        .collect(Collectors.toSet());
+        Set<String> runningItemIds = getRunningItemIds();
+        List<String> toBeCrawledItemIds = itemIds.stream().filter(i -> !runningItemIds.contains(i)).toList();
 
-        List<String> toBeCrawledItemIds = itemIds.stream().filter(i -> !pendingItemIds.contains(i)).toList();
-        List<Schedule> toSaveSchedules = toBeCrawledItemIds.stream()
+        scheduleRepository.saveAll(getToSaveSchedules(toBeCrawledItemIds));
+
+    }
+
+    private static List<Schedule> getToSaveSchedules(List<String> toBeCrawledItemIds) {
+        return toBeCrawledItemIds.stream()
                 .map(e -> Schedule.builder().outItemId(e).status(ScheduleStatus.READY).build())
                 .toList();
-        scheduleRepository.saveAll(toSaveSchedules);
+    }
 
+    private Set<String> getRunningItemIds() {
+        return scheduleRepository.findAll(Example.of(Schedule.builder().status(ScheduleStatus.RUNNING).build()))
+                .stream().map(Schedule::getOutItemId)
+                .collect(Collectors.toSet());
     }
 
     public Boolean saveSellCount(String toCrawledItemId) {
         Schedule schedule = scheduleRepository.findByOutItemId(toCrawledItemId);
-        if (schedule.isRunning()) {
-            throw new ItemIsCrawlingException(String.format("itemId=%s的商品，正在爬取并存储销量信息！", toCrawledItemId));
-        }
-        schedule.setStatus(ScheduleStatus.RUNNING);
-        scheduleRepository.save(schedule);
+        schedule.checkStatus();
+        setRunning(schedule);
 
-        Integer totalSellCount = null;
-        Sale sale = null;
-        try {
-            totalSellCount = itemService.getTotalSellCountByOneBound(toCrawledItemId);
-        } catch (Exception e) {
-            schedule.setStatus(ScheduleStatus.READY);
-            scheduleRepository.save(schedule);
-            throw new ItemCrawlFailedException(String.format("itemId=%s的商品，调用销量数据接口失败！", toCrawledItemId));
-        }
+        Integer totalSellCount = withException(
+                () -> itemService.getTotalSellCountByOneBound(toCrawledItemId), schedule, "crawl", toCrawledItemId);
+        Sale sale = withException(
+                () -> itemService.saveSellCount(totalSellCount, toCrawledItemId), schedule, "save", toCrawledItemId);
 
-        try {
-            sale = itemService.saveSellCount(totalSellCount, toCrawledItemId);
-        } catch (Exception e) {
-            schedule.setStatus(ScheduleStatus.READY);
-            scheduleRepository.save(schedule);
-        }
-
-        boolean result = totalSellCount != null && sale != null
-                && totalSellCount.equals(sale.getNumber()) && toCrawledItemId.equals(sale.getItem().getOutItemId());
-
-        if (result) {
+        if (isSuccessful(toCrawledItemId, totalSellCount, sale)) {
             scheduleRepository.deleteByOutItemId(toCrawledItemId);
-        } else {
-            schedule.setStatus(ScheduleStatus.READY);
-            scheduleRepository.save(schedule);
+            return true;
         }
+        setReady(schedule);
+        return false;
+    }
 
-        return result;
+    private static boolean isSuccessful(String toCrawledItemId, Integer totalSellCount, Sale sale) {
+        return totalSellCount != null && sale != null
+                && totalSellCount.equals(sale.getNumber()) && toCrawledItemId.equals(sale.getItem().getOutItemId());
+    }
+
+    public <T> T withException(Supplier<T> supplier, Schedule schedule, String type, String toCrawledItemId) {
+        try {
+            return supplier.get();
+        } catch (Throwable throwable) {
+            setReady(schedule);
+            if (type.equals("crawl")) {
+                throw new ItemCrawlFailedException(String.format("itemId=%s的商品，调用销量数据接口失败！", toCrawledItemId));
+            } else if (type.equals("save")) {
+                throw new SaleAssociatedItemMustNotBeNullException("找不到 itemId=" + toCrawledItemId + " 的商品！");
+            }
+        }
+        return null;
+    }
+
+
+    private void setReady(Schedule schedule) {
+        setStatus(schedule, ScheduleStatus.READY);
+    }
+
+    private void setRunning(Schedule schedule) {
+        setStatus(schedule, ScheduleStatus.RUNNING);
+    }
+
+    private void setStatus(Schedule schedule, ScheduleStatus status) {
+        schedule.setStatus(status);
+        scheduleRepository.save(schedule);
     }
 
 }
