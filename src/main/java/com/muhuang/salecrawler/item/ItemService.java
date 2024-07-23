@@ -80,7 +80,7 @@ public class ItemService {
     }
 
     @Resource
-    OneBoundService oneBoundService;
+    private OneBoundService oneBoundService;
 
     public Integer getTotalSellCountByOneBound(String toFetchItemId) {
         String json = oneBoundService.getTaobaoDetail(toFetchItemId);
@@ -125,7 +125,7 @@ public class ItemService {
     }
 
 
-    public Sale getSale(String toFetchItemId, Date date) {
+    private Sale getSale(String toFetchItemId, Date date) {
         List<Sale> sale = saleRepository.findAll(new Specification<Sale>() {
             @Override
             public Predicate toPredicate(Root<Sale> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
@@ -144,11 +144,14 @@ public class ItemService {
         return sale.stream().findFirst().orElse(Sale.builder().number(0).build());
     }
 
-    Sale saveSellCount(Integer sellCount, String itemId) {
+    public Sale saveSellCount(Integer sellCount, String itemId) {
         Date date = DateUtil.getFormatedYesterday();
         return saveSellCount(sellCount, itemId, date);
     }
 
+    public List<String> getToBeCrawledItemIds() {
+        return itemRepository.getOutItemIds();
+    }
 }
 
 

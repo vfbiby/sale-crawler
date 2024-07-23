@@ -20,6 +20,10 @@ public class Schedule extends BaseEntity {
 
     @Enumerated(value = EnumType.STRING)
     private ScheduleStatus status;
+
+    public boolean isRunning() {
+        return ScheduleStatus.RUNNING.equals(this.status);
+    }
 }
 
 

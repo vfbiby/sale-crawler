@@ -1,6 +1,7 @@
 package com.muhuang.salecrawler.schedule;
 
-import jakarta.annotation.Resource;
+import com.muhuang.salecrawler.item.ItemService;
+import com.muhuang.salecrawler.sale.Sale;
 import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
@@ -12,8 +13,14 @@ import java.util.stream.Collectors;
 @Service
 public class ScheduleService {
 
-    @Resource
-    ScheduleRepository scheduleRepository;
+    private ScheduleRepository scheduleRepository;
+
+    private ItemService itemService;
+
+    public ScheduleService(ScheduleRepository scheduleRepository, ItemService itemService) {
+        this.scheduleRepository = scheduleRepository;
+        this.itemService = itemService;
+    }
 
     public List<String> getToBeCrawledItemIds() {
         Example<Schedule> example = Example.of(Schedule.builder().status(ScheduleStatus.READY).build());
@@ -21,12 +28,12 @@ public class ScheduleService {
                 .stream().map(Schedule::getOutItemId).toList();
     }
 
-    public void addToBeCrawledItems(List<String> itemIds) {
+    public void saveToBeCrawledItems(List<String> itemIds) {
         if (CollectionUtils.isEmpty(itemIds)) {
             return;
         }
         Set<String> pendingItemIds =
-                scheduleRepository.findAll(Example.of(Schedule.builder().status(ScheduleStatus.PENDING).build()))
+                scheduleRepository.findAll(Example.of(Schedule.builder().status(ScheduleStatus.RUNNING).build()))
                         .stream().map(Schedule::getOutItemId)
                         .collect(Collectors.toSet());
 
@@ -37,4 +44,43 @@ public class ScheduleService {
         scheduleRepository.saveAll(toSaveSchedules);
 
     }
+
+    public Boolean saveSellCount(String toCrawledItemId) {
+        Schedule schedule = scheduleRepository.findByOutItemId(toCrawledItemId);
+        if (schedule.isRunning()) {
+            throw new ItemIsCrawlingException(String.format("itemId=%s的商品，正在爬取并存储销量信息！", toCrawledItemId));
+        }
+        schedule.setStatus(ScheduleStatus.RUNNING);
+        scheduleRepository.save(schedule);
+
+        Integer totalSellCount = null;
+        Sale sale = null;
+        try {
+            totalSellCount = itemService.getTotalSellCountByOneBound(toCrawledItemId);
+        } catch (Exception e) {
+            schedule.setStatus(ScheduleStatus.READY);
+            scheduleRepository.save(schedule);
+            throw new ItemCrawlFailedException(String.format("itemId=%s的商品，调用销量数据接口失败！", toCrawledItemId));
+        }
+
+        try {
+            sale = itemService.saveSellCount(totalSellCount, toCrawledItemId);
+        } catch (Exception e) {
+            schedule.setStatus(ScheduleStatus.READY);
+            scheduleRepository.save(schedule);
+        }
+
+        boolean result = totalSellCount != null && sale != null
+                && totalSellCount.equals(sale.getNumber()) && toCrawledItemId.equals(sale.getItem().getOutItemId());
+
+        if (result) {
+            scheduleRepository.deleteByOutItemId(toCrawledItemId);
+        } else {
+            schedule.setStatus(ScheduleStatus.READY);
+            scheduleRepository.save(schedule);
+        }
+
+        return result;
+    }
+
 }
