@@ -111,7 +111,7 @@ public class ItemService {
         int yesterdayTotalSellCount = getYesterdayTotalSellCount(itemId, saleDate);
         Sale sale = Sale.builder()
                 .saleDate(saleDate)
-                .number(totalSellCount)
+                .sellCount(totalSellCount)
                 .incrementalSellCount(totalSellCount - yesterdayTotalSellCount)
                 .item(item)
                 .build();
@@ -121,7 +121,7 @@ public class ItemService {
     private int getYesterdayTotalSellCount(String toFetchItemId, Date saleDate) {
         Date yesterday = Date.from(saleDate.toInstant().minus(Duration.ofDays(1)));
         Sale yestedaySale = getSale(toFetchItemId, yesterday);
-        return yestedaySale.getNumber();
+        return yestedaySale.getSellCount();
     }
 
 
@@ -141,7 +141,7 @@ public class ItemService {
                 return query.where(ps.toArray(new Predicate[ps.size()])).getRestriction();
             }
         });
-        return sale.stream().findFirst().orElse(Sale.builder().number(0).build());
+        return sale.stream().findFirst().orElse(Sale.builder().sellCount(0).build());
     }
 
     public Sale saveSellCount(Integer sellCount, String itemId) {

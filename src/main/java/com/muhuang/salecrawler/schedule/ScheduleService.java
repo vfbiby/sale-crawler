@@ -73,7 +73,7 @@ public class ScheduleService {
 
     private static boolean isSuccessful(String toCrawledItemId, Integer totalSellCount, Sale sale) {
         return totalSellCount != null && sale != null
-                && totalSellCount.equals(sale.getNumber()) && toCrawledItemId.equals(sale.getItem().getOutItemId());
+                && totalSellCount.equals(sale.getSellCount()) && toCrawledItemId.equals(sale.getItem().getOutItemId());
     }
 
     public <T> T withException(Supplier<T> supplier, Schedule schedule, String type, String toCrawledItemId) {

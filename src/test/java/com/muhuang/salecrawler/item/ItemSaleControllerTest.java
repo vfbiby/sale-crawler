@@ -79,7 +79,7 @@ public class ItemSaleControllerTest {
     private static Sale createSale() {
         Sale sale = new Sale();
         sale.setSaleDate(new Date());
-        sale.setNumber(8);
+        sale.setSellCount(8);
         return sale;
     }
 
