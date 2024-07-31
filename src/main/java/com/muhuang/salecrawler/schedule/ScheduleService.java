@@ -67,7 +67,7 @@ public class ScheduleService {
             scheduleRepository.deleteByOutItemId(toCrawledItemId);
             return true;
         }
-        setReady(schedule);
+        setPending(schedule);
         return false;
     }
 
@@ -80,7 +80,7 @@ public class ScheduleService {
         try {
             return supplier.get();
         } catch (Throwable throwable) {
-            setReady(schedule);
+            setPending(schedule);
             if (type.equals("crawl")) {
                 throw new ItemCrawlFailedException(String.format("itemId=%s的商品，调用销量数据接口失败！", toCrawledItemId));
             } else if (type.equals("save")) {
@@ -91,7 +91,7 @@ public class ScheduleService {
     }
 
 
-    private void setReady(Schedule schedule) {
+    private void setPending(Schedule schedule) {
         setStatus(schedule, ScheduleStatus.PENDING);
     }
 
