@@ -24,13 +24,13 @@ public class ScheduleService {
         this.itemService = itemService;
     }
 
-    public List<String> getToBeCrawledItemIds() {
-        Example<Schedule> example = Example.of(Schedule.builder().status(ScheduleStatus.READY).build());
+    public List<String> getPendingItemIds() {
+        Example<Schedule> example = Example.of(Schedule.builder().status(ScheduleStatus.PENDING).build());
         return scheduleRepository.findAll(example)
                 .stream().map(Schedule::getOutItemId).toList();
     }
 
-    public void saveToBeCrawledItems(List<String> itemIds) {
+    public void savePendingItemIds(List<String> itemIds) {
         if (CollectionUtils.isEmpty(itemIds)) {
             return;
         }
@@ -43,7 +43,7 @@ public class ScheduleService {
 
     private static List<Schedule> getToSaveSchedules(List<String> toBeCrawledItemIds) {
         return toBeCrawledItemIds.stream()
-                .map(e -> Schedule.builder().outItemId(e).status(ScheduleStatus.READY).build())
+                .map(e -> Schedule.builder().outItemId(e).status(ScheduleStatus.PENDING).build())
                 .toList();
     }
 
@@ -92,7 +92,7 @@ public class ScheduleService {
 
 
     private void setReady(Schedule schedule) {
-        setStatus(schedule, ScheduleStatus.READY);
+        setStatus(schedule, ScheduleStatus.PENDING);
     }
 
     private void setRunning(Schedule schedule) {

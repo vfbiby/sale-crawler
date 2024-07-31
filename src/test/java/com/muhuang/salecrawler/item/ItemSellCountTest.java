@@ -2,7 +2,6 @@ package com.muhuang.salecrawler.item;
 
 import com.muhuang.salecrawler.sale.Sale;
 import com.muhuang.salecrawler.sale.SaleRepository;
-import com.muhuang.salecrawler.schedule.*;
 import com.muhuang.salecrawler.share.TestUtil;
 import jakarta.annotation.Resource;
 import org.junit.jupiter.api.*;
@@ -14,7 +13,6 @@ import org.springframework.test.context.ActiveProfiles;
 
 import java.time.Duration;
 import java.util.Date;
-import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -23,8 +21,8 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 @ActiveProfiles("test")
 public class ItemSellCountTest {
 
-    private final String mockJson = TestUtil.readJsonFromResources("taobao_item_get_app_response.json");
-    private final String itemId = "32838242344";
+    final String mockJson = TestUtil.readJsonFromResources("taobao_item_get_app_response.json");
+    final String itemId = "32838242344";
 
     @MockBean
     OneBoundService oneBoundService;
@@ -132,222 +130,6 @@ public class ItemSellCountTest {
                     itemRepository.save(TestUtil.createValidItem());
                 }).isInstanceOf(DataIntegrityViolationException.class);
             }
-        }
-
-    }
-
-
-    @Nested
-    class QueueScheduleFetch {
-
-        @Resource
-        ScheduleRepository scheduleRepository;
-
-        @Resource
-        ScheduleService scheduleService;
-
-        @BeforeEach
-        void cleanup() {
-            scheduleRepository.deleteAll();
-        }
-
-        @Nested
-        class GetToBeCrawledItemIdsFromItem {
-
-            @Resource
-            ItemRepository itemRepository;
-
-            @Resource
-            ItemService itemService;
-
-            @BeforeEach
-            void cleanup() {
-                itemRepository.deleteAll();
-            }
-
-            @Test
-            public void itemTable_callGetToBeCrawledItemIdsAndItemTableHasRecord_receiveItemWithId() {
-                Item item1 = TestUtil.createValidItem();
-                item1.setOutItemId("111");
-                Item item2 = TestUtil.createValidItem();
-                item2.setOutItemId("222");
-                itemRepository.saveAll(List.of(item1, item2));
-
-                List<String> itemIds = itemService.getToBeCrawledItemIds();
-                assertThat(itemIds).isEqualTo(List.of("111", "222"));
-            }
-
-            @Test
-            public void itemTable_callGetToBeCrawledItemIdsAndItemTableIsEmpty_receiveEmptyList() {
-                List<String> itemIds = itemService.getToBeCrawledItemIds();
-                assertThat(itemIds.isEmpty()).isTrue();
-            }
-        }
-
-        @Nested
-        class SaveToBeCrawledItemsToSchedule {
-
-            @Test
-            public void toCrawledItemIds_callSaveToBeCrawledItems_receiveNewRecords() {
-                List<String> itemIds = List.of("111", "222");
-                scheduleService.saveToBeCrawledItems(itemIds);
-
-                assertThat(scheduleRepository.count()).isEqualTo(itemIds.size());
-            }
-
-            @Test
-            public void toCrawledItemIds_callSaveToBeCrawledItemsAndParamsIsNull_receiveEmptyRecords() {
-                scheduleService.saveToBeCrawledItems(null);
-
-                assertThat(scheduleRepository.count()).isEqualTo(0);
-            }
-
-            @Test
-            public void toCrawledItemIds_callSaveToBeCrawledItemsAndParamsIsEmpty_receiveEmptyRecords() {
-                scheduleService.saveToBeCrawledItems(List.of());
-
-                assertThat(scheduleRepository.count()).isEqualTo(0);
-            }
-
-            @Test
-            public void toCrawledItemIds_callSaveToBeCrawledItemsAndItemIdIsPending_notSaveRecord() {
-                scheduleRepository.save(Schedule.builder().outItemId("111").status(ScheduleStatus.RUNNING).build());
-                scheduleService.saveToBeCrawledItems(List.of("111"));
-
-                assertThat(scheduleRepository.findAll().get(0).getStatus()).isEqualTo(ScheduleStatus.RUNNING);
-            }
-
-        }
-
-        @Nested
-        class GetToBeCrawledItemIdsFromSchedule {
-
-            @Test
-            public void scheduleTable_callGetToBeCrawledItemIdsAndAllRecordsAreReadyStatus_receiveToCrawledItemIds() {
-                scheduleRepository.save(Schedule.builder().outItemId("111").status(ScheduleStatus.READY).build());
-                scheduleRepository.save(Schedule.builder().outItemId("222").status(ScheduleStatus.READY).build());
-                List<String> toCrawledItemIds = scheduleService.getToBeCrawledItemIds();
-
-                assertThat(toCrawledItemIds).isEqualTo(List.of("111", "222"));
-            }
-
-            @Test
-            public void scheduleTable_callGetToBeCrawledItemIdsAndAllRecordsArePendingStatus_receiveEmptyList() {
-                scheduleRepository.save(Schedule.builder().outItemId("111").status(ScheduleStatus.RUNNING).build());
-                scheduleRepository.save(Schedule.builder().outItemId("222").status(ScheduleStatus.RUNNING).build());
-                List<String> toCrawledItemIds = scheduleService.getToBeCrawledItemIds();
-
-                assertThat(toCrawledItemIds.isEmpty()).isTrue();
-            }
-
-            @Test
-            public void scheduleTable_callGetToBeCrawledItemIdsAndRecordsHasAllStatus_receiveToCrawledItemIds() {
-                scheduleRepository.save(Schedule.builder().outItemId("111").status(ScheduleStatus.RUNNING).build());
-                scheduleRepository.save(Schedule.builder().outItemId("222").status(ScheduleStatus.READY).build());
-                List<String> toCrawledItemIds = scheduleService.getToBeCrawledItemIds();
-
-                assertThat(toCrawledItemIds).isEqualTo(List.of("222"));
-            }
-
-            @Test
-            public void scheduleTable_callGetToBeCrawledItemIdsAndHasNoneRecords_receiveEmptyList() {
-                List<String> toCrawledItemIds = scheduleService.getToBeCrawledItemIds();
-
-                assertThat(toCrawledItemIds.isEmpty()).isTrue();
-            }
-        }
-
-        @Nested
-        class CallSaveSellCount {
-
-            @BeforeEach
-            void cleanup() {
-                itemRepository.deleteAll();
-            }
-
-            @Test
-            public void scheduleTable_callSaveSellCount_receiveOk() {
-                Mockito.when(oneBoundService.getTaobaoDetail(itemId)).thenReturn(mockJson);
-                itemRepository.save(TestUtil.createValidItem());
-                scheduleRepository.save(Schedule.builder().outItemId(itemId).status(ScheduleStatus.READY).build());
-
-                String toCrawledItemId = scheduleService.getToBeCrawledItemIds().get(0);
-                Boolean result = scheduleService.saveSellCount(toCrawledItemId);
-
-                assertThat(result).isTrue();
-            }
-
-            @Test
-            public void scheduleTable_callSaveSellCountAndSuccessful_deleteSuccessfulItemIdFromSchedule() {
-                Mockito.when(oneBoundService.getTaobaoDetail(itemId)).thenReturn(mockJson);
-                itemRepository.save(TestUtil.createValidItem());
-                scheduleRepository.save(Schedule.builder().outItemId(itemId).status(ScheduleStatus.READY).build());
-
-                String toCrawledItemId = scheduleService.getToBeCrawledItemIds().get(0);
-                scheduleService.saveSellCount(toCrawledItemId);
-
-                assertThat(scheduleRepository.count()).isEqualTo(0);
-            }
-
-            @Test
-            public void scheduleTable_callSaveSellCountAndFailed_itemInScheduleIsReadyStatus() {
-                Mockito.when(oneBoundService.getTaobaoDetail("333")).thenReturn(mockJson);
-                itemRepository.save(TestUtil.createValidItem());
-                scheduleRepository.save(Schedule.builder().outItemId(itemId).status(ScheduleStatus.READY).build());
-
-                String toCrawledItemId = scheduleService.getToBeCrawledItemIds().get(0);
-                try {
-                    scheduleService.saveSellCount(toCrawledItemId);
-                } catch (Exception ignored) {
-                }
-
-                assertThat(scheduleRepository.findAll().get(0).getStatus()).isEqualTo(ScheduleStatus.READY);
-            }
-
-            @Test
-            public void scheduleTable_callSaveSellCountAndFailed_throwItemCrawlFailedException() {
-                Mockito.when(oneBoundService.getTaobaoDetail("333")).thenReturn(mockJson);
-                itemRepository.save(TestUtil.createValidItem());
-                scheduleRepository.save(Schedule.builder().outItemId(itemId).status(ScheduleStatus.READY).build());
-
-                String toCrawledItemId = scheduleService.getToBeCrawledItemIds().get(0);
-
-                assertThatThrownBy(() -> scheduleService.saveSellCount(toCrawledItemId))
-                        .isInstanceOf(ItemCrawlFailedException.class);
-            }
-
-            @Test
-            public void scheduleTable_callSaveSellCountAndFailed_throwItemCrawlFailedExceptionHasCorrectMessage() {
-                Mockito.when(oneBoundService.getTaobaoDetail("333")).thenReturn(mockJson);
-                itemRepository.save(TestUtil.createValidItem());
-                scheduleRepository.save(Schedule.builder().outItemId(itemId).status(ScheduleStatus.READY).build());
-
-                String toCrawledItemId = scheduleService.getToBeCrawledItemIds().get(0);
-
-                assertThatThrownBy(() -> scheduleService.saveSellCount(toCrawledItemId))
-                        .hasMessage(String.format("itemId=%s的商品，调用销量数据接口失败！", itemId));
-            }
-
-            @Test
-            public void scheduleTable_callSaveSellCountAndItemIsRunning_throwItemIsCrawlingException() {
-                Mockito.when(oneBoundService.getTaobaoDetail(itemId)).thenReturn(mockJson);
-                itemRepository.save(TestUtil.createValidItem());
-                scheduleRepository.save(Schedule.builder().outItemId(itemId).status(ScheduleStatus.RUNNING).build());
-
-                assertThatThrownBy(() -> scheduleService.saveSellCount(itemId))
-                        .isInstanceOf(ItemIsCrawlingException.class);
-            }
-
-            @Test
-            public void scheduleTable_callSaveSellCountAndItemIsRunning_throwItemIsCrawlingExceptionHasCorrectMessage() {
-                Mockito.when(oneBoundService.getTaobaoDetail(itemId)).thenReturn(mockJson);
-                itemRepository.save(TestUtil.createValidItem());
-                scheduleRepository.save(Schedule.builder().outItemId(itemId).status(ScheduleStatus.RUNNING).build());
-
-                assertThatThrownBy(() -> scheduleService.saveSellCount(itemId))
-                        .hasMessage(String.format("itemId=%s的商品，正在爬取并存储销量信息！", itemId));
-            }
-
         }
 
     }
