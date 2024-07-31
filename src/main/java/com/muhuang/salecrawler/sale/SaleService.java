@@ -24,7 +24,7 @@ public class SaleService {
         Sale sale = Sale.builder()
                 .item(item)
                 .saleDate(new Date())
-                .number(monthlySaleNum)
+                .sellCount(monthlySaleNum)
                 .build();
         saleRepository.save(sale);
     }

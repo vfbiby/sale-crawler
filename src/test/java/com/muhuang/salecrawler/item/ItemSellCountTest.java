@@ -21,21 +21,22 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 @ActiveProfiles("test")
 public class ItemSellCountTest {
 
+    final String mockJson = TestUtil.readJsonFromResources("taobao_item_get_app_response.json");
+    final String itemId = "32838242344";
+
+    @MockBean
+    OneBoundService oneBoundService;
+
+    @Resource
+    ItemRepository itemRepository;
+
     @Nested
     class SingleRealTimeFetch {
 
-        private final String itemId = "32838242344";
         private final Date now = new Date();
-        String mockJson = TestUtil.readJsonFromResources("taobao_item_get_app_response.json");
 
         @Resource
         ItemService itemService;
-
-        @MockBean
-        OneBoundService oneBoundService;
-
-        @Resource
-        ItemRepository itemRepository;
 
         @Resource
         SaleRepository saleRepository;
@@ -132,5 +133,6 @@ public class ItemSellCountTest {
         }
 
     }
+
 
 }

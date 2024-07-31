@@ -57,7 +57,7 @@ public class SaleControllerTest {
         void postSale_whenSaleIsValid_receiveOK() {
             Item item = TestUtil.createValidItem();
             itemRepository.save(item);
-            Sale sale = Sale.builder().saleDate(new Date()).number(3).item(item).build();
+            Sale sale = Sale.builder().saleDate(new Date()).sellCount(3).item(item).build();
             ResponseEntity<Object> response = testRestTemplate.postForEntity(API_1_0_SALES, sale, Object.class);
             assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         }
@@ -65,7 +65,7 @@ public class SaleControllerTest {
         @Test
         void postSale_whenSaleIsValid_saleSaveToDatabase() {
             Item inDB = itemRepository.save(TestUtil.createValidItem());
-            Sale sale = Sale.builder().saleDate(new Date()).number(3).item(inDB).build();
+            Sale sale = Sale.builder().saleDate(new Date()).sellCount(3).item(inDB).build();
             testRestTemplate.postForEntity(API_1_0_SALES, sale, Object.class);
             assertThat(saleRepository.count()).isEqualTo(1);
         }
@@ -143,6 +143,6 @@ public class SaleControllerTest {
     }
 
     private static Sale createValidSale() {
-        return Sale.builder().saleDate(new Date()).number(3).build();
+        return Sale.builder().saleDate(new Date()).sellCount(3).build();
     }
 }

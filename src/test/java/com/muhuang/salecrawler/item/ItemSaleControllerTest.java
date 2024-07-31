@@ -8,6 +8,7 @@ import com.muhuang.salecrawler.sale.SaleRepository;
 import com.muhuang.salecrawler.shop.ShopRepository;
 import jakarta.annotation.Resource;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -42,7 +43,7 @@ public class ItemSaleControllerTest {
     @Autowired
     private TestRestTemplate testRestTemplate;
 
-    @AfterEach
+    @BeforeEach
     public void cleanup() {
         cateRepository.deleteAll();
         saleRepository.deleteAll();
@@ -79,7 +80,7 @@ public class ItemSaleControllerTest {
     private static Sale createSale() {
         Sale sale = new Sale();
         sale.setSaleDate(new Date());
-        sale.setNumber(8);
+        sale.setSellCount(8);
         return sale;
     }
 

@@ -1,7 +1,5 @@
 package com.muhuang.salecrawler.schedule;
 
-import com.muhuang.salecrawler.schedule.Schedule;
-import com.muhuang.salecrawler.schedule.ScheduleRepository;
 import jakarta.annotation.Resource;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -51,7 +49,7 @@ public class PostScheduleControllerTest {
         Schedule schedule = new Schedule();
         schedule.setOutItemId("34234324");
         postSchedule(schedule);
-        assertThat(scheduleRepository.findByOutItemId("34234324").getStatus()).isEqualTo("pending");
+        assertThat(scheduleRepository.findByOutItemId("34234324").getStatus()).isEqualTo(ScheduleStatus.RUNNING);
     }
 
     @Test

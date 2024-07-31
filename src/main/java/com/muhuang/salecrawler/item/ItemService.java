@@ -80,7 +80,7 @@ public class ItemService {
     }
 
     @Resource
-    OneBoundService oneBoundService;
+    private OneBoundService oneBoundService;
 
     public Integer getTotalSellCountByOneBound(String toFetchItemId) {
         String json = oneBoundService.getTaobaoDetail(toFetchItemId);
@@ -111,7 +111,7 @@ public class ItemService {
         int yesterdayTotalSellCount = getYesterdayTotalSellCount(itemId, saleDate);
         Sale sale = Sale.builder()
                 .saleDate(saleDate)
-                .number(totalSellCount)
+                .sellCount(totalSellCount)
                 .incrementalSellCount(totalSellCount - yesterdayTotalSellCount)
                 .item(item)
                 .build();
@@ -121,11 +121,11 @@ public class ItemService {
     private int getYesterdayTotalSellCount(String toFetchItemId, Date saleDate) {
         Date yesterday = Date.from(saleDate.toInstant().minus(Duration.ofDays(1)));
         Sale yestedaySale = getSale(toFetchItemId, yesterday);
-        return yestedaySale.getNumber();
+        return yestedaySale.getSellCount();
     }
 
 
-    public Sale getSale(String toFetchItemId, Date date) {
+    private Sale getSale(String toFetchItemId, Date date) {
         List<Sale> sale = saleRepository.findAll(new Specification<Sale>() {
             @Override
             public Predicate toPredicate(Root<Sale> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
@@ -141,14 +141,17 @@ public class ItemService {
                 return query.where(ps.toArray(new Predicate[ps.size()])).getRestriction();
             }
         });
-        return sale.stream().findFirst().orElse(Sale.builder().number(0).build());
+        return sale.stream().findFirst().orElse(Sale.builder().sellCount(0).build());
     }
 
-    Sale saveSellCount(Integer sellCount, String itemId) {
+    public Sale saveSellCount(Integer sellCount, String itemId) {
         Date date = DateUtil.getFormatedYesterday();
         return saveSellCount(sellCount, itemId, date);
     }
 
+    public List<String> getToBeCrawledItemIds() {
+        return itemRepository.getOutItemIds();
+    }
 }
 
 

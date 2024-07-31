@@ -18,7 +18,7 @@ public class ScheduleItemSalesScrapingController {
 
     @PostMapping
     void createSchedule(@Valid @RequestBody Schedule schedule) throws ScheduleItemIdNotNullException {
-        schedule.setStatus("pending");
+        schedule.setStatus(ScheduleStatus.RUNNING);
         scheduleRepository.save(schedule);
     }
 
