@@ -18,6 +18,8 @@
         <org.mapstruct.version>1.5.5.Final</org.mapstruct.version>
         <org.projectlombok.version>1.18.34</org.projectlombok.version>
         <org.apache.maven.plugins.compiler.version>3.13.0</org.apache.maven.plugins.compiler.version>
+        <org.flywaydb.flyway-core.version>10.16.0</org.flywaydb.flyway-core.version>
+        <org.flywaydb.flyway-mysql.version>10.16.0</org.flywaydb.flyway-mysql.version>
     </properties>
     <dependencies>
         <dependency>
@@ -76,6 +78,19 @@
             <artifactId>mapstruct</artifactId>
             <version>${org.mapstruct.version}</version>
         </dependency>
+        <!-- https://mvnrepository.com/artifact/org.flywaydb/flyway-core -->
+        <dependency>
+            <groupId>org.flywaydb</groupId>
+            <artifactId>flyway-core</artifactId>
+            <version>${org.flywaydb.flyway-core.version}</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/org.flywaydb/flyway-mysql -->
+        <dependency>
+            <groupId>org.flywaydb</groupId>
+            <artifactId>flyway-mysql</artifactId>
+            <version>${org.flywaydb.flyway-mysql.version}</version>
+        </dependency>
+
     </dependencies>
 
     <build>

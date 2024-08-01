@@ -1,10 +1,12 @@
 package com.muhuang.salecrawler;
 
+import jakarta.persistence.EntityManagerFactory;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.context.annotation.Bean;
+import org.springframework.orm.jpa.JpaTransactionManager;
+import org.springframework.transaction.PlatformTransactionManager;
 
-@EnableScheduling
 @SpringBootApplication
 public class SaleCrawlerApplication {
 
@@ -12,4 +14,9 @@ public class SaleCrawlerApplication {
         SpringApplication.run(SaleCrawlerApplication.class, args);
     }
 
+
+    @Bean
+    public PlatformTransactionManager transactionManager(EntityManagerFactory factory) {
+        return new JpaTransactionManager(factory);
+    }
 }
