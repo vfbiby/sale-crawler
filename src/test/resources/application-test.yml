@@ -7,6 +7,11 @@ spring:
     properties:
       hibernate:
         format_sql: true
+      # fix: https://cloud.tencent.com/developer/ask/sof/106604482、https://stackoverflow.com/questions/69072406/hv000028-unexpected-exception-during-isvalid-call
+      javax:
+        persistence:
+          validation:
+            mode: none
   datasource:
     driver-class-name: org.h2.Driver
     url: jdbc:h2:mem:testDB
